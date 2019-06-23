@@ -10,7 +10,7 @@ class Boatswain(QMainWindow):
         uic.loadUi('boatswain.ui', self)
 
         self.show()
-        self.Add.clicked.connect(self.addInputTextToListbox)
+        self.addApp.clicked.connect(self.addInputTextToListbox)
 
 
     def addInputTextToListbox(self):

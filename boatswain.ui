@@ -29,7 +29,7 @@
     <property name="styleSheet">
      <string notr="true">border-bottom: 1px solid #999999</string>
     </property>
-    <widget class="QPushButton" name="Add">
+    <widget class="QPushButton" name="addApp">
      <property name="geometry">
       <rect>
        <x>0</x>
@@ -42,7 +42,7 @@
       <string>Add</string>
      </property>
     </widget>
-    <widget class="QComboBox" name="comboBox">
+    <widget class="QComboBox" name="appType">
      <property name="geometry">
       <rect>
        <x>140</x>
@@ -67,7 +67,7 @@
       </property>
      </item>
     </widget>
-    <widget class="QLineEdit" name="lineEdit">
+    <widget class="QLineEdit" name="searchApp">
      <property name="geometry">
       <rect>
        <x>240</x>
