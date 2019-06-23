@@ -12,7 +12,6 @@ class Boatswain(QMainWindow):
         self.show()
         self.addApp.clicked.connect(self.addInputTextToListbox)
 
-
     def addInputTextToListbox(self):
         print("asdasd")
 
