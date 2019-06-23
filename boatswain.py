@@ -1,7 +1,10 @@
 import sys
 
 from PyQt5 import uic
-from PyQt5.QtWidgets import QApplication, QLineEdit, QMainWindow
+from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtWidgets import QApplication, QLineEdit, QMainWindow, QDialog
+
+from add.add_app import AddAppDialog
 
 
 class Boatswain(QMainWindow):
@@ -10,10 +13,15 @@ class Boatswain(QMainWindow):
         uic.loadUi('boatswain.ui', self)
 
         self.show()
-        self.addApp.clicked.connect(self.addInputTextToListbox)
 
-    def addInputTextToListbox(self):
-        print("asdasd")
+    @pyqtSlot(bool, name='on_addApp_clicked')
+    def addAppClicked(self, checked=None):
+        if checked is None:
+            return
+        dialog = QDialog()
+        dialog.ui = AddAppDialog("Add app")
+        dialog.ui.setupUi(dialog)
+        dialog.exec_()
 
     def mousePressEvent(self, event):
         focused_widget = QApplication.focusWidget()
