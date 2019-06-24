@@ -9,10 +9,10 @@ from add.add_app import AddAppDialog
 
 
 class Boatswain(QMainWindow):
+
     def __init__(self):
         super(Boatswain, self).__init__()
         uic.loadUi('boatswain.ui', self)
-
         self.show()
 
     @pyqtSlot(bool, name='on_addApp_clicked')
@@ -20,8 +20,7 @@ class Boatswain(QMainWindow):
         if checked is None:
             return
         dialog = QDialog()
-        dialog.ui = AddAppDialog("Add app")
-        dialog.ui.setupUi(dialog)
+        dialog.ui = AddAppDialog("Add app", dialog)
         dialog.exec_()
 
     def mousePressEvent(self, event):

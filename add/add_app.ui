@@ -77,17 +77,23 @@
          <property name="text">
           <string>All repos</string>
          </property>
+         <property name="focusPolicy">
+          <enum>Qt::ClickFocus</enum>
+         </property>
         </item>
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLineEdit" name="lineEdit">
+       <widget class="QLineEdit" name="keySearch">
         <property name="styleSheet">
          <string notr="true">padding: 2 2 2 5;</string>
         </property>
         <property name="placeholderText">
          <string>Search apps</string>
         </property>
+        <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
        </widget>
       </item>
      </layout>

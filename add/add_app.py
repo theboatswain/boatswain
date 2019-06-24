@@ -7,11 +7,11 @@ file_path = __file__
 
 
 class AddAppDialog(object):
-    def __init__(self, title) -> None:
+
+    def __init__(self, title, dialog) -> None:
         super().__init__()
         self.title = title
-
-    def setupUi(self, dialog):
+        self.dialog = dialog
         ui_dir = os.path.dirname(file_path)
         uic.loadUi(os.path.join(ui_dir, 'add_app.ui'), dialog)
         dialog.setWindowTitle(self.title)

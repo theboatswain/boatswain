@@ -71,6 +71,9 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="focusPolicy">
+          <enum>Qt::ClickFocus</enum>
+         </property>
          <item>
           <property name="text">
            <string>All apps</string>
@@ -118,6 +121,9 @@
          <property name="text">
           <string>Add</string>
          </property>
+         <property name="focusPolicy">
+          <enum>Qt::ClickFocus</enum>
+         </property>
         </widget>
        </item>
        <item row="0" column="1">
@@ -158,12 +164,12 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionAdd_app"/>
+    <addaction name="actionAdd"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="actionAdd_app">
+  <action name="actionAdd">
    <property name="text">
     <string>Add new app</string>
    </property>
