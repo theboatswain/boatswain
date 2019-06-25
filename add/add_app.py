@@ -1,3 +1,4 @@
+import json
 import os
 
 from PyQt5 import uic
@@ -28,15 +29,20 @@ class AddAppDialog(object):
         self.dialog.scrollArea.setWidget(self.searchResultArea)
         dialog.keySearch.returnPressed.connect(self.searchApp)
 
+        with open('resources/default_search.json', 'r') as f:
+            self.loadResult(json.load(f))
+
     def searchApp(self):
         keyword = self.dialog.keySearch.text()
         if len(keyword) == 0:
             return
-        self.cleanSearchResults()
         docker_images = docker_service.search_containers(keyword)
+        self.loadResult(docker_images)
+
+    def loadResult(self, docker_images):
+        self.cleanSearchResults()
         for item in docker_images:
-            widget = QWidget(self.searchResultArea)
-            AppWidget(widget, item['name'], item['description'])
+            widget = AppWidget(self.searchResultArea, item['name'], item['description'])
             self.searchResultArea.layout().addWidget(widget)
 
     def cleanSearchResults(self):

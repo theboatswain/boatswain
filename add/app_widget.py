@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QMetaObject, QCoreApplication, Qt
+from PyQt5.QtCore import QMetaObject, QCoreApplication, Qt, pyqtSlot
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QSizePolicy, QPushButton, QWidget, QVBoxLayout
 
@@ -6,34 +6,37 @@ from utils import text_utils
 from utils.app_avatar import AppAvatar
 
 
-class AppWidget(object):
+class AppWidget(QWidget):
 
-    def __init__(self, widget, name, description) -> None:
-        super().__init__()
-        self.horizontalLayout = QHBoxLayout(widget)
+    def __init__(self, parent, name, description) -> None:
+        super().__init__(parent)
+        self.horizontalLayout = QHBoxLayout(self)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        _translate = QCoreApplication.translate
 
         img_name = name
         name_part = name.split('/')
         if len(name_part) > 1:
             img_name = name_part[1]
-        self.pic = AppAvatar(text_utils.getSimpleName(img_name), parent=widget)
+        self.pic = AppAvatar(text_utils.getSimpleName(img_name), parent=self)
         self.horizontalLayout.addWidget(self.pic)
 
-        self.infoWidget = QWidget(widget)
+        self.infoWidget = QWidget(self)
         self.infoWidget.setObjectName("infoWidget")
         self.infoLayout = QVBoxLayout(self.infoWidget)
         self.infoLayout.setContentsMargins(5, 0, 0, 0)
 
-        self.name = QLabel(widget)
+        self.name = QLabel(self)
         self.name.setObjectName("name")
         self.infoLayout.addWidget(self.name)
 
-        self.description = QLabel(widget)
-        self.description.setWordWrap(True)
-        self.description.setObjectName("description")
-        self.infoLayout.addWidget(self.description)
+        if len(description) > 0:
+            self.description = QLabel(self)
+            self.description.setWordWrap(True)
+            self.description.setObjectName("description")
+            self.description.setText(_translate("widget", description))
+            self.infoLayout.addWidget(self.description)
 
         sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(2)
@@ -41,21 +44,21 @@ class AppWidget(object):
 
         self.infoWidget.setSizePolicy(sizePolicy)
         self.horizontalLayout.addWidget(self.infoWidget)
-        self.fromRepo = QLabel(widget)
+        self.fromRepo = QLabel(self)
         font = QFont()
         font.setBold(True)
         font.setWeight(75)
         self.fromRepo.setFont(font)
         self.fromRepo.setObjectName("fromRepo")
         self.horizontalLayout.addWidget(self.fromRepo)
-        self.install = QPushButton(widget)
+        self.install = QPushButton(self)
         self.install.setObjectName("install")
         self.horizontalLayout.addWidget(self.install)
-
-        _translate = QCoreApplication.translate
-        widget.setWindowTitle(_translate("widget", "widget"))
-        self.description.setText(_translate("widget", description))
         self.fromRepo.setText(_translate("widget", "From Dockerhub"))
         self.install.setText(_translate("widget", "Install"))
         self.name.setText(_translate("widget", name))
-        QMetaObject.connectSlotsByName(widget)
+        QMetaObject.connectSlotsByName(self)
+
+    @pyqtSlot(bool, name='on_install_clicked')
+    def installApp(self, checked):
+        print(self.name.text())

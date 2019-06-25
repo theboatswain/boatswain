@@ -1,0 +1,46 @@
+[
+  {
+    "name": "wordpress",
+    "description": "The WordPress rich content management system can utilize plugins, widgets, and themes."
+  },
+  {
+    "name": "mysql",
+    "description": "MySQL is a widely used, open-source relational database management system (RDBMS)."
+  },
+  {
+    "name": "mongo",
+    "description": "MongoDB document databases provide high availability and easy scalability."
+  },
+  {
+    "name": "mariadb",
+    "description": "MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL."
+  },
+  {
+    "name": "arangodb",
+    "description": "ArangoDB - a distributed database with a flexible data model for documents, graphs, and key-values."
+  },
+  {
+    "name": "postgres",
+    "description": "The PostgreSQL object-relational database system provides reliability and data integrity."
+  },
+  {
+    "name": "django",
+    "description": "Django is a free web application framework, written in Python."
+  },
+  {
+    "name": "redis",
+    "description": "Redis is an open source key-value store that functions as a data structure server."
+  },
+  {
+    "name": "memcached",
+    "description": "Free & open source, high-performance, distributed memory object caching system."
+  },
+  {
+    "name": "nginx",
+    "description": "Official build of Nginx."
+  },
+  {
+    "name": "tomcat",
+    "description": "Apache Tomcat is an open source implementation of the Java Servlet and JavaServer Pages technologies"
+  }
+]
