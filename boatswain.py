@@ -16,6 +16,7 @@ class Boatswain(QMainWindow):
         self.show()
 
     @pyqtSlot(bool, name='on_addApp_clicked')
+    @pyqtSlot(bool, name='on_actionAdd_triggered')
     def addAppClicked(self, checked=None):
         if checked is None:
             return
