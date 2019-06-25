@@ -2,6 +2,9 @@ from PyQt5.QtCore import QMetaObject, QCoreApplication, Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QSizePolicy, QPushButton, QWidget, QVBoxLayout
 
+from utils import text_utils
+from utils.app_avatar import AppAvatar
+
 
 class AppWidget(object):
 
@@ -11,9 +14,11 @@ class AppWidget(object):
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
 
-        self.pic = QLabel(widget)
-        self.pic.setMaximumSize(40, 40)
-        self.pic.setPixmap(pixmap.scaled(40, 40, Qt.KeepAspectRatio))
+        img_name = name
+        name_part = name.split('/')
+        if len(name_part) > 1:
+            img_name = name_part[1]
+        self.pic = AppAvatar(text_utils.getSimpleName(img_name), parent=widget)
         self.horizontalLayout.addWidget(self.pic)
 
         self.infoWidget = QWidget(widget)
