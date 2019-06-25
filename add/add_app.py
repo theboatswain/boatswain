@@ -1,7 +1,10 @@
 import os
+from urllib import request
 
+import requests
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtWidgets import QWidget, QSizePolicy, QVBoxLayout
 
 from add.app_widget import AppWidget
@@ -25,6 +28,7 @@ class AddAppDialog(object):
         self.searchResultArea.setObjectName('searchResultArea')
         self.searchResultArea.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
         self.searchResultArea.setLayout(QVBoxLayout(self.searchResultArea))
+        self.searchResultArea.setContentsMargins(0, 0, 0, 0)
         self.dialog.scrollArea.setWidget(self.searchResultArea)
         dialog.keySearch.returnPressed.connect(self.searchApp)
 
@@ -32,13 +36,22 @@ class AddAppDialog(object):
         keyword = self.dialog.keySearch.text()
         if len(keyword) == 0:
             return
+        self.cleanSearchResults()
         docker_images = docker_service.search_containers(keyword)
+        pix_map = QPixmap("resources/icon/a.png")
         for item in docker_images:
             # res = requests.get(DOCKERHUB_IMG_API + "/%s" % item['name'])
             # if res.status_code == 200:
-            #     avatar_url = res.json()['logo_url']['large']
-            #     data = request.urlopen(avatar_url).read()
-            #     image = QImage.fromData(data)
+            #     for avatar_url in res.json()['logo_url']:
+            #         data = request.urlopen(res.json()['logo_url'][avatar_url]).read()
+            #         image = QImage.fromData(data)
+            #         pix_map = QPixmap.fromImage(image)
+            #         break
             widget = QWidget(self.searchResultArea)
-            AppWidget(widget, item['name'], item['description'])
+            AppWidget(widget, item['name'], item['description'], pix_map)
             self.searchResultArea.layout().addWidget(widget)
+
+    def cleanSearchResults(self):
+        while self.searchResultArea.layout().count():
+            item = self.searchResultArea.layout().takeAt(0)
+            item.widget().deleteLater()
