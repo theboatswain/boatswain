@@ -1,17 +1,13 @@
 import os
-from urllib import request
 
-import requests
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtWidgets import QWidget, QSizePolicy, QVBoxLayout
 
 from add.app_widget import AppWidget
 from services import docker_service
 
 file_path = __file__
-DOCKERHUB_IMG_API = 'https://hub.docker.com/api/content/v1/products/images'
 
 
 class AddAppDialog(object):
@@ -38,17 +34,9 @@ class AddAppDialog(object):
             return
         self.cleanSearchResults()
         docker_images = docker_service.search_containers(keyword)
-        pix_map = QPixmap("resources/icon/a.png")
         for item in docker_images:
-            # res = requests.get(DOCKERHUB_IMG_API + "/%s" % item['name'])
-            # if res.status_code == 200:
-            #     for avatar_url in res.json()['logo_url']:
-            #         data = request.urlopen(res.json()['logo_url'][avatar_url]).read()
-            #         image = QImage.fromData(data)
-            #         pix_map = QPixmap.fromImage(image)
-            #         break
             widget = QWidget(self.searchResultArea)
-            AppWidget(widget, item['name'], item['description'], pix_map)
+            AppWidget(widget, item['name'], item['description'])
             self.searchResultArea.layout().addWidget(widget)
 
     def cleanSearchResults(self):

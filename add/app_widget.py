@@ -8,7 +8,7 @@ from utils.app_avatar import AppAvatar
 
 class AppWidget(object):
 
-    def __init__(self, widget, name, description, pixmap) -> None:
+    def __init__(self, widget, name, description) -> None:
         super().__init__()
         self.horizontalLayout = QHBoxLayout(widget)
         self.horizontalLayout.setObjectName("horizontalLayout")
