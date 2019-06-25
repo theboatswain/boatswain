@@ -140,15 +140,26 @@
      </widget>
     </item>
     <item>
-     <widget class="QWidget" name="widget_2" native="true">
-      <property name="sizePolicy">
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
         <horstretch>0</horstretch>
         <verstretch>20</verstretch>
        </sizepolicy>
       </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
      </widget>
-    </item>
+    </widget>
+   </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
