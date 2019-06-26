@@ -6,8 +6,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QSizePolicy, QVBoxLayout
 
 from controllers.add.app_widget import AppWidget
-from controllers.add.search.dockerhub_searcher import DockerHubSearcher
-from controllers.add.search.search_images import DefaultSearchImages
+from services.search.dockerhub_searcher import DockerHubSearcher
+from services.search.search_images import DefaultSearchImages
 
 file_path = __file__
 
