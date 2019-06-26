@@ -6,7 +6,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QSizePolicy, QVBoxLayout
 
 from add.app_widget import AppWidget
-from services import docker_service
+from search.dockerhub_searcher import DockerHubSearcher
+from search.search_images import DefaultSearchImages
 
 file_path = __file__
 
@@ -29,6 +30,11 @@ class AddAppDialog(object):
         self.dialog.scrollArea.setWidget(self.searchResultArea)
         dialog.keySearch.returnPressed.connect(self.searchApp)
 
+        # Initialising search engines
+        self.searchEngine = DefaultSearchImages()
+        self.searchEngine = DockerHubSearcher(self.searchEngine)
+
+        # Loading default search images
         with open('resources/default_search.json', 'r') as f:
             self.loadResult(json.load(f))
 
@@ -36,7 +42,7 @@ class AddAppDialog(object):
         keyword = self.dialog.keySearch.text()
         if len(keyword) == 0:
             return
-        docker_images = docker_service.search_containers(keyword)
+        docker_images = self.searchEngine.search(keyword, self.dialog.comboBox.currentText())
         self.loadResult(docker_images)
 
     def loadResult(self, docker_images):
