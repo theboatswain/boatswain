@@ -5,7 +5,7 @@ from PyQt5.QtCore import pyqtSlot, QSize
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QLineEdit, QMainWindow, QDialog
 
-from add.add_app import AddAppDialog
+from controllers.add.add_app import AddAppDialog
 
 
 class Boatswain(QMainWindow):

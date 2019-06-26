@@ -1,4 +1,4 @@
-from search.search_images import AbstractSearchImages
+from controllers.add.search.search_images import AbstractSearchImages
 from services import docker_service
 
 
