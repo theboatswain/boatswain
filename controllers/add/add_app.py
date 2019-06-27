@@ -5,9 +5,9 @@ from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QSizePolicy, QVBoxLayout
 
-from add.app_widget import AppWidget
-from search.dockerhub_searcher import DockerHubSearcher
-from search.search_images import DefaultSearchImages
+from controllers.add.add_app_widget import AddAppWidget
+from services.search.dockerhub_searcher import DockerHubSearcher
+from services.search.search_images import DefaultSearchImages
 
 file_path = __file__
 
@@ -48,7 +48,7 @@ class AddAppDialog(object):
     def loadResult(self, docker_images):
         self.cleanSearchResults()
         for item in docker_images:
-            widget = AppWidget(self.searchResultArea, item['name'], item['description'])
+            widget = AddAppWidget(self.searchResultArea, item['name'], item['description'])
             self.searchResultArea.layout().addWidget(widget)
 
     def cleanSearchResults(self):

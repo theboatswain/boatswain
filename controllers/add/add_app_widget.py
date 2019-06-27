@@ -2,11 +2,12 @@ from PyQt5.QtCore import QMetaObject, QCoreApplication, Qt, pyqtSlot
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QSizePolicy, QPushButton, QWidget, QVBoxLayout
 
+from services import containers_service
 from utils import text_utils
 from utils.app_avatar import AppAvatar
 
 
-class AppWidget(QWidget):
+class AddAppWidget(QWidget):
 
     def __init__(self, parent, name, description) -> None:
         super().__init__(parent)
@@ -61,4 +62,4 @@ class AppWidget(QWidget):
 
     @pyqtSlot(bool, name='on_install_clicked')
     def installApp(self, checked):
-        print(self.name.text())
+        containers_service.install_container(self.name.text(), self.description.text())
