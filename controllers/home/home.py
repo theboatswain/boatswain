@@ -29,8 +29,9 @@ class Home(QMainWindow):
         layout = QVBoxLayout(self.searchResultArea)
         layout.setAlignment(Qt.AlignTop)
         self.searchResultArea.setLayout(layout)
-        self.searchResultArea.setContentsMargins(0, 0, 0, 0)
+        self.searchResultArea.layout().setContentsMargins(8, 12, 0, 12)
         self.scrollArea.setWidget(self.searchResultArea)
+        self.scrollArea.setContentsMargins(0, 0, 0, 0)
 
     @pyqtSlot(bool, name='on_addApp_clicked')
     @pyqtSlot(bool, name='on_actionAdd_triggered')
