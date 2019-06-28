@@ -28,12 +28,10 @@ class AppWidget(QWidget):
 
         self.infoWidget = QWidget(self)
         self.infoWidget.setObjectName("infoWidget")
-        self.infoLayout = QVBoxLayout(self.infoWidget)
-        self.infoLayout.setContentsMargins(5, 0, 0, 0)
 
         self.name = QLabel(self)
         self.name.setObjectName("name")
-        self.infoLayout.addWidget(self.name)
+        self.horizontalLayout.addWidget(self.name)
 
         sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(2)
