@@ -15,7 +15,7 @@ class Home(QMainWindow):
 
     def __init__(self):
         super(Home, self).__init__()
-        self.setup_ui(self)
+        self.setupUi(self)
         self.show()
         data_transporter_service.listen(CONTAINER_CHANNEL, self.addAppFromContainer)
 
@@ -28,7 +28,7 @@ class Home(QMainWindow):
         self.scroll_area.setWidget(self.search_result_area)
         self.scroll_area.setContentsMargins(0, 0, 0, 0)
 
-    def setup_ui(self, parent_widget):
+    def setupUi(self, parent_widget):
         parent_widget.resize(460, 639)
         parent_widget.setSizePolicy(BQSizePolicy(h_stretch=1))
         parent_widget.setMinimumSize(QSize(460, 639))
@@ -89,7 +89,7 @@ class Home(QMainWindow):
         self.retranslateUi(parent_widget)
         QMetaObject.connectSlotsByName(parent_widget)
 
-    def retranslate_ui(self, boatswain):
+    def retranslateUi(self, boatswain):
         _translate = QCoreApplication.translate
         boatswain.setWindowTitle(_translate("Boatswain", "Boatswain"))
         self.app_type.setItemText(0, _translate("Boatswain", "All apps"))

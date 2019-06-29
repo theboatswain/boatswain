@@ -5,13 +5,14 @@ from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication
 
+from common.services import data_transporter_service
 from home.home import Home
 from common.models.base import db
 from common.models.container import Container
 from common.models.environment import Environment
 from common.models.port_mapping import PortMapping
 from common.models.volume_mount import VolumeMount
-from home import data_transporter_service
+
 from common.utils.constants import APP_DATA_DIR, CONTAINER_CHANNEL, APP_EXIT_CHANNEL
 
 

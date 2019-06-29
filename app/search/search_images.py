@@ -19,11 +19,11 @@ class AbstractSearchImages(SearchProvider):
     def search(self, keyword, repo_filter):
         images = self.__search_provider.search(keyword, repo_filter)
         if self.isSupported(repo_filter):
-            images += self.search_images(keyword)
+            images += self.searchImages(keyword)
         return images
 
     def isSupported(self, repo_filter):
         raise NotImplementedError("Should have implemented this")
 
-    def search_images(self, keyword):
+    def searchImages(self, keyword):
         raise NotImplementedError("Should have implemented this")
