@@ -1,15 +1,11 @@
 import json
-import os
-
-from PyQt5 import uic
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QSizePolicy, QVBoxLayout
+from PyQt5.QtCore import Qt, QCoreApplication, QMetaObject, QRect, QSize
+from PyQt5.QtWidgets import QWidget, QSizePolicy, QVBoxLayout, QFrame, QScrollArea, QLineEdit, QComboBox, QGridLayout
 
 from controllers.add.add_app_widget import AddAppWidget
 from services.search.dockerhub_searcher import DockerHubSearcher
 from services.search.search_images import DefaultSearchImages
-
-file_path = __file__
+from utils.custom_ui import BQSizePolicy
 
 
 class AddAppDialog(object):
@@ -17,18 +13,15 @@ class AddAppDialog(object):
     def __init__(self, title, dialog) -> None:
         super().__init__()
         self.title = title
-        self.dialog = dialog
-        ui_dir = os.path.dirname(file_path)
-        uic.loadUi(os.path.join(ui_dir, 'add_app.ui'), dialog)
+        self.setupUi(dialog)
         dialog.setWindowTitle(self.title)
         dialog.setAttribute(Qt.WA_DeleteOnClose)
         self.searchResultArea = QWidget(dialog)
-        self.searchResultArea.setObjectName('searchResultArea')
         self.searchResultArea.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
         self.searchResultArea.setLayout(QVBoxLayout(self.searchResultArea))
         self.searchResultArea.setContentsMargins(0, 0, 0, 0)
-        self.dialog.scrollArea.setWidget(self.searchResultArea)
-        dialog.keySearch.returnPressed.connect(self.searchApp)
+        self.scrollArea.setWidget(self.searchResultArea)
+        self.keySearch.returnPressed.connect(self.searchApp)
 
         # Initialising search engines
         self.searchEngine = DefaultSearchImages()
@@ -38,11 +31,49 @@ class AddAppDialog(object):
         with open('resources/default_search.json', 'r') as f:
             self.loadResult(json.load(f))
 
+    def setupUi(self, addAppDialog):
+        addAppDialog.resize(792, 387)
+        addAppDialog.setSizePolicy(BQSizePolicy(h_stretch=1))
+        addAppDialog.setMinimumSize(QSize(792, 387))
+        addAppDialog.setSizeGripEnabled(False)
+        addAppDialog.setModal(False)
+        self.mainLayout = QVBoxLayout(addAppDialog)
+        self.mainLayout.setContentsMargins(8, 8, 8, 8)
+        self.mainLayout.setSpacing(0)
+        self.widget = QWidget(addAppDialog)
+        self.widget.setSizePolicy(BQSizePolicy())
+        self.gridContainer = QGridLayout(self.widget)
+        self.gridContainer.setContentsMargins(0, 0, 0, 0)
+        self.comboBox = QComboBox(self.widget)
+        self.comboBox.setSizePolicy(BQSizePolicy(width=QSizePolicy.Fixed, height=QSizePolicy.Fixed))
+        self.comboBox.addItem("")
+        self.gridContainer.addWidget(self.comboBox, 0, 0, 1, 1)
+        self.keySearch = QLineEdit(self.widget)
+        self.keySearch.setFocusPolicy(Qt.StrongFocus)
+        self.keySearch.setStyleSheet("padding: 2 2 2 5;")
+        self.keySearch.setObjectName("keySearch")
+        self.gridContainer.addWidget(self.keySearch, 0, 1, 1, 1)
+        self.mainLayout.addWidget(self.widget)
+        self.scrollArea = QScrollArea(addAppDialog)
+        self.scrollArea.setFrameShape(QFrame.NoFrame)
+        self.scrollArea.setFrameShadow(QFrame.Plain)
+        self.scrollArea.setWidgetResizable(True)
+        self.mainLayout.addWidget(self.scrollArea)
+
+        self.retranslateUi(addAppDialog)
+        QMetaObject.connectSlotsByName(addAppDialog)
+
+    def retranslateUi(self, addAppDialog):
+        _translate = QCoreApplication.translate
+        addAppDialog.setWindowTitle(_translate("addAppDialog", "Dialog"))
+        self.comboBox.setItemText(0, _translate("addAppDialog", "All repos"))
+        self.keySearch.setPlaceholderText(_translate("addAppDialog", "Search apps"))
+
     def searchApp(self):
-        keyword = self.dialog.keySearch.text()
+        keyword = self.keySearch.text()
         if len(keyword) == 0:
             return
-        docker_images = self.searchEngine.search(keyword, self.dialog.comboBox.currentText())
+        docker_images = self.searchEngine.search(keyword, self.comboBox.currentText())
         self.loadResult(docker_images)
 
     def loadResult(self, docker_images):
