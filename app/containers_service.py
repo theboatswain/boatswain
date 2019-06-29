@@ -1,6 +1,6 @@
-from domains.container import Container
-from services import data_transporter_service
-from utils.constants import CONTAINER_CHANNEL
+from common.models.container import Container
+from home import data_transporter_service
+from common.utils.constants import CONTAINER_CHANNEL
 
 
 def install_container(image_name, description):

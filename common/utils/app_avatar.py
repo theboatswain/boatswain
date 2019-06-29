@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout
 
 
 class AppAvatar(QWidget):
+    """ Class to customise app's avatar """
 
     def __init__(self, name, radius=25, parent=None):
         super().__init__(parent)

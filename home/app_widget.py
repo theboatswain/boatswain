@@ -1,15 +1,13 @@
-from PyQt5.QtCore import QMetaObject, QCoreApplication, Qt, pyqtSlot
-from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QHBoxLayout, QLabel, QSizePolicy, QPushButton, QWidget, QVBoxLayout
+from PyQt5.QtCore import QMetaObject, QCoreApplication
+from PyQt5.QtWidgets import QHBoxLayout, QLabel, QSizePolicy, QPushButton, QWidget
 
-from domains.container import Container
-from services import containers_service
-from utils import text_utils
-from utils.app_avatar import AppAvatar
+from common.models.container import Container
+from common.utils import text_utils
+from common.utils.app_avatar import AppAvatar
 
 
 class AppWidget(QWidget):
-
+    """ Class to customise app's widgets """
     def __init__(self, parent, container: Container) -> None:
         super().__init__(parent)
         self.setMinimumHeight(50)

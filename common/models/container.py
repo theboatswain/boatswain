@@ -1,9 +1,11 @@
 from peewee import *
 
-from domains.base import BaseModel
+from common.models.base import BaseModel
 
 
 class Container(BaseModel):
+    """ Model object represents for a docker container"""
+
     id = IntegerField(primary_key=True)
     name = CharField()
     tag = CharField()

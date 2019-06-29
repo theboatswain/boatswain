@@ -1,7 +1,7 @@
 from peewee import *
 
-from domains.base import BaseModel
-from domains.container import Container
+from common.models.base import BaseModel
+from common.models.container import Container
 
 
 class Environment(BaseModel):

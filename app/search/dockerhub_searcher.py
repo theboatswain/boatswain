@@ -1,5 +1,5 @@
-from services import docker_service
-from services.search.search_images import AbstractSearchImages
+from app.search import docker_service
+from app.search.search_images import AbstractSearchImages
 
 
 class DockerHubSearcher(AbstractSearchImages):

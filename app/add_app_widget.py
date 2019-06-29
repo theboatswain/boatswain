@@ -1,10 +1,10 @@
-from PyQt5.QtCore import QMetaObject, QCoreApplication, Qt, pyqtSlot
+from PyQt5.QtCore import QMetaObject, QCoreApplication, pyqtSlot
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QSizePolicy, QPushButton, QWidget, QVBoxLayout
 
-from services import containers_service
-from utils import text_utils
-from utils.app_avatar import AppAvatar
+from app import containers_service
+from common.utils import text_utils
+from common.utils.app_avatar import AppAvatar
 
 
 class AddAppWidget(QWidget):
