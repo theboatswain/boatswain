@@ -3,9 +3,9 @@ from PyQt5.QtWidgets import QMainWindow, QDialog, QApplication, QLineEdit, QWidg
     QStatusBar, QMenu, QMenuBar, QFrame, QScrollArea, QPushButton, QGridLayout, QComboBox
 
 from app.add_app import AddAppDialog
+from common.services import data_transporter_service
 from home.app_widget import AppWidget
 from common.models.container import Container
-from home import data_transporter_service
 from common.utils.constants import CONTAINER_CHANNEL, APP_EXIT_CHANNEL
 from common.utils.custom_ui import BQSizePolicy
 
@@ -19,14 +19,14 @@ class Home(QMainWindow):
         self.show()
         data_transporter_service.listen(CONTAINER_CHANNEL, self.addAppFromContainer)
 
-        self.searchResultArea = QWidget(self)
-        self.searchResultArea.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
-        layout = QVBoxLayout(self.searchResultArea)
+        self.search_result_area = QWidget(self)
+        self.search_result_area.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
+        layout = QVBoxLayout(self.search_result_area)
         layout.setAlignment(Qt.AlignTop)
-        self.searchResultArea.setLayout(layout)
-        self.searchResultArea.layout().setContentsMargins(8, 12, 0, 12)
-        self.scrollArea.setWidget(self.searchResultArea)
-        self.scrollArea.setContentsMargins(0, 0, 0, 0)
+        self.search_result_area.setLayout(layout)
+        self.search_result_area.layout().setContentsMargins(8, 12, 0, 12)
+        self.scroll_area.setWidget(self.search_result_area)
+        self.scroll_area.setContentsMargins(0, 0, 0, 0)
 
     def setup_ui(self, parent_widget):
         parent_widget.resize(460, 639)
@@ -58,35 +58,35 @@ class Home(QMainWindow):
         self.search_app.setStyleSheet("padding: 2 2 2 5;")
         self.search_app.setObjectName("searchApp")
         top_layout.addWidget(self.search_app, 0, 3, 1, 1)
-        self.addApp = QPushButton(widget)
-        self.addApp.setSizePolicy(BQSizePolicy(width=QSizePolicy.Minimum, height=QSizePolicy.Fixed))
-        self.addApp.setFocusPolicy(Qt.ClickFocus)
-        self.addApp.setObjectName("addApp")
-        top_layout.addWidget(self.addApp, 0, 0, 1, 1)
+        self.add_app = QPushButton(widget)
+        self.add_app.setSizePolicy(BQSizePolicy(width=QSizePolicy.Minimum, height=QSizePolicy.Fixed))
+        self.add_app.setFocusPolicy(Qt.ClickFocus)
+        self.add_app.setObjectName("addApp")
+        top_layout.addWidget(self.add_app, 0, 0, 1, 1)
         hidden_widget = QWidget(widget)
         hidden_widget.setSizePolicy(BQSizePolicy())
         top_layout.addWidget(hidden_widget, 0, 1, 1, 1)
         main_layout.addWidget(widget)
-        self.scrollArea = QScrollArea(central_widget)
-        self.scrollArea.setSizePolicy(BQSizePolicy(v_stretch=20))
-        self.scrollArea.setFrameShape(QFrame.NoFrame)
-        self.scrollArea.setFrameShadow(QFrame.Plain)
-        self.scrollArea.setWidgetResizable(True)
-        main_layout.addWidget(self.scrollArea)
+        self.scroll_area = QScrollArea(central_widget)
+        self.scroll_area.setSizePolicy(BQSizePolicy(v_stretch=20))
+        self.scroll_area.setFrameShape(QFrame.NoFrame)
+        self.scroll_area.setFrameShadow(QFrame.Plain)
+        self.scroll_area.setWidgetResizable(True)
+        main_layout.addWidget(self.scroll_area)
         parent_widget.setCentralWidget(central_widget)
 
-        self.menuBar = QMenuBar(parent_widget)
-        self.menuBar.setGeometry(QRect(0, 0, 460, 22))
-        self.menuFile = QMenu(self.menuBar)
-        parent_widget.setMenuBar(self.menuBar)
-        self.statusBar = QStatusBar(parent_widget)
-        parent_widget.setStatusBar(self.statusBar)
-        self.actionAdd = QAction(parent_widget)
-        self.actionAdd.setObjectName("actionAdd")
-        self.menuFile.addAction(self.actionAdd)
-        self.menuBar.addAction(self.menuFile.menuAction())
+        self.menu_bar = QMenuBar(parent_widget)
+        self.menu_bar.setGeometry(QRect(0, 0, 460, 22))
+        self.menu_file = QMenu(self.menu_bar)
+        parent_widget.setMenuBar(self.menu_bar)
+        self.status_bar = QStatusBar(parent_widget)
+        parent_widget.setStatusBar(self.status_bar)
+        self.action_add = QAction(parent_widget)
+        self.action_add.setObjectName("actionAdd")
+        self.menu_file.addAction(self.action_add)
+        self.menu_bar.addAction(self.menu_file.menuAction())
 
-        self.retranslate_ui(parent_widget)
+        self.retranslateUi(parent_widget)
         QMetaObject.connectSlotsByName(parent_widget)
 
     def retranslate_ui(self, boatswain):
@@ -96,9 +96,9 @@ class Home(QMainWindow):
         self.app_type.setItemText(1, _translate("Boatswain", "Running"))
         self.app_type.setItemText(2, _translate("Boatswain", "Stopped"))
         self.search_app.setPlaceholderText(_translate("Boatswain", "Filter apps"))
-        self.addApp.setText(_translate("Boatswain", "Add"))
-        self.menuFile.setTitle(_translate("Boatswain", "File"))
-        self.actionAdd.setText(_translate("Boatswain", "Add new app"))
+        self.add_app.setText(_translate("Boatswain", "Add"))
+        self.menu_file.setTitle(_translate("Boatswain", "File"))
+        self.action_add.setText(_translate("Boatswain", "Add new app"))
 
     @pyqtSlot(bool, name='on_addApp_clicked')
     @pyqtSlot(bool, name='on_actionAdd_triggered')
@@ -110,8 +110,8 @@ class Home(QMainWindow):
         dialog.exec_()
 
     def addAppFromContainer(self, container: Container):
-        widget = AppWidget(self.searchResultArea, container)
-        self.searchResultArea.layout().addWidget(widget)
+        widget = AppWidget(self.search_result_area, container)
+        self.search_result_area.layout().addWidget(widget)
 
     def mousePressEvent(self, event):
         focused_widget = QApplication.focusWidget()
@@ -121,4 +121,4 @@ class Home(QMainWindow):
 
     def closeEvent(self, event):
         data_transporter_service.fire(APP_EXIT_CHANNEL, True)
-        event.accept()
+        QMainWindow.closeEvent(self, event)

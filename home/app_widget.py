@@ -1,9 +1,10 @@
 from PyQt5.QtCore import QMetaObject, QCoreApplication
-from PyQt5.QtWidgets import QHBoxLayout, QLabel, QSizePolicy, QPushButton, QWidget
+from PyQt5.QtWidgets import QHBoxLayout, QLabel, QPushButton, QWidget
 
 from common.models.container import Container
 from common.utils import text_utils
 from common.utils.app_avatar import AppAvatar
+from common.utils.custom_ui import BQSizePolicy
 
 
 class AppWidget(QWidget):
@@ -12,9 +13,8 @@ class AppWidget(QWidget):
         super().__init__(parent)
         self.setMinimumHeight(50)
         self.setMaximumHeight(50)
-        self.horizontalLayout = QHBoxLayout(self)
-        self.horizontalLayout.setObjectName("horizontalLayout")
-        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.horizontal_layout = QHBoxLayout(self)
+        self.horizontal_layout.setContentsMargins(0, 0, 0, 0)
         _translate = QCoreApplication.translate
 
         img_name = container.name
@@ -22,27 +22,17 @@ class AppWidget(QWidget):
         if len(name_part) > 1:
             img_name = name_part[1]
         self.pic = AppAvatar(text_utils.getSimpleName(img_name), parent=self, radius=22)
-        self.horizontalLayout.addWidget(self.pic)
-
-        self.infoWidget = QWidget(self)
-        self.infoWidget.setObjectName("infoWidget")
+        self.horizontal_layout.addWidget(self.pic)
 
         self.name = QLabel(self)
+        self.name.setSizePolicy(BQSizePolicy(h_stretch=2))
         self.name.setObjectName("name")
-        self.horizontalLayout.addWidget(self.name)
-
-        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(2)
-        sizePolicy.setVerticalStretch(2)
-
-        self.infoWidget.setSizePolicy(sizePolicy)
-        self.horizontalLayout.addWidget(self.infoWidget)
+        self.horizontal_layout.addWidget(self.name)
 
         self.start = QPushButton(self)
         self.start.setObjectName("start")
-        self.horizontalLayout.addWidget(self.start)
+        self.horizontal_layout.addWidget(self.start)
         self.start.setText(_translate("widget", "Start"))
         self.name.setText(_translate("widget", container.name))
 
         QMetaObject.connectSlotsByName(self)
-
