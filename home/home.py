@@ -19,14 +19,14 @@ class Home(QMainWindow):
         self.show()
         data_transporter_service.listen(CONTAINER_CHANNEL, self.addAppFromContainer)
 
-        self.search_result_area = QWidget(self)
-        self.search_result_area.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
-        layout = QVBoxLayout(self.search_result_area)
+        self.app_list = QWidget(self)
+        self.app_list.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
+        layout = QVBoxLayout(self.app_list)
+        layout.setSpacing(0)
         layout.setAlignment(Qt.AlignTop)
-        self.search_result_area.setLayout(layout)
-        self.search_result_area.layout().setContentsMargins(8, 12, 0, 12)
-        self.scroll_area.setWidget(self.search_result_area)
-        self.scroll_area.setContentsMargins(0, 0, 0, 0)
+        layout.setContentsMargins(0, 1, 0, 0)
+        self.app_list.setLayout(layout)
+        self.scroll_area.setWidget(self.app_list)
 
     def setupUi(self, parent_widget):
         parent_widget.resize(460, 639)
@@ -35,14 +35,13 @@ class Home(QMainWindow):
         central_widget = QWidget(parent_widget)
         central_widget.setSizePolicy(BQSizePolicy(h_stretch=1))
         main_layout = QVBoxLayout(central_widget)
-        main_layout.setContentsMargins(11, 5, 11, 11)
+        main_layout.setContentsMargins(0, 5, 0, 11)
         main_layout.setSpacing(0)
         widget = QWidget(central_widget)
         widget.setSizePolicy(BQSizePolicy(h_stretch=1))
         widget.setAutoFillBackground(False)
-        widget.setStyleSheet("border-bottom: 1px solid #999999")
         top_layout = QGridLayout(widget)
-        top_layout.setContentsMargins(0, 0, 0, 0)
+        top_layout.setContentsMargins(11, 0, 11, 11)
         top_layout.setSpacing(6)
         self.app_type = QComboBox(widget)
         self.app_type.setSizePolicy(BQSizePolicy(h_stretch=1, width=QSizePolicy.Fixed, height=QSizePolicy.Fixed))
@@ -63,15 +62,24 @@ class Home(QMainWindow):
         self.add_app.setFocusPolicy(Qt.ClickFocus)
         self.add_app.setObjectName("addApp")
         top_layout.addWidget(self.add_app, 0, 0, 1, 1)
+
         hidden_widget = QWidget(widget)
         hidden_widget.setSizePolicy(BQSizePolicy())
         top_layout.addWidget(hidden_widget, 0, 1, 1, 1)
+
         main_layout.addWidget(widget)
+
+        line = QFrame(self)
+        line.setFrameShape(QFrame.HLine)
+        line.setFrameShadow(QFrame.Sunken)
+        main_layout.addWidget(line)
+
         self.scroll_area = QScrollArea(central_widget)
         self.scroll_area.setSizePolicy(BQSizePolicy(v_stretch=20))
         self.scroll_area.setFrameShape(QFrame.NoFrame)
         self.scroll_area.setFrameShadow(QFrame.Plain)
         self.scroll_area.setWidgetResizable(True)
+        self.scroll_area.setContentsMargins(0, 0, 0, 0)
         main_layout.addWidget(self.scroll_area)
         parent_widget.setCentralWidget(central_widget)
 
@@ -110,8 +118,8 @@ class Home(QMainWindow):
         dialog.exec_()
 
     def addAppFromContainer(self, container: Container):
-        widget = AppWidget(self.search_result_area, container)
-        self.search_result_area.layout().addWidget(widget)
+        widget = AppWidget(self.app_list, container)
+        self.app_list.layout().addWidget(widget)
 
     def mousePressEvent(self, event):
         focused_widget = QApplication.focusWidget()
