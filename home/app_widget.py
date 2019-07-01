@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QMetaObject, QCoreApplication, Qt
+from PyQt5.QtCore import QMetaObject, QCoreApplication, Qt, QPropertyAnimation, QSize, QRect
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QPushButton, QWidget, QVBoxLayout, QSizePolicy, QFrame
 
 from common.models.container import Container
@@ -39,6 +39,10 @@ class AppWidget(QWidget):
         self.start.setStyleSheet("border: 1px solid #999999; padding: 1px 10px; border-radius: 2px")
         self.horizontal_layout.addWidget(self.start)
 
+        self.app_info = QWidget(self)
+        self.app_info.setSizePolicy(BQSizePolicy(height=QSizePolicy.Fixed))
+        self.vertical_layout.addWidget(self.app_info)
+
         line = QFrame(self)
         line.setFrameShape(QFrame.HLine)
         line.setFrameShadow(QFrame.Sunken)
@@ -47,4 +51,26 @@ class AppWidget(QWidget):
         self.start.setText(_translate("widget", "Start"))
         self.name.setText(_translate("widget", container.name))
 
+        self.is_app_info_opened = False
+
         QMetaObject.connectSlotsByName(self)
+
+    def mouseReleaseEvent(self, event):
+        if not self.is_app_info_opened:
+            self.expanding = QPropertyAnimation(self.app_info, b"minimumHeight")
+            self.expanding.setDuration(300)
+            self.expanding.setStartValue(0)
+            self.expanding.setEndValue(150)
+            self.expanding.start()
+            self.is_app_info_opened = True
+        else:
+            self.collapsing = QPropertyAnimation(self.app_info, b"minimumHeight")
+            self.collapsing.setDuration(300)
+            self.collapsing.setStartValue(150)
+            self.collapsing.setEndValue(0)
+            self.collapsing.start()
+            self.is_app_info_opened = False
+        QWidget.mouseReleaseEvent(self, event)
+
+    
+
