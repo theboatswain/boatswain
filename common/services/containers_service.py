@@ -5,8 +5,8 @@ from common.services import data_transporter_service
 from common.utils.constants import CONTAINER_CHANNEL
 
 # Initialising search engines
-search_engine = DefaultSearchImages()
-search_engine = DockerHubSearcher(search_engine)
+search_engine = SearchImages()
+search_engine.addSearchProvider(DockerHubSearcher())
 
 
 def installContainer(image_name, description):

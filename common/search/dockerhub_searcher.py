@@ -1,15 +1,25 @@
+from typing import List
+
 import requests
 
+from common.models.tag import Tag
 from common.services import docker_service
-from common.search.search_images import AbstractSearchImages
+from common.search.search_images import SearchProvider
 
 DOCKERHUB_API = 'https://registry.hub.docker.com/v2'
 
 
-class DockerHubSearcher(AbstractSearchImages):
+class DockerHubSearcher(SearchProvider):
 
-    def searchImageTags(self, image_name):
-        return self.recursiveFindImageTag(image_name, 100, 1)
+    def search(self, keyword, repo):
+        return docker_service.searchDockerhubContainers(keyword)
+
+    def searchTags(self, image_name: str, repo: str) -> List[Tag]:
+        tags = self.recursiveFindImageTag(image_name, 100, 1)
+        result = []
+        for item in tags:
+            result.append(Tag(name=item['name'], size=item['full_size']))
+        return result
 
     def recursiveFindImageTag(self, image_name, page_size, page):
         image_location = image_name
@@ -24,6 +34,3 @@ class DockerHubSearcher(AbstractSearchImages):
 
     def isSupported(self, repo_filter):
         return True
-
-    def searchImages(self, keyword):
-        return docker_service.searchDockerhubContainers(keyword)
