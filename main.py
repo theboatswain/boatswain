@@ -5,6 +5,7 @@ from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication
 
+from common.models.tag import Tag
 from common.services import data_transporter_service
 from home.home import Home
 from common.models.base import db
@@ -35,7 +36,7 @@ if __name__ == '__main__':
 
     # Connect to SQLite DB
     db.connect()
-    db.create_tables([Container, Environment, PortMapping, VolumeMount])
+    db.create_tables([Container, Environment, PortMapping, VolumeMount, Tag])
 
     # Set default icon
     set_app_icon()

@@ -12,3 +12,4 @@ class Container(BaseModel):
     description = TextField()
     status = IntegerField()
     avatar = CharField(default='')
+    repo = CharField(default='dockerhub')
