@@ -12,8 +12,9 @@ from common.utils.custom_ui import BQSizePolicy
 
 class AddAppWidget(QWidget):
 
-    def __init__(self, parent, name, description) -> None:
+    def __init__(self, parent, name, description, repo) -> None:
         super().__init__(parent)
+        self.repo = repo
         self.disable_button = False
         self.horizontal_layout = QHBoxLayout(self)
         self.horizontal_layout.setContentsMargins(0, 0, 0, 0)
@@ -65,7 +66,7 @@ class AddAppWidget(QWidget):
             return
         self.disable_button = True
         self.install.setText(self._translate("widget", "Installing"))
-        worker = Worker(containers_service.installContainer, self.name.text(), 'dockerhub', self.description.text())
+        worker = Worker(containers_service.installContainer, self.name.text(), self.repo, self.description.text())
         worker.signals.result.connect(self.onAppInstalled)
         threadpool.start(worker)
 
