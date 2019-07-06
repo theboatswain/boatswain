@@ -1,7 +1,10 @@
+import yaml
 from PyQt5.QtCore import QMetaObject, QCoreApplication, pyqtSlot, Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QPushButton, QWidget, QVBoxLayout
 
+from common.models.environment import Environment
+from common.models.port_mapping import PortMapping
 from common.services import containers_service, data_transporter_service
 from common.services.worker_service import Worker, threadpool
 from common.utils import text_utils
@@ -12,8 +15,11 @@ from common.utils.custom_ui import BQSizePolicy
 
 class AddAppWidget(QWidget):
 
-    def __init__(self, parent, name, description) -> None:
+    def __init__(self, parent, name, description, supported_app) -> None:
         super().__init__(parent)
+        # set supported app list
+        self.supported_app = supported_app
+
         self.disable_button = False
         self.horizontal_layout = QHBoxLayout(self)
         self.horizontal_layout.setContentsMargins(0, 0, 0, 0)
@@ -55,20 +61,35 @@ class AddAppWidget(QWidget):
         self.name.setText(self._translate("widget", name))
         QMetaObject.connectSlotsByName(self)
 
-        if containers_service.isAppInstalled(name):
+        if containers_service.is_app_installed(name):
             self.install.setText(self._translate("widget", "Installed"))
             self.disable_button = True
 
     @pyqtSlot(bool, name='on_install_clicked')
-    def installApp(self, checked):
+    def install_app(self, checked):
         if self.disable_button:
             return
         self.disable_button = True
         self.install.setText(self._translate("widget", "Installing"))
-        worker = Worker(containers_service.installContainer, self.name.text(), 'dockerhub', self.description.text())
-        worker.signals.result.connect(self.onAppInstalled)
+
+        # Case of a supported app
+        if self.name.text() in self.supported_app:
+            app = self.supported_app[self.name.text()]
+            environments = []
+            for env in app['env']:
+                environments.append(Environment(name=env['name'], value=env['value']))
+            ports = []
+            for port in app['ports']:
+                ports.append(PortMapping(port=port['port'], protocol=port['protocol'], targetPort=port['targetPort']))
+            worker = Worker(containers_service.install_container, app['image'], 'dockerhub',
+                            self.description.text(), app['tag'], environments, ports)
+        # Un-supported app
+        else:
+            worker = Worker(containers_service.install_container, self.name.text(), 'dockerhub',
+                            self.description.text(), "latest")
+        worker.signals.result.connect(self.on_app_installed)
         threadpool.start(worker)
 
-    def onAppInstalled(self, container):
+    def on_app_installed(self, container):
         data_transporter_service.fire(CONTAINER_CHANNEL, container)
         self.install.setText(self._translate("widget", "Installed"))

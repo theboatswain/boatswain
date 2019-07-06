@@ -7,9 +7,19 @@ search_engine = SearchImages()
 search_engine.addSearchProvider(DockerHubSearcher())
 
 
-def installContainer(image_name, repo, description):
-    container = Container(name=image_name, description=description, tag='latest', status=0)
+def install_container(image_name, repo='dockerhub', description='', tag='latest', environments=None, ports=None):
+    container = Container(image_name=image_name, description=description, tag=tag, status='INSTALLED')
     container.save()
+
+    if environments is not None:
+        for env in environments:
+            env.container = container
+            env.save()
+    if ports is not None:
+        for port in ports:
+            port.container = container;
+            port.save()
+
     tags = search_engine.searchTags(image_name, repo)
     for tag in tags:
         tag.container = container
@@ -17,10 +27,11 @@ def installContainer(image_name, repo, description):
     return container
 
 
-def isAppInstalled(image_name):
+def is_app_installed(image_name):
     # Todo: Should we do this? [Performance]
+    # Yes, we should, let's do it by checking image name and registry url
     for container in Container.select():
-        if container.name == image_name:
+        if container.image_name == image_name:
             return True
     return False
 

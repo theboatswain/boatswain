@@ -1,5 +1,6 @@
 import json
 
+import yaml
 from PyQt5.QtCore import Qt, QCoreApplication, QMetaObject, QSize
 from PyQt5.QtWidgets import QWidget, QSizePolicy, QVBoxLayout, QFrame, QScrollArea, QLineEdit, QComboBox, QGridLayout
 
@@ -7,13 +8,16 @@ from app.add_app_widget import AddAppWidget
 from common.services import containers_service
 from common.utils.custom_ui import BQSizePolicy
 
+SUPPORTED_APPS_YAML_FILE = 'app/resources/supported_apps.yaml'
+DEFAULT_SEARCH_RESULT = 'app/resources/default_search.json'
+
 
 class AddAppDialog(object):
 
     def __init__(self, title, dialog) -> None:
         super().__init__()
         self.title = title
-        self.setupUi(dialog)
+        self.setup_ui(dialog)
         dialog.setWindowTitle(self.title)
         dialog.setAttribute(Qt.WA_DeleteOnClose)
         self.search_result_area = QWidget(dialog)
@@ -21,13 +25,13 @@ class AddAppDialog(object):
         self.search_result_area.setLayout(QVBoxLayout(self.search_result_area))
         self.search_result_area.setContentsMargins(0, 0, 0, 0)
         self.scroll_area.setWidget(self.search_result_area)
-        self.key_search.returnPressed.connect(self.searchApp)
+        self.key_search.returnPressed.connect(self.search_app)
 
         # Loading default search images
-        with open('app/resources/default_search.json', 'r') as f:
-            self.loadResult(json.load(f))
+        with open(DEFAULT_SEARCH_RESULT, 'r') as f:
+            self.load_result(json.load(f))
 
-    def setupUi(self, add_app_dialog):
+    def setup_ui(self, add_app_dialog):
         add_app_dialog.resize(792, 387)
         add_app_dialog.setSizePolicy(BQSizePolicy(h_stretch=1))
         add_app_dialog.setMinimumSize(QSize(792, 387))
@@ -56,29 +60,32 @@ class AddAppDialog(object):
         self.scroll_area.setWidgetResizable(True)
         main_layout.addWidget(self.scroll_area)
 
-        self.retranslateUi(add_app_dialog)
+        self.retranslate_ui(add_app_dialog)
         QMetaObject.connectSlotsByName(add_app_dialog)
 
-    def retranslateUi(self, add_app_dialog):
+    def retranslate_ui(self, add_app_dialog):
         _translate = QCoreApplication.translate
         add_app_dialog.setWindowTitle(_translate("addAppDialog", "Dialog"))
         self.combo_box.setItemText(0, _translate("addAppDialog", "All repos"))
         self.key_search.setPlaceholderText(_translate("addAppDialog", "Search apps"))
 
-    def searchApp(self):
+    def search_app(self):
         keyword = self.key_search.text()
         if len(keyword) == 0:
             return
         docker_images = containers_service.search_images(keyword, self.combo_box.currentText())
-        self.loadResult(docker_images)
+        self.load_result(docker_images)
 
-    def loadResult(self, docker_images):
-        self.cleanSearchResults()
+    def load_result(self, docker_images):
+        self.clean_search_results()
+        # Load supported apps info
+        with open(SUPPORTED_APPS_YAML_FILE, 'r') as stream:
+            supported_app = yaml.safe_load(stream)
         for item in docker_images:
-            widget = AddAppWidget(self.search_result_area, item['name'], item['description'])
+            widget = AddAppWidget(self.search_result_area, item['name'], item['description'], supported_app)
             self.search_result_area.layout().addWidget(widget)
 
-    def cleanSearchResults(self):
+    def clean_search_results(self):
         while self.search_result_area.layout().count():
             item = self.search_result_area.layout().takeAt(0)
             item.widget().deleteLater()
