@@ -82,7 +82,8 @@ class AddAppDialog(object):
         with open(SUPPORTED_APPS_YAML_FILE, 'r') as stream:
             supported_app = yaml.safe_load(stream)
         for item in docker_images:
-            widget = AddAppWidget(self.search_result_area, item['name'], item['description'], supported_app)
+            widget = AddAppWidget(self.search_result_area, item['name'], item['description'], supported_app,
+                                  item['from'])
             self.search_result_area.layout().addWidget(widget)
 
     def clean_search_results(self):
