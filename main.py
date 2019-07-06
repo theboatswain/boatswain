@@ -34,6 +34,8 @@ if __name__ == '__main__':
     if not os.path.isdir(APP_DATA_DIR):
         os.makedirs(APP_DATA_DIR)
 
+    print("App data path: %s" % APP_DATA_DIR)
+
     # Connect to SQLite DB
     db.connect()
     db.create_tables([Container, Environment, PortMapping, VolumeMount, Tag])

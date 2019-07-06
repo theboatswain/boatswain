@@ -61,7 +61,7 @@ class AddAppWidget(QWidget):
         self.name.setText(self._translate("widget", name))
         QMetaObject.connectSlotsByName(self)
 
-        if containers_service.is_app_installed(name):
+        if containers_service.isAppInstalled(name):
             self.install.setText(self._translate("widget", "Installed"))
             self.disable_button = True
 
@@ -81,11 +81,11 @@ class AddAppWidget(QWidget):
             ports = []
             for port in app['ports']:
                 ports.append(PortMapping(port=port['port'], protocol=port['protocol'], targetPort=port['targetPort']))
-            worker = Worker(containers_service.install_container, app['image'], 'dockerhub',
+            worker = Worker(containers_service.installContainer, app['image'], 'dockerhub',
                             self.description.text(), app['tag'], environments, ports)
         # Un-supported app
         else:
-            worker = Worker(containers_service.install_container, self.name.text(), 'dockerhub',
+            worker = Worker(containers_service.installContainer, self.name.text(), 'dockerhub',
                             self.description.text(), "latest")
         worker.signals.result.connect(self.on_app_installed)
         threadpool.start(worker)

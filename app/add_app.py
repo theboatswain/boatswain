@@ -73,7 +73,7 @@ class AddAppDialog(object):
         keyword = self.key_search.text()
         if len(keyword) == 0:
             return
-        docker_images = containers_service.search_images(keyword, self.combo_box.currentText())
+        docker_images = containers_service.searchImages(keyword, self.combo_box.currentText())
         self.load_result(docker_images)
 
     def load_result(self, docker_images):
