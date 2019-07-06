@@ -1,0 +1,36 @@
+# Supported app list
+
+mongo:
+  image: mongo
+  tag: latest
+  ports:
+    - port: 27017
+      protocol: tcp
+      targetPort: 27017
+  env:
+    - name: MONGO_INITDB_ROOT_USERNAME
+      value: "your_admin"
+    - name: MONGO_INITDB_ROOT_PASSWORD
+      value: "your_secret"
+
+mysql:
+  image: mysql
+  tag: latest
+  ports:
+    - port: 3306
+      protocol: TCP
+      targetPort: 3306
+  env:
+    - name: MYSQL_ROOT_PASSWORD
+      value: "your_secret"
+
+mariadb:
+  image: mariadb
+  tag: latest
+  ports:
+    - port: 3306
+      protocol: TCP
+      targetPort: 3306
+  env:
+    - name: MYSQL_ROOT_PASSWORD
+      value: "your_secret"
