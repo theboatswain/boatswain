@@ -15,10 +15,11 @@ from common.utils.custom_ui import BQSizePolicy
 
 class AddAppWidget(QWidget):
 
-    def __init__(self, parent, name, description, supported_app) -> None:
+    def __init__(self, parent, name, description, supported_app, repo) -> None:
         super().__init__(parent)
         # set supported app list
         self.supported_app = supported_app
+        self.repo = repo
 
         self.disable_button = False
         self.horizontal_layout = QHBoxLayout(self)
@@ -61,7 +62,7 @@ class AddAppWidget(QWidget):
         self.name.setText(self._translate("widget", name))
         QMetaObject.connectSlotsByName(self)
 
-        if containers_service.is_app_installed(name):
+        if containers_service.isAppInstalled(name):
             self.install.setText(self._translate("widget", "Installed"))
             self.disable_button = True
 
@@ -81,11 +82,11 @@ class AddAppWidget(QWidget):
             ports = []
             for port in app['ports']:
                 ports.append(PortMapping(port=port['port'], protocol=port['protocol'], targetPort=port['targetPort']))
-            worker = Worker(containers_service.install_container, app['image'], 'dockerhub',
+            worker = Worker(containers_service.installContainer, app['image'], self.repo,
                             self.description.text(), app['tag'], environments, ports)
         # Un-supported app
         else:
-            worker = Worker(containers_service.install_container, self.name.text(), 'dockerhub',
+            worker = Worker(containers_service.installContainer, self.name.text(), self.repo,
                             self.description.text(), "latest")
         worker.signals.result.connect(self.on_app_installed)
         threadpool.start(worker)

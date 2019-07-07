@@ -1,13 +1,23 @@
+import logging
+
+from docker.errors import NotFound, ContainerError, APIError
+
 from common.models.container import Container
+from common.models.environment import Environment
+from common.models.port_mapping import PortMapping
 from common.search.dockerhub_searcher import DockerHubSearcher
 from common.search.search_images import SearchImages
 
 # Initialising search engines
+from common.services import docker_service
+
+logger = logging.getLogger(__name__)
+
 search_engine = SearchImages()
 search_engine.addSearchProvider(DockerHubSearcher())
 
 
-def install_container(image_name, repo='dockerhub', description='', tag='latest', environments=None, ports=None):
+def installContainer(image_name, repo='dockerhub', description='', tag='latest', environments=None, ports=None):
     container = Container(image_name=image_name, description=description, tag=tag, status='INSTALLED')
     container.save()
 
@@ -27,7 +37,7 @@ def install_container(image_name, repo='dockerhub', description='', tag='latest'
     return container
 
 
-def is_app_installed(image_name):
+def isAppInstalled(image_name):
     # Todo: Should we do this? [Performance]
     # Yes, we should, let's do it by checking image name and registry url
     for container in Container.select():
@@ -36,5 +46,49 @@ def is_app_installed(image_name):
     return False
 
 
-def search_images(keyword, repo_filter):
+def searchImages(keyword, repo_filter):
     return search_engine.search(keyword, repo_filter)
+
+
+def isContainerExists(container: Container):
+    try:
+        if container.container_id != "":
+            docker_service.getContainerInfo(container.container_id)
+            return True
+    except NotFound as e:
+        logger.error("Exception occurred. Container should be there. ", e)
+        container.container_id = ""
+        container.save()
+    return False
+
+
+def startContainer(container: Container):
+    if isContainerExists(container):
+        docker_container = docker_service.getContainerInfo(container.container_id)
+        docker_container.start()
+        return container
+    else:
+        container_envs = []
+        for environment in Environment.select():
+            if environment.container == container:
+                container_envs.append(environment.name + '=' + environment.value)
+
+        ports = {}
+        for port in PortMapping.select():
+            if port.container == container:
+                ports[str(port.port) + '/' + port.protocol] = port.targetPort
+
+        docker_container = docker_service.run(container, ports, container_envs)
+        container.container_id = docker_container.short_id
+        return container
+
+
+def stopContainer(container: Container):
+    try:
+        docker_container = docker_service.stop(container)
+        docker_container.stop(timeout=20)
+        return True
+    except ContainerError:
+        print("got ContainerError error")
+    except APIError:
+        print('got APIError error')

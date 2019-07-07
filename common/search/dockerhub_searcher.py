@@ -12,7 +12,10 @@ DOCKERHUB_API = 'https://registry.hub.docker.com/v2'
 class DockerHubSearcher(SearchProvider):
 
     def search(self, keyword, repo):
-        return docker_service.searchDockerhubContainers(keyword)
+        items = docker_service.searchDockerhubContainers(keyword)
+        for item in items:
+            item['from'] = 'dockerhub'
+        return items
 
     def searchTags(self, image_name: str, repo: str) -> List[Tag]:
         tags = self.recursiveFindImageTag(image_name, 100, 1)

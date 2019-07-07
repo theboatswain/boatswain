@@ -73,7 +73,7 @@ class AddAppDialog(object):
         keyword = self.key_search.text()
         if len(keyword) == 0:
             return
-        docker_images = containers_service.search_images(keyword, self.combo_box.currentText())
+        docker_images = containers_service.searchImages(keyword, self.combo_box.currentText())
         self.load_result(docker_images)
 
     def load_result(self, docker_images):
@@ -82,7 +82,8 @@ class AddAppDialog(object):
         with open(SUPPORTED_APPS_YAML_FILE, 'r') as stream:
             supported_app = yaml.safe_load(stream)
         for item in docker_images:
-            widget = AddAppWidget(self.search_result_area, item['name'], item['description'], supported_app)
+            widget = AddAppWidget(self.search_result_area, item['name'], item['description'], supported_app,
+                                  item['from'])
             self.search_result_area.layout().addWidget(widget)
 
     def clean_search_results(self):
