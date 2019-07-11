@@ -1,6 +1,5 @@
 from PyQt5.QtCore import QMetaObject, QCoreApplication, Qt, QPropertyAnimation, pyqtSlot
-from PyQt5.QtWidgets import QHBoxLayout, QLabel, QPushButton, QWidget, QVBoxLayout, QSizePolicy, QFrame, QMessageBox, \
-    QGridLayout
+from PyQt5.QtWidgets import QHBoxLayout, QLabel, QPushButton, QWidget, QVBoxLayout, QSizePolicy, QFrame
 
 from common.exceptions.docker_exceptions import DockerNotAvailableException
 from common.models.container import Container
@@ -22,6 +21,7 @@ class AppWidget(QWidget):
         self.vertical_layout.setAlignment(Qt.AlignTop)
         widget = QWidget(self)
         widget.setSizePolicy(BQSizePolicy(height=QSizePolicy.Fixed))
+        widget.mouseReleaseEvent = self.onAppClicked
         self.vertical_layout.addWidget(widget)
         self.horizontal_layout = QHBoxLayout(widget)
         self.horizontal_layout.setContentsMargins(20, 2, 10, 5)
@@ -45,7 +45,7 @@ class AppWidget(QWidget):
         self.horizontal_layout.addWidget(self.start)
 
         self.app_info = AdvancedAppWidget(widget, container)
-        self.app_info_max_height = self.app_info.size().height() + 10
+        self.app_info_max_height = self.app_info.sizeHint().height() + 10
         self.app_info.setMaximumHeight(0)
 
         self.vertical_layout.addWidget(self.app_info)
@@ -94,6 +94,7 @@ class AppWidget(QWidget):
 
     def onAppStopped(self, status=True):
         self.container_info.status = 'STOPPED'
+        self.container_info.save()
         self.start.setText('Start')
 
     def onFailure(self, exception):
@@ -101,7 +102,7 @@ class AppWidget(QWidget):
             docker_utils.notify_docker_not_available()
         self.onAppStopped()
 
-    def mouseReleaseEvent(self, event):
+    def onAppClicked(self, event):
         if self.app_info.maximumHeight() == 0:
             self.animation = QPropertyAnimation(self.app_info, b"maximumHeight")
             self.animation.setDuration(300)
