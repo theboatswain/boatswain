@@ -1,6 +1,6 @@
-PyQt5==5.12.2
 docker==4.0.2
-requests==2.22.0
+PyQt5==5.13.0
 peewee==3.9.6
 appdirs==1.4.3
 PyYAML==5.1.1
+requests
