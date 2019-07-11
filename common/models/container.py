@@ -16,8 +16,8 @@ class Container(BaseModel):
     tag = CharField()
     # a short info that describes about app/soft/tool...
     description = TextField()
-    # RUNNING/STOPPED/INSTALLED/RESTARTING/RESETTING/REMOVED
+    # RUNNING/STOPPED
     status = CharField()
-    avatar = CharField(default='')
+    avatar = CharField(default='STOPPED')
     # docker registry, default is docker hub, users can also use a custom registry
     repo = CharField(default='dockerhub')
