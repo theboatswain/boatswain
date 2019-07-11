@@ -3,6 +3,8 @@ import traceback
 
 from PyQt5.QtCore import *
 
+from common.exceptions.exceptions import KnownException
+
 threadpool = QThreadPool()
 
 
@@ -26,7 +28,7 @@ class WorkerSignals(QObject):
 
     """
     finished = pyqtSignal()
-    error = pyqtSignal(tuple)
+    error = pyqtSignal(object)
     result = pyqtSignal(object)
     progress = pyqtSignal(int)
 
@@ -63,10 +65,10 @@ class Worker(QRunnable):
         # Retrieve args/kwargs here; and fire processing using them
         try:
             result = self.fn(*self.args, **self.kwargs)
-        except:
-            traceback.print_exc()
-            exctype, value = sys.exc_info()[:2]
-            self.signals.error.emit((exctype, value, traceback.format_exc()))
+        except Exception as e:
+            if not isinstance(e, KnownException):
+                traceback.print_exc()
+            self.signals.error.emit(e)
         else:
             self.signals.result.emit(result)  # Return the result of the processing
         finally:

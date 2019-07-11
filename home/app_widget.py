@@ -1,10 +1,11 @@
 from PyQt5.QtCore import QMetaObject, QCoreApplication, Qt, QPropertyAnimation, pyqtSlot
-from PyQt5.QtWidgets import QHBoxLayout, QLabel, QPushButton, QWidget, QVBoxLayout, QSizePolicy, QFrame
+from PyQt5.QtWidgets import QHBoxLayout, QLabel, QPushButton, QWidget, QVBoxLayout, QSizePolicy, QFrame, QMessageBox
 
+from common.exceptions.docker_exceptions import DockerNotAvailableException
 from common.models.container import Container
 from common.services import containers_service
 from common.services.worker_service import Worker, threadpool
-from common.utils import text_utils
+from common.utils import text_utils, docker_utils
 from common.utils.app_avatar import AppAvatar
 from common.utils.custom_ui import BQSizePolicy
 
@@ -78,6 +79,7 @@ class AppWidget(QWidget):
             self.start.setText('Stopping')
             worker = Worker(containers_service.stopContainer, self.container_info)
             worker.signals.result.connect(self.onAppStopped)
+        worker.signals.error.connect(self.onFailure)
         threadpool.start(worker)
 
     def onAppStarted(self, container):
@@ -87,9 +89,14 @@ class AppWidget(QWidget):
         self.start.setText('Stop')
         # Todo: Add a green dot beside app's avatar
 
-    def onAppStopped(self, status):
+    def onAppStopped(self, status=True):
         self.container_info.status = 'STOPPED'
         self.start.setText('Start')
+
+    def onFailure(self, exception):
+        if isinstance(exception, DockerNotAvailableException):
+            docker_utils.notify_docker_not_available()
+        self.onAppStopped()
 
     def mouseReleaseEvent(self, event):
         if not self.is_app_info_opened:
