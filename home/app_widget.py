@@ -1,5 +1,6 @@
 from PyQt5.QtCore import QMetaObject, QCoreApplication, Qt, QPropertyAnimation, pyqtSlot
-from PyQt5.QtWidgets import QHBoxLayout, QLabel, QPushButton, QWidget, QVBoxLayout, QSizePolicy, QFrame, QMessageBox
+from PyQt5.QtWidgets import QHBoxLayout, QLabel, QPushButton, QWidget, QVBoxLayout, QSizePolicy, QFrame, QMessageBox, \
+    QGridLayout
 
 from common.exceptions.docker_exceptions import DockerNotAvailableException
 from common.models.container import Container
@@ -8,6 +9,7 @@ from common.services.worker_service import Worker, threadpool
 from common.utils import text_utils, docker_utils
 from common.utils.app_avatar import AppAvatar
 from common.utils.custom_ui import BQSizePolicy
+from home.advanced_app_widget import AdvancedAppWidget
 
 
 class AppWidget(QWidget):
@@ -42,22 +44,23 @@ class AppWidget(QWidget):
         self.start.setStyleSheet("border: 1px solid #999999; padding: 1px 10px; border-radius: 2px")
         self.horizontal_layout.addWidget(self.start)
 
-        self.app_info = QWidget(self)
-        self.app_info.setSizePolicy(BQSizePolicy(height=QSizePolicy.Fixed))
+        self.app_info = AdvancedAppWidget(widget, container)
+        self.app_info_max_height = self.app_info.size().height() + 10
+        self.app_info.setMaximumHeight(0)
+
         self.vertical_layout.addWidget(self.app_info)
         self.container_info = container
 
         line = QFrame(self)
         line.setFrameShape(QFrame.HLine)
         line.setFrameShadow(QFrame.Sunken)
+
         self.vertical_layout.addWidget(line)
 
         # Init for 'start' button
         self.start.setText(_translate("widget", "Start"))
         self.start.setEnabled(True)
         self.name.setText(_translate("widget", container.image_name))
-
-        self.is_app_info_opened = False
 
         QMetaObject.connectSlotsByName(self)
 
@@ -99,18 +102,16 @@ class AppWidget(QWidget):
         self.onAppStopped()
 
     def mouseReleaseEvent(self, event):
-        if not self.is_app_info_opened:
-            self.expanding = QPropertyAnimation(self.app_info, b"minimumHeight")
-            self.expanding.setDuration(300)
-            self.expanding.setStartValue(0)
-            self.expanding.setEndValue(150)
-            self.expanding.start()
-            self.is_app_info_opened = True
+        if self.app_info.maximumHeight() == 0:
+            self.animation = QPropertyAnimation(self.app_info, b"maximumHeight")
+            self.animation.setDuration(300)
+            self.animation.setStartValue(0)
+            self.animation.setEndValue(self.app_info_max_height)
+            self.animation.start()
         else:
-            self.collapsing = QPropertyAnimation(self.app_info, b"minimumHeight")
-            self.collapsing.setDuration(300)
-            self.collapsing.setStartValue(150)
-            self.collapsing.setEndValue(0)
-            self.collapsing.start()
-            self.is_app_info_opened = False
+            self.animation = QPropertyAnimation(self.app_info, b"maximumHeight")
+            self.animation.setDuration(300)
+            self.animation.setStartValue(self.app_info_max_height)
+            self.animation.setEndValue(0)
+            self.animation.start()
         QWidget.mouseReleaseEvent(self, event)
