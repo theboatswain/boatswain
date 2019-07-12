@@ -14,7 +14,7 @@ class AdvancedAppWidget(QWidget):
         self.container = container
         self.setSizePolicy(BQSizePolicy(height=QSizePolicy.Fixed))
         self.layout = QVBoxLayout(self)
-        self.layout.setContentsMargins(20, 0, 10, 0)
+        self.layout.setContentsMargins(20, 0, 3, 0)
         self.layout.setSpacing(6)
         line = QFrame(self)
         line.setFrameShape(QFrame.HLine)
@@ -65,4 +65,4 @@ class AdvancedAppWidget(QWidget):
         self.container.tag = tag
         self.container.container_id = ""
         self.container.save()
-        # Todo: Should we do the clean up? delete downloaded image
+        # Todo: Should we do the clean up? delete the downloaded image
