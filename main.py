@@ -6,7 +6,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication
 
 from common.models.tag import Tag
-from common.services import data_transporter_service
+from common.services import data_transporter_service, boatswain_daemon
 from home.home import Home
 from common.models.base import db
 from common.models.container import Container
@@ -52,4 +52,10 @@ if __name__ == '__main__':
 
     # Close db before exit
     data_transporter_service.listen(APP_EXIT_CHANNEL, lambda x: db.close())
+
+    daemon = boatswain_daemon.BoatswainDaemon(window)
+    daemon.start()
+
+    # Stop daemon before exit
+    data_transporter_service.listen(APP_EXIT_CHANNEL, lambda x: daemon.events.close())
     sys.exit(app.exec_())
