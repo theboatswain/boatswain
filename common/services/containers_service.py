@@ -1,18 +1,17 @@
 import logging
 
-from docker.errors import NotFound, ContainerError, APIError
+from docker.errors import NotFound, DockerException
 
 from common.models.container import Container
 from common.models.environment import Environment
 from common.models.port_mapping import PortMapping
 from common.search.dockerhub_searcher import DockerHubSearcher
 from common.search.search_images import SearchImages
-
-# Initialising search engines
 from common.services import docker_service
 
 logger = logging.getLogger(__name__)
 
+# Initialising search engines
 search_engine = SearchImages()
 search_engine.addSearchProvider(DockerHubSearcher())
 
@@ -55,10 +54,17 @@ def isContainerExists(container: Container):
         if container.container_id != "":
             docker_service.getContainerInfo(container.container_id)
             return True
-    except NotFound as e:
-        logger.error("Exception occurred. Container should be there. ", e)
-        container.container_id = ""
-        container.save()
+    except NotFound:
+        if container.container_id != "":
+            container.container_id = ""
+            container.save()
+    return False
+
+
+def isContainerRunning(container: Container):
+    if isContainerExists(container):
+        container_info = docker_service.getContainerInfo(container.container_id)
+        return container_info.status == "running"
     return False
 
 
@@ -88,7 +94,6 @@ def stopContainer(container: Container):
         docker_container = docker_service.stop(container)
         docker_container.stop(timeout=20)
         return True
-    except ContainerError:
-        print("got ContainerError error")
-    except APIError:
-        print('got APIError error')
+    except DockerException as e:
+        logger.error("Exception occurred when trying to stop container", e)
+    return False
