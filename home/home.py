@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QMainWindow, QDialog, QApplication, QLineEdit, QWidg
 from app.add_app import AddAppDialog
 from common.models.container import Container
 from common.services import data_transporter_service
-from common.utils.constants import CONTAINER_CHANNEL, APP_EXIT_CHANNEL
+from common.utils.constants import CONTAINER_CHANNEL, APP_EXIT_CHANNEL, ADD_APP_CHANNEL
 from common.utils.custom_ui import BQSizePolicy
 from home.app_widget import AppWidget
 
@@ -17,8 +17,8 @@ class Home(QMainWindow):
         super(Home, self).__init__()
         self.setupUi(self)
         self.show()
-        data_transporter_service.listen(CONTAINER_CHANNEL, self.add_app_from_container)
-
+        data_transporter_service.listen(CONTAINER_CHANNEL, self.addAppFromContainer)
+        data_transporter_service.listen(ADD_APP_CHANNEL, self.addAppClicked)
         self.app_list = QWidget(self)
         self.app_list.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
         layout = QVBoxLayout(self.app_list)
@@ -117,7 +117,7 @@ class Home(QMainWindow):
         dialog.ui = AddAppDialog("Add app", dialog)
         dialog.exec_()
 
-    def add_app_from_container(self, container: Container):
+    def addAppFromContainer(self, container: Container):
         widget = AppWidget(self.app_list, container)
         self.app_list.layout().addWidget(widget)
 
