@@ -17,7 +17,7 @@ search_engine.addSearchProvider(DockerHubSearcher())
 
 
 def installContainer(image_name, repo='dockerhub', description='', tag='latest', environments=None, ports=None):
-    container = Container(image_name=image_name, description=description, tag=tag, status='INSTALLED')
+    container = Container(image_name=image_name, description=description, tag=tag, name=image_name)
     container.save()
 
     if environments is not None:

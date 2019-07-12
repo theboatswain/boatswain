@@ -61,7 +61,7 @@ class AppWidget(QWidget):
 
         status = "Stop" if containers_service.isContainerRunning(container) else "Start"
         self.status.setText(_translate("widget", status))
-        self.name.setText(_translate("widget", container.image_name))
+        self.name.setText(_translate("widget", container.name))
 
         boatswain_daemon.listen('container', 'start', self.onContainerStart)
         boatswain_daemon.listen('container', 'stop', self.onContainerStop)
