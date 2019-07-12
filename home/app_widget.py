@@ -1,12 +1,14 @@
 from PyQt5.QtCore import QMetaObject, QCoreApplication, Qt, QPropertyAnimation, pyqtSlot
-from PyQt5.QtWidgets import QHBoxLayout, QLabel, QPushButton, QWidget, QVBoxLayout, QSizePolicy, QFrame
+from PyQt5.QtGui import QMouseEvent
+from PyQt5.QtWidgets import QHBoxLayout, QLabel, QPushButton, QWidget, QVBoxLayout, QSizePolicy, QFrame, QMenu
 
 from common.exceptions.docker_exceptions import DockerNotAvailableException
 from common.models.container import Container
-from common.services import containers_service
+from common.services import containers_service, data_transporter_service
 from common.services.worker_service import Worker, threadpool
 from common.utils import text_utils, docker_utils
 from common.utils.app_avatar import AppAvatar
+from common.utils.constants import ADD_APP_CHANNEL
 from common.utils.custom_ui import BQSizePolicy
 from home.advanced_app_widget import AdvancedAppWidget
 
@@ -102,17 +104,33 @@ class AppWidget(QWidget):
             docker_utils.notify_docker_not_available()
         self.onAppStopped()
 
-    def onAppClicked(self, event):
-        if self.app_info.maximumHeight() == 0:
-            self.animation = QPropertyAnimation(self.app_info, b"maximumHeight")
-            self.animation.setDuration(300)
-            self.animation.setStartValue(0)
-            self.animation.setEndValue(self.app_info_max_height)
-            self.animation.start()
-        else:
-            self.animation = QPropertyAnimation(self.app_info, b"maximumHeight")
-            self.animation.setDuration(300)
-            self.animation.setStartValue(self.app_info_max_height)
-            self.animation.setEndValue(0)
-            self.animation.start()
+    def onAppClicked(self, event: QMouseEvent):
+        if event.button() == Qt.LeftButton:
+            if self.app_info.maximumHeight() == 0:
+                self.animation = QPropertyAnimation(self.app_info, b"maximumHeight")
+                self.animation.setDuration(300)
+                self.animation.setStartValue(0)
+                self.animation.setEndValue(self.app_info_max_height)
+                self.animation.start()
+            else:
+                self.animation = QPropertyAnimation(self.app_info, b"maximumHeight")
+                self.animation.setDuration(300)
+                self.animation.setStartValue(self.app_info_max_height)
+                self.animation.setEndValue(0)
+                self.animation.start()
         QWidget.mouseReleaseEvent(self, event)
+
+    def contextMenuEvent(self, event):
+        menu = QMenu(self)
+        addAction = menu.addAction("Add...")
+        addAction.triggered.connect(lambda: data_transporter_service.fire(ADD_APP_CHANNEL, True))
+        menu.addSeparator()
+        menu.addAction("Connect to terminal")
+        menu.addAction("Open log")
+        menu.addSeparator()
+        menu.addAction("Configuration")
+        menu.addSeparator()
+        menu.addAction("Restart")
+        menu.addAction("Reset")
+        menu.addAction("Delete")
+        menu.exec_(self.mapToGlobal(event.pos()))

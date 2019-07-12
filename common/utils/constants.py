@@ -10,3 +10,4 @@ APP_DB = 'boatswain.db'
 # Channels
 CONTAINER_CHANNEL = 'container_channel'
 APP_EXIT_CHANNEL = 'app_exit'
+ADD_APP_CHANNEL = 'add_app_channel'
