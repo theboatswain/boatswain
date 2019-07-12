@@ -40,11 +40,11 @@ class AppWidget(QWidget):
         self.name.setObjectName("name")
         self.horizontal_layout.addWidget(self.name)
 
-        self.start = QPushButton(widget)
-        self.start.setObjectName("start")
-        self.start.setFlat(True)
-        self.start.setStyleSheet("border: 1px solid #999999; padding: 1px 10px; border-radius: 2px")
-        self.horizontal_layout.addWidget(self.start)
+        self.status = QPushButton(widget)
+        self.status.setObjectName("start")
+        self.status.setFlat(True)
+        self.status.setStyleSheet("border: 1px solid #999999; padding: 1px 10px; border-radius: 2px")
+        self.horizontal_layout.addWidget(self.status)
 
         self.app_info = AdvancedAppWidget(widget, container)
         self.app_info_max_height = self.app_info.sizeHint().height() + 10
@@ -59,9 +59,8 @@ class AppWidget(QWidget):
 
         self.vertical_layout.addWidget(line)
 
-        # Init for 'start' button
-        self.start.setText(_translate("widget", "Start"))
-        self.start.setEnabled(True)
+        status = "Stop" if containers_service.isContainerRunning(container) else "Start"
+        self.status.setText(_translate("widget", status))
         self.name.setText(_translate("widget", container.image_name))
 
         QMetaObject.connectSlotsByName(self)
@@ -76,12 +75,12 @@ class AppWidget(QWidget):
             - environment 
         """
         # TODO having more statuses to be handled
-        if self.container_info.status != 'RUNNING':
-            self.start.setText('Starting')
+        if not containers_service.isContainerRunning(self.container_info):
+            self.status.setText('Starting')
             worker = Worker(containers_service.startContainer, self.container_info)
             worker.signals.result.connect(self.onAppStarted)
         else:
-            self.start.setText('Stopping')
+            self.status.setText('Stopping')
             worker = Worker(containers_service.stopContainer, self.container_info)
             worker.signals.result.connect(self.onAppStopped)
         worker.signals.error.connect(self.onFailure)
@@ -89,15 +88,12 @@ class AppWidget(QWidget):
 
     def onAppStarted(self, container):
         self.container_info = container
-        self.container_info.status = 'RUNNING'
         self.container_info.save()
-        self.start.setText('Stop')
+        self.status.setText('Stop')
         # Todo: Add a green dot beside app's avatar
 
     def onAppStopped(self, status=True):
-        self.container_info.status = 'STOPPED'
-        self.container_info.save()
-        self.start.setText('Start')
+        self.status.setText('Start')
 
     def onFailure(self, exception):
         if isinstance(exception, DockerNotAvailableException):
