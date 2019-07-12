@@ -12,6 +12,9 @@ class Container(BaseModel):
     # docker container name
     # image name, ex: mongo
     image_name = CharField()
+
+    # customisable name
+    name = CharField(default='')
     # image tag, ex: 1.0
     tag = CharField()
     # a short info that describes about app/soft/tool...
