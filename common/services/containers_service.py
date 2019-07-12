@@ -97,3 +97,15 @@ def stopContainer(container: Container):
     except DockerException as e:
         logger.error("Exception occurred when trying to stop container", e)
     return False
+
+
+def isInstanceOf(container: Container, dockerId):
+    """
+    Check if the given container and dockerId hash tag is from the same Container
+    :param container: Container
+    :param dockerId: hash tag ID of a container
+    :return:
+    """
+    if container.container_id == '':
+        return False
+    return dockerId.startswith(container.container_id)

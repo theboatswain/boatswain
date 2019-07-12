@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QHBoxLayout, QLabel, QPushButton, QWidget, QVBoxLayo
 
 from common.exceptions.docker_exceptions import DockerNotAvailableException
 from common.models.container import Container
-from common.services import containers_service, data_transporter_service
+from common.services import containers_service, data_transporter_service, boatswain_daemon
 from common.services.worker_service import Worker, threadpool
 from common.utils import text_utils, docker_utils
 from common.utils.app_avatar import AppAvatar
@@ -63,6 +63,9 @@ class AppWidget(QWidget):
         self.status.setText(_translate("widget", status))
         self.name.setText(_translate("widget", container.image_name))
 
+        boatswain_daemon.listen('container', 'start', self.onContainerStart)
+        boatswain_daemon.listen('container', 'stop', self.onContainerStop)
+
         QMetaObject.connectSlotsByName(self)
 
     @pyqtSlot(bool, name="on_start_clicked")
@@ -82,7 +85,6 @@ class AppWidget(QWidget):
         else:
             self.status.setText('Stopping')
             worker = Worker(containers_service.stopContainer, self.container_info)
-            worker.signals.result.connect(self.onAppStopped)
         worker.signals.error.connect(self.onFailure)
         threadpool.start(worker)
 
@@ -90,15 +92,10 @@ class AppWidget(QWidget):
         self.container_info = container
         self.container_info.save()
         self.status.setText('Stop')
-        # Todo: Add a green dot beside app's avatar
-
-    def onAppStopped(self, status=True):
-        self.status.setText('Start')
 
     def onFailure(self, exception):
         if isinstance(exception, DockerNotAvailableException):
             docker_utils.notify_docker_not_available()
-        self.onAppStopped()
 
     def onAppClicked(self, event: QMouseEvent):
         if event.button() == Qt.LeftButton:
@@ -130,3 +127,12 @@ class AppWidget(QWidget):
         menu.addAction("Reset")
         menu.addAction("Delete")
         menu.exec_(self.mapToGlobal(event.pos()))
+
+    def onContainerStart(self, event):
+        if containers_service.isInstanceOf(self.container_info, event['id']):
+            self.status.setText('Stop')
+            # Todo: Add a green dot beside app's avatar
+
+    def onContainerStop(self, event):
+        if containers_service.isInstanceOf(self.container_info, event['id']):
+            self.status.setText('Start')

@@ -28,6 +28,11 @@ def stop(container: Container):
     return client.containers.get(container.container_id)
 
 
+def streamEvents():
+    ping()
+    return client.events(decode=True)
+
+
 def ping():
     try:
         client.ping()
