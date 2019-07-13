@@ -1,0 +1,60 @@
+from PyQt5.QtCore import QMetaObject, QCoreApplication, Qt, QSize
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTabWidget
+
+from common.models.container import Container
+from common.utils.custom_ui import BQSizePolicy
+from config.configures.general import GeneralAppConfig
+
+
+class AppConfig(object):
+
+    def __init__(self, title, dialog, container: Container) -> None:
+        super().__init__()
+        self.title = title
+        self.container = container
+        self.setupUi(dialog)
+        dialog.setWindowTitle(self.title)
+        dialog.setAttribute(Qt.WA_DeleteOnClose)
+
+    def setupUi(self, dialog):
+        dialog.resize(745, 405)
+        dialog.setSizePolicy(BQSizePolicy(h_stretch=1))
+        dialog.setMinimumSize(QSize(745, 405))
+        dialog.setSizeGripEnabled(False)
+        dialog.setModal(False)
+
+        main_layout = QVBoxLayout(dialog)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setSpacing(0)
+
+        self.central_widget = QWidget(dialog)
+        self.vertical_layout = QVBoxLayout(self.central_widget)
+        self.vertical_layout.setContentsMargins(11, 11, 11, 15)
+        self.vertical_layout.setSpacing(6)
+        self.tab_widget = QTabWidget(self.central_widget)
+        self.tab_widget.setDocumentMode(False)
+        self.general = GeneralAppConfig(self.central_widget, self.container)
+        self.tab_widget.addTab(self.general, "")
+        self.port = QWidget(self.central_widget)
+        self.port.setObjectName("port")
+        self.tab_widget.addTab(self.port, "")
+        self.volume = QWidget(self.central_widget)
+        self.volume.setObjectName("volume")
+        self.tab_widget.addTab(self.volume, "")
+        self.environments = QWidget(self.central_widget)
+        self.environments.setObjectName("environments")
+        self.tab_widget.addTab(self.environments, "")
+        self.vertical_layout.addWidget(self.tab_widget)
+
+        main_layout.addWidget(self.central_widget)
+
+        self.retranslateUi()
+        self.tab_widget.setCurrentIndex(0)
+        QMetaObject.connectSlotsByName(dialog)
+
+    def retranslateUi(self):
+        _translate = QCoreApplication.translate
+        self.tab_widget.setTabText(self.tab_widget.indexOf(self.general), _translate("MainWindow", "General"))
+        self.tab_widget.setTabText(self.tab_widget.indexOf(self.port), _translate("MainWindow", "Port mapping"))
+        self.tab_widget.setTabText(self.tab_widget.indexOf(self.volume), _translate("MainWindow", "Volume mount"))
+        self.tab_widget.setTabText(self.tab_widget.indexOf(self.environments), _translate("MainWindow", "Enviroments"))

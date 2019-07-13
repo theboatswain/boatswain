@@ -70,3 +70,10 @@ class AdvancedAppWidget(ReloadableWidget):
         self.container.container_id = ""
         self.container.save()
         # Todo: Should we do the clean up? delete the downloaded image
+
+    @pyqtSlot(bool, name='on_advancedConfiguration_clicked')
+    def onAdvancedConfigurationClicked(self, checked=True):
+        dialog = QDialog()
+        dialog.ui = AppConfig("%s - configuration" % self.container.name, dialog, self.container)
+        dialog.exec_()
+        self.parentWidget().reloadData()
