@@ -16,8 +16,15 @@ search_engine = SearchImages()
 search_engine.addSearchProvider(DockerHubSearcher())
 
 
+def updateContainerTags(container: Container):
+    tags = search_engine.searchTags(container.image_name, container.repo)
+    for tag in tags:
+        tag.container = container
+        tag.save()
+
+
 def installContainer(image_name, repo='dockerhub', description='', tag='latest', environments=None, ports=None):
-    container = Container(image_name=image_name, description=description, tag=tag, name=image_name)
+    container = Container(image_name=image_name, description=description, tag=tag, name=image_name, repo=repo)
     container.save()
 
     if environments is not None:
@@ -29,10 +36,7 @@ def installContainer(image_name, repo='dockerhub', description='', tag='latest',
             port.container = container;
             port.save()
 
-    tags = search_engine.searchTags(image_name, repo)
-    for tag in tags:
-        tag.container = container
-        tag.save()
+    updateContainerTags(container)
     return container
 
 
