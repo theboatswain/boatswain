@@ -49,6 +49,7 @@ class AddAppDialog(object):
         self.combo_box.addItem("")
         self.grid_container.addWidget(self.combo_box, 0, 0, 1, 1)
         self.key_search = QLineEdit(widget)
+        self.key_search.setAttribute(Qt.WA_MacShowFocusRect, 0)
         self.key_search.setFocusPolicy(Qt.StrongFocus)
         self.key_search.setStyleSheet("padding: 2 2 2 5;")
         self.key_search.setObjectName("keySearch")

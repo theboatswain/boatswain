@@ -23,3 +23,11 @@ class Container(BaseModel):
     avatar = CharField(default='')
     # docker registry, default is docker hub, users can also use a custom registry
     repo = CharField(default='dockerhub')
+    # limit amount of memory for this container
+    memory_limit = IntegerField(default=0)
+    # unit of the memory limit MB/GB
+    memory_limit_unit = CharField(default='MB')
+    # limit number of cpus for this container
+    cpu_limit = FloatField(default=0.0)
+    # unit of the cpu limit CPUs/Period/Quota
+    cpu_limit_unit = CharField(default='CPUs')
