@@ -9,12 +9,17 @@ from common.services.worker_service import Worker, threadpool
 from common.utils import text_utils, docker_utils
 from common.utils.app_avatar import AppAvatar
 from common.utils.constants import ADD_APP_CHANNEL
-from common.utils.custom_ui import BQSizePolicy
+from common.utils.custom_ui import BQSizePolicy, ReloadableWidget
 from home.advanced_app_widget import AdvancedAppWidget
 
 
-class AppWidget(QWidget):
+class AppWidget(ReloadableWidget):
     """ Class to customise app's widgets """
+
+    def reloadData(self):
+        self.name.setText(self._translate("widget", self.container_info.name))
+        self.app_info.reloadData()
+
     def __init__(self, parent, container: Container) -> None:
         super().__init__(parent)
         self.vertical_layout = QVBoxLayout(self)
@@ -27,7 +32,7 @@ class AppWidget(QWidget):
         self.vertical_layout.addWidget(widget)
         self.horizontal_layout = QHBoxLayout(widget)
         self.horizontal_layout.setContentsMargins(20, 2, 10, 5)
-        _translate = QCoreApplication.translate
+        self._translate = QCoreApplication.translate
 
         img_name = container.image_name
         name_part = container.image_name.split('/')
@@ -60,13 +65,13 @@ class AppWidget(QWidget):
         self.vertical_layout.addWidget(line)
 
         status = "Stop" if containers_service.isContainerRunning(container) else "Start"
-        self.status.setText(_translate("widget", status))
-        self.name.setText(_translate("widget", container.name))
+        self.status.setText(self._translate("widget", status))
 
         boatswain_daemon.listen('container', 'start', self.onContainerStart)
         boatswain_daemon.listen('container', 'stop', self.onContainerStop)
-
         QMetaObject.connectSlotsByName(self)
+
+        self.reloadData()
 
     @pyqtSlot(bool, name="on_start_clicked")
     def controlApp(self, checked):
@@ -121,7 +126,8 @@ class AppWidget(QWidget):
         menu.addAction("Connect to terminal")
         menu.addAction("Open log")
         menu.addSeparator()
-        menu.addAction("Configuration")
+        conf = menu.addAction("Configuration")
+        conf.triggered.connect(lambda: self.app_info.onAdvancedConfigurationClicked())
         menu.addSeparator()
         menu.addAction("Restart")
         menu.addAction("Reset")

@@ -1,13 +1,20 @@
 from PyQt5.QtCore import QMetaObject, QCoreApplication, pyqtSlot
 from PyQt5.QtWidgets import QWidget, QSizePolicy, QPushButton, QLabel, QComboBox, QFrame, QVBoxLayout, \
-    QHBoxLayout
+    QHBoxLayout, QDialog
 
 from common.models.container import Container
 from common.models.tag import Tag
-from common.utils.custom_ui import BQSizePolicy
+from common.utils.custom_ui import BQSizePolicy, ReloadableWidget
+from config.app_config import AppConfig
 
 
-class AdvancedAppWidget(QWidget):
+class AdvancedAppWidget(ReloadableWidget):
+
+    def reloadData(self):
+        for index, tag in enumerate(Tag.select().where(Tag.container == self.container)):
+            self.tags.addItem(self.container.image_name + ":" + tag.name)
+            if tag.name == self.container.tag:
+                self.tags.setCurrentIndex(index)
 
     def __init__(self, parent, container: Container) -> None:
         super().__init__(parent)
@@ -49,10 +56,7 @@ class AdvancedAppWidget(QWidget):
         self.retranslateUi()
         QMetaObject.connectSlotsByName(self)
 
-        for index, tag in enumerate(Tag.select().where(Tag.container == container)):
-            self.tags.addItem(container.image_name + ":" + tag.name)
-            if tag.name == container.tag:
-                self.tags.setCurrentIndex(index)
+        self.reloadData()
         self.tags.currentIndexChanged.connect(self.onImageTagChange)
 
     def retranslateUi(self):

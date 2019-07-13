@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QSizePolicy
+from PyQt5.QtWidgets import QSizePolicy, QWidget
 
 
 class BQSizePolicy(QSizePolicy):
@@ -6,3 +6,8 @@ class BQSizePolicy(QSizePolicy):
         super().__init__(width, height)
         self.setHorizontalStretch(h_stretch)
         self.setVerticalStretch(v_stretch)
+
+
+class ReloadableWidget(QWidget):
+    def reloadData(self):
+        raise NotImplementedError()
