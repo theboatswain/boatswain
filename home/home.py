@@ -52,6 +52,7 @@ class Home(QMainWindow):
         self.app_type.addItem("")
         top_layout.addWidget(self.app_type, 0, 2, 1, 1)
         self.search_app = QLineEdit(widget)
+        self.search_app.setAttribute(Qt.WA_MacShowFocusRect, 0)
         self.search_app.setSizePolicy(BQSizePolicy(h_stretch=2, height=QSizePolicy.Fixed))
         self.search_app.setFocusPolicy(Qt.ClickFocus)
         self.search_app.setStyleSheet("padding: 2 2 2 5;")
