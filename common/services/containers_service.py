@@ -1,4 +1,5 @@
 import logging
+import os
 
 from docker.errors import NotFound, DockerException
 
@@ -7,7 +8,8 @@ from common.models.environment import Environment
 from common.models.port_mapping import PortMapping
 from common.search.dockerhub_searcher import DockerHubSearcher
 from common.search.search_images import SearchImages
-from common.services import docker_service
+from common.services import docker_service, config_service
+from common.utils.constants import INCLUDING_ENV_SYSTEM
 
 logger = logging.getLogger(__name__)
 
@@ -78,10 +80,16 @@ def startContainer(container: Container):
         docker_container.start()
         return container
     else:
-        container_envs = []
+        container_envs = {}
+
+        if config_service.isAppConf(container, INCLUDING_ENV_SYSTEM, 'true'):
+            for item in os.environ:
+                if item != 'PATH':
+                    container_envs[item] = os.environ[item]
+
         for environment in Environment.select():
             if environment.container == container:
-                container_envs.append(environment.name + '=' + environment.value)
+                container_envs[environment.name] = environment.value
 
         ports = {}
         for port in PortMapping.select():

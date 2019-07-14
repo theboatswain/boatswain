@@ -4,7 +4,6 @@ from PyQt5.QtWidgets import QWidget, QSizePolicy, QPushButton, QLabel, QComboBox
 
 from common.models.container import Container
 from common.models.tag import Tag
-from common.services import containers_service
 from common.utils.custom_ui import BQSizePolicy, ReloadableWidget
 from config.app_config import AppConfig
 
