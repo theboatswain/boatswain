@@ -3,12 +3,15 @@ from PyQt5.QtCore import QModelIndex
 from PyQt5.QtCore import QVariant
 from PyQt5.QtCore import Qt
 
+from common.models.container import Container
+
 
 class UserEnvModel(QAbstractTableModel):
-    def __init__(self, data_in, header_data, parent=None):
+    def __init__(self, data_in, header_data, container: Container, parent=None):
         QAbstractTableModel.__init__(self, parent)
         self.array_data = data_in
         self.header_data = header_data
+        self.container = container
 
     def rowCount(self, parent=None, *args, **kwargs):
         return len(self.array_data)
@@ -32,8 +35,8 @@ class UserEnvModel(QAbstractTableModel):
             container = self.array_data[index.row()].container
             if container is not None:
                 # Todo: Clean up the previous container
-                container.container_id = ""
-                container.save()
+                self.container.container_id = ""
+                self.container.save()
             return True
         else:
             return False
@@ -55,7 +58,12 @@ class UserEnvModel(QAbstractTableModel):
         self.layoutChanged.emit()
 
     def removeRow(self, p_int, parent=None, *args, **kwargs):
-        self.array_data[p_int].delete_instance()
+        if self.array_data[p_int].container is not None:
+            self.array_data[p_int].delete_instance()
+            # Todo: Clean up the previous container
+            self.container.container_id = ""
+            self.container.save()
+
         self.array_data.pop(p_int)
         self.layoutChanged.emit()
 
