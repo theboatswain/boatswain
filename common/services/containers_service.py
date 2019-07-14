@@ -87,24 +87,27 @@ def startContainer(container: Container):
                 if item != 'PATH':
                     container_envs[item] = os.environ[item]
 
-        for environment in Environment.select():
-            if environment.container == container:
-                container_envs[environment.name] = environment.value
+        for environment in Environment.select().where(Environment.container == container):
+            container_envs[environment.name] = environment.value
 
         ports = {}
-        for port in PortMapping.select():
-            if port.container == container:
-                ports[str(port.port) + '/' + port.protocol] = port.targetPort
+        for port in PortMapping.select().where(PortMapping.container == container):
+            ports[str(port.port) + '/' + port.protocol] = port.target_port
 
-        docker_container = docker_service.run(container, ports, container_envs)
+        volumes = {}
+        for volume in VolumeMount.select():
+            volumes[volume.host_path] = {'bind': volume.container_path, 'mode': volume.mode}
+
+        docker_container = docker_service.run(container, ports, container_envs, volumes)
         container.container_id = docker_container.short_id
         return container
 
 
 def stopContainer(container: Container):
     try:
-        docker_container = docker_service.stop(container)
-        docker_container.stop(timeout=20)
+        if isContainerRunning(container):
+            docker_container = docker_service.stop(container)
+            docker_container.stop(timeout=20)
         return True
     except DockerException as e:
         logger.error("Exception occurred when trying to stop container", e)

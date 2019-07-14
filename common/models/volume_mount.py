@@ -9,6 +9,7 @@ class VolumeMount(BaseModel):
 
     id = IntegerField(primary_key=True)
     container = ForeignKeyField(Container, backref='volumes')
-    hostPath = CharField()
-    containerPath = CharField()
+    host_path = CharField()
+    container_path = CharField()
+    mode = CharField(default='rw')
     description = CharField(default='')

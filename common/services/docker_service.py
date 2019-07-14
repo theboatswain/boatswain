@@ -17,10 +17,10 @@ def getContainerInfo(container_id):
     return client.containers.get(container_id)
 
 
-def run(container: Container, ports, envs):
+def run(container: Container, ports, envs, volumes):
     ping()
-    return client.containers.run(container.image_name + ":" + container.tag,
-                                 detach=True, ports=ports, environment=envs)
+    return client.containers.run(container.image_name + ":" + container.tag, detach=True, ports=ports,
+                                 environment=envs, volumes=volumes)
 
 
 def stop(container: Container):
