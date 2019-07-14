@@ -5,6 +5,7 @@ from common.models.container import Container
 from common.utils.custom_ui import BQSizePolicy, AutoResizeWidget
 from config.configures.environment import EnvironmentVariable
 from config.configures.general import GeneralAppConfig
+from config.configures.port_mapping import PortMappingConfig
 
 
 class AppConfig(object):
@@ -38,7 +39,7 @@ class AppConfig(object):
         self.tab_widget.setDocumentMode(False)
         self.general = GeneralAppConfig(self.central_widget, self.container)
         self.tab_widget.addTab(self.general, "")
-        self.port = AutoResizeWidget(self.central_widget)
+        self.port = PortMappingConfig(self.central_widget, self.container)
         self.tab_widget.addTab(self.port, "")
         self.volume = AutoResizeWidget(self.central_widget)
         self.tab_widget.addTab(self.volume, "")

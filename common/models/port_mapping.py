@@ -14,9 +14,9 @@ class PortMapping(BaseModel):
     # Description about this port
     description = CharField(default='')
 
-    # client port
+    # container port
     port = IntegerField()
     # protocol is either tcp, udp, or sctp.
-    protocol = CharField()
-    # container port
+    protocol = CharField(default='tcp')
+    # host port
     targetPort = IntegerField()
