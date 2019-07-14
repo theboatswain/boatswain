@@ -10,6 +10,10 @@ class PortMapping(BaseModel):
     id = IntegerField(primary_key=True)
     # target container Id
     container = ForeignKeyField(Container, backref='ports')
+
+    # Description about this port
+    description = CharField(default='')
+
     # client port
     port = IntegerField()
     # protocol is either tcp, udp, or sctp.

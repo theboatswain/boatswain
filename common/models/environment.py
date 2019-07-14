@@ -9,3 +9,4 @@ class Environment(BaseModel):
     container = ForeignKeyField(Container, backref='environments')
     name = CharField()
     value = CharField()
+    description = CharField(default='')

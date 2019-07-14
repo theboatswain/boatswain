@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QWidget, QSizePolicy, QPushButton, QLabel, QComboBox
 
 from common.models.container import Container
 from common.models.tag import Tag
+from common.services import containers_service
 from common.utils.custom_ui import BQSizePolicy, ReloadableWidget
 from config.app_config import AppConfig
 
@@ -54,21 +55,21 @@ class AdvancedAppWidget(ReloadableWidget):
         self.layout.addWidget(self.widget_3)
 
         self.retranslateUi()
-        QMetaObject.connectSlotsByName(self)
-
         self.reloadData()
-        self.tags.currentIndexChanged.connect(self.onImageTagChange)
+
+        QMetaObject.connectSlotsByName(self)
 
     def retranslateUi(self):
         _translate = QCoreApplication.translate
         self.label.setText(_translate("AdvancedWidget", "Image tag:"))
         self.advanced_configuration.setText(_translate("AdvancedWidget", "Advanced configuration"))
 
+    @pyqtSlot(int, name='on_tags_currentIndexChanged')
     def onImageTagChange(self, index):
         tag = self.tags.itemText(index).split(':')[1]
         self.container.tag = tag
         self.container.container_id = ""
-        self.container.save()
+        self.container.update()
         # Todo: Should we do the clean up? delete the downloaded image
 
     @pyqtSlot(bool, name='on_advancedConfiguration_clicked')

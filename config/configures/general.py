@@ -9,10 +9,11 @@ from common.services import containers_service
 from common.services.worker_service import Worker, threadpool
 from common.utils import text_utils
 from common.utils.app_avatar import AppAvatar
-from common.utils.custom_ui import BQSizePolicy
+from common.utils.custom_ui import BQSizePolicy, AutoResizeWidget
 
 
-class GeneralAppConfig(QWidget):
+class GeneralAppConfig(AutoResizeWidget):
+
     def __init__(self, parent, container: Container) -> None:
         super().__init__(parent)
         self.container = container        
@@ -41,6 +42,7 @@ class GeneralAppConfig(QWidget):
         self.container_name.setStyleSheet('border: none; background-color: transparent')
         self.container_name.setFocusPolicy(Qt.StrongFocus)
         self.container_name.setFocus()
+        self.container_name.setObjectName('containerName')
         self.horizontal_layout_2.addWidget(self.container_name)
         self.widget_5 = QWidget(self.widget)
         self.widget_5.setSizePolicy(BQSizePolicy(h_stretch=1))
@@ -67,7 +69,7 @@ class GeneralAppConfig(QWidget):
         self.widget_4 = QWidget(self)
         self.widget_4.setSizePolicy(BQSizePolicy(v_stretch=2))
         self.grid_layout = QGridLayout(self.widget_4)
-        self.grid_layout.setContentsMargins(0, 0, 0, 0)
+        self.grid_layout.setContentsMargins(0, 0, 0, 5)
         self.grid_layout.setSpacing(6)
         self.sync = QPushButton(self.widget_4)
         self.sync.setObjectName("sync")
@@ -94,6 +96,8 @@ class GeneralAppConfig(QWidget):
         self.grid_layout.addWidget(self.widget_7, 3, 3, 1, 1)
         self.limit_cpu_label = QLabel(self.widget_4)
         self.grid_layout.addWidget(self.limit_cpu_label, 4, 0, 1, 1)
+        self.entrypoint_label = QLabel(self.widget_4)
+        self.grid_layout.addWidget(self.entrypoint_label, 5, 0, 1, 1)
         self.image_tags = QComboBox(self.widget_4)
         self.image_tags.setObjectName("imageTags")
         self.grid_layout.addWidget(self.image_tags, 2, 1, 1, 3)
@@ -111,6 +115,9 @@ class GeneralAppConfig(QWidget):
         self.limit_cpu.setText(str(self.container.cpu_limit))
         self.limit_cpu.setValidator(QDoubleValidator(0, 99999999, 2))
         self.grid_layout.addWidget(self.limit_cpu, 4, 1, 1, 1)
+        self.entrypoint = QLineEdit(self.widget_4)
+        self.entrypoint.setFocusPolicy(Qt.ClickFocus)
+        self.grid_layout.addWidget(self.entrypoint, 5, 1, 1, 3)
         self.vertical_layout_2.addWidget(self.widget_4)
         self.line_2 = QFrame(self)
         self.line_2.setFrameShape(QFrame.HLine)
@@ -130,9 +137,8 @@ class GeneralAppConfig(QWidget):
         self.vertical_layout_2.addWidget(self.widget_2)
 
         self.retranslateUi()
-        QMetaObject.connectSlotsByName(self)
         self.loadTags()
-        self.container_name.textChanged.connect(self.onNameChanged)
+        QMetaObject.connectSlotsByName(self)
 
     def retranslateUi(self):
         self.container_name.setText(self._translate("General", self.container.name))
@@ -150,6 +156,8 @@ class GeneralAppConfig(QWidget):
         self.cpu_unit.setItemText(1, self._translate("General", "Period"))
         self.cpu_unit.setItemText(2, self._translate("General", "Quota"))
         self.limit_cpu_label.setText(self._translate("General", "CPU limit:"))
+        self.entrypoint_label.setText(self._translate("General", "Entrypoint"))
+        self.entrypoint.setPlaceholderText(self._translate("General", "Override the default command of the container"))
         self.limit_memory_label.setText(self._translate("General", "Memory limit:   "))
         self.start_with_boatswain.setText(self._translate("General", " Start with Boatswain"))
         self.stop_with_boatswain.setText(self._translate("General", " Stop when Boatswain exit"))
@@ -169,12 +177,18 @@ class GeneralAppConfig(QWidget):
             if tag.name == self.container.tag:
                 self.image_tags.setCurrentIndex(index)
 
+    @pyqtSlot(str, name='on_containerName_textChanged')
     def onNameChanged(self, name):
         if len(name) == 0:
             self.container.name = self.container.image_name
         else:
             self.container.name = name
-
-    def closeEvent(self, QCloseEvent):
         self.container.save()
-        super().closeEvent(QCloseEvent)
+
+    @pyqtSlot(int, name='on_imageTags_currentIndexChanged')
+    def onImageTagChange(self, index):
+        tag = self.image_tags.itemText(index).split(':')[1]
+        self.container.tag = tag
+        self.container.container_id = ""
+        self.container.update()
+        # Todo: Should we do the clean up? delete the downloaded image

@@ -31,3 +31,6 @@ class Container(BaseModel):
     cpu_limit = FloatField(default=0.0)
     # unit of the cpu limit CPUs/Period/Quota
     cpu_limit_unit = CharField(default='CPUs')
+
+    # overwriting the default behavior
+    entrypoint = CharField(default='')

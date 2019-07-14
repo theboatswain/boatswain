@@ -11,3 +11,4 @@ class VolumeMount(BaseModel):
     container = ForeignKeyField(Container, backref='volumes')
     hostPath = CharField()
     containerPath = CharField()
+    description = CharField(default='')

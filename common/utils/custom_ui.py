@@ -1,3 +1,4 @@
+from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import QSizePolicy, QWidget
 
 
@@ -11,3 +12,8 @@ class BQSizePolicy(QSizePolicy):
 class ReloadableWidget(QWidget):
     def reloadData(self):
         raise NotImplementedError()
+
+
+class AutoResizeWidget(QWidget):
+    def preferableSize(self) -> QSize:
+        return QSize(745, 445)
