@@ -1,12 +1,14 @@
 import os
 
 from PyQt5 import QtCore
-from PyQt5.QtCore import QSize, pyqtSlot, QItemSelectionModel
+from PyQt5.QtCore import QSize, pyqtSlot, QItemSelectionModel, Qt
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTableView, QCheckBox, \
     QAbstractItemView
 
 from common.models.container import Container
 from common.models.environment import Environment
+from common.services import config_service
+from common.utils.constants import INCLUDING_ENV_SYSTEM
 from common.utils.custom_ui import BQSizePolicy, AutoResizeWidget
 from config.models.user_env_model import UserEnvModel
 
@@ -62,6 +64,8 @@ class EnvironmentVariable(AutoResizeWidget):
         sys_headers = ['name', 'value']
         self.configureUserTable(self.sys_env_table, sys_headers, self.getAllSysEnv())
         self.sys_env_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        if config_service.isAppConf(self.container, INCLUDING_ENV_SYSTEM, 'true'):
+            self.include_sys_env.setChecked(True)
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
@@ -84,6 +88,11 @@ class EnvironmentVariable(AutoResizeWidget):
         indicates = self.user_table.selectionModel().selectedRows()
         for item in sorted(indicates):
             self.user_table.model().removeRow(item.row())
+
+    @pyqtSlot(int, name='on_includeSysEnv_stateChanged')
+    def onIncludeSysEnvCheck(self, state):
+        val = 'true' if state == Qt.Checked else 'false'
+        config_service.setAppConf(self.container, INCLUDING_ENV_SYSTEM, val)
 
     def getAllSysEnv(self):
         envs = []
