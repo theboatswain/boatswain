@@ -4,6 +4,8 @@ from PyQt5.QtCore import QVariant
 from PyQt5.QtCore import Qt
 
 from common.models.container import Container
+from common.services import containers_service, config_service
+from common.utils.constants import CONTAINER_CONF_CHANGED
 
 
 class UserEnvModel(QAbstractTableModel):
@@ -34,9 +36,7 @@ class UserEnvModel(QAbstractTableModel):
             self.array_data[index.row()].save()
             container = self.array_data[index.row()].container
             if container is not None:
-                # Todo: Clean up the previous container
-                self.container.container_id = ""
-                self.container.save()
+                config_service.setAppConf(self.container, CONTAINER_CONF_CHANGED, 'true')
             return True
         else:
             return False
@@ -60,9 +60,7 @@ class UserEnvModel(QAbstractTableModel):
     def removeRow(self, p_int, parent=None, *args, **kwargs):
         if self.array_data[p_int].container is not None:
             self.array_data[p_int].delete_instance()
-            # Todo: Clean up the previous container
-            self.container.container_id = ""
-            self.container.save()
+            config_service.setAppConf(self.container, CONTAINER_CONF_CHANGED, 'true')
 
         self.array_data.pop(p_int)
         self.layoutChanged.emit()

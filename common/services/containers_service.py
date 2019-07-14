@@ -6,10 +6,11 @@ from docker.errors import NotFound, DockerException
 from common.models.container import Container
 from common.models.environment import Environment
 from common.models.port_mapping import PortMapping
+from common.models.volume_mount import VolumeMount
 from common.search.dockerhub_searcher import DockerHubSearcher
 from common.search.search_images import SearchImages
 from common.services import docker_service, config_service
-from common.utils.constants import INCLUDING_ENV_SYSTEM
+from common.utils.constants import INCLUDING_ENV_SYSTEM, CONTAINER_CONF_CHANGED
 
 logger = logging.getLogger(__name__)
 
@@ -75,6 +76,12 @@ def isContainerRunning(container: Container):
 
 
 def startContainer(container: Container):
+    if config_service.isAppConf(container, CONTAINER_CONF_CHANGED, 'true'):
+        container.container_id = ""
+        container.save()
+        config_service.setAppConf(container, CONTAINER_CONF_CHANGED, 'false')
+        # Todo: Should we do the clean up? delete the downloaded image
+
     if isContainerExists(container):
         docker_container = docker_service.getContainerInfo(container.container_id)
         docker_container.start()
@@ -87,24 +94,27 @@ def startContainer(container: Container):
                 if item != 'PATH':
                     container_envs[item] = os.environ[item]
 
-        for environment in Environment.select():
-            if environment.container == container:
-                container_envs[environment.name] = environment.value
+        for environment in Environment.select().where(Environment.container == container):
+            container_envs[environment.name] = environment.value
 
         ports = {}
-        for port in PortMapping.select():
-            if port.container == container:
-                ports[str(port.port) + '/' + port.protocol] = port.targetPort
+        for port in PortMapping.select().where(PortMapping.container == container):
+            ports[str(port.port) + '/' + port.protocol] = port.target_port
 
-        docker_container = docker_service.run(container, ports, container_envs)
+        volumes = {}
+        for volume in VolumeMount.select():
+            volumes[volume.host_path] = {'bind': volume.container_path, 'mode': volume.mode}
+
+        docker_container = docker_service.run(container, ports, container_envs, volumes)
         container.container_id = docker_container.short_id
         return container
 
 
 def stopContainer(container: Container):
     try:
-        docker_container = docker_service.stop(container)
-        docker_container.stop(timeout=20)
+        if isContainerRunning(container):
+            docker_container = docker_service.stop(container)
+            docker_container.stop(timeout=20)
         return True
     except DockerException as e:
         logger.error("Exception occurred when trying to stop container", e)

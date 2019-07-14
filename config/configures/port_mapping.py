@@ -67,7 +67,7 @@ class PortMappingConfig(AutoResizeWidget):
         QtCore.QMetaObject.connectSlotsByName(self)
 
         table_data = PortMapping.select().where(PortMapping.container == self.container)
-        headers = ['targetPort', 'port', 'protocol', 'description']
+        headers = ['target_port', 'port', 'protocol', 'description']
         display_headers = ['Host Port', 'Container Port', 'Protocol', 'Description']
         self.configurePortTable(self.port_mapping_table, headers, display_headers, list(table_data), self.container)
 
@@ -83,7 +83,7 @@ class PortMappingConfig(AutoResizeWidget):
     @pyqtSlot(bool, name='on_newPort_clicked')
     def onNewPortClicked(self, checked):
         self.port_mapping_table.model().addRecord(
-            PortMapping(port=1000, targetPort=1000, description='description', container=self.container))
+            PortMapping(port=1000, target_port=1000, description='description', container=self.container))
         self.port_mapping_table.resizeRowToContents(self.port_mapping_table.model().rowCount() - 1)
         flags = QItemSelectionModel.ClearAndSelect | QItemSelectionModel.Rows
         index = self.port_mapping_table.model().index(self.port_mapping_table.model().rowCount() - 1, 0)

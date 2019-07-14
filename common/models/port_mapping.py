@@ -19,4 +19,4 @@ class PortMapping(BaseModel):
     # protocol is either tcp, udp, or sctp.
     protocol = CharField(default='tcp')
     # host port
-    targetPort = IntegerField()
+    target_port = IntegerField()

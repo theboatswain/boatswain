@@ -9,13 +9,13 @@ from common.models.container import Container
 from common.models.environment import Environment
 from common.services import config_service
 from common.utils.constants import INCLUDING_ENV_SYSTEM
-from common.utils.custom_ui import BQSizePolicy, AutoResizeWidget
+from common.utils.custom_ui import BQSizePolicy, AutoResizeWidget, PathInputDelegate
 from config.models.user_env_model import UserEnvModel
 
 
 class EnvironmentVariable(AutoResizeWidget):
     def preferableSize(self) -> QSize:
-        return QSize(705, 555)
+        return QSize(745, 555)
 
     def __init__(self, parent, container: Container) -> None:
         super().__init__(parent)
@@ -61,6 +61,7 @@ class EnvironmentVariable(AutoResizeWidget):
         table_data = Environment.select().where(Environment.container == self.container)
         headers = ['name', 'value', 'description']
         self.configureEnvTable(self.user_table, headers, list(table_data), self.container)
+        self.user_table.setItemDelegateForColumn(1, PathInputDelegate(self.user_table))
         sys_headers = ['name', 'value']
         self.configureEnvTable(self.sys_env_table, sys_headers, self.getAllSysEnv(), self.container)
         self.sys_env_table.setEditTriggers(QAbstractItemView.NoEditTriggers)

@@ -81,7 +81,7 @@ class AddAppWidget(QWidget):
                 environments.append(Environment(name=env['name'], value=env['value']))
             ports = []
             for port in app['ports']:
-                ports.append(PortMapping(port=port['port'], protocol=port['protocol'], targetPort=port['targetPort']))
+                ports.append(PortMapping(port=port['port'], protocol=port['protocol'], target_port=port['targetPort']))
             worker = Worker(containers_service.installContainer, app['image'], self.repo,
                             self.description.text(), app['tag'], environments, ports)
         # Un-supported app

@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QCoreApplication, Qt, QSize, QPropertyAnimation
+from PyQt5.QtCore import QCoreApplication, Qt, QSize
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTabWidget, QDialog
 
 from common.models.container import Container
@@ -6,6 +6,7 @@ from common.utils.custom_ui import BQSizePolicy, AutoResizeWidget
 from config.configures.environment import EnvironmentVariable
 from config.configures.general import GeneralAppConfig
 from config.configures.port_mapping import PortMappingConfig
+from config.configures.volume_mount import VolumeMountConfig
 
 
 class AppConfig(object):
@@ -41,12 +42,12 @@ class AppConfig(object):
         self.tab_widget.addTab(self.general, "")
         self.port = PortMappingConfig(self.central_widget, self.container)
         self.tab_widget.addTab(self.port, "")
-        self.volume = AutoResizeWidget(self.central_widget)
+        self.volume = VolumeMountConfig(self.central_widget, self.container)
         self.tab_widget.addTab(self.volume, "")
         self.environment = EnvironmentVariable(self.central_widget, self.container)
         self.tab_widget.addTab(self.environment, "")
-        self.others = AutoResizeWidget(self.central_widget)
-        self.tab_widget.addTab(self.others, "")
+        # self.others = AutoResizeWidget(self.central_widget)
+        # self.tab_widget.addTab(self.others, "")
         self.vertical_layout.addWidget(self.tab_widget)
 
         main_layout.addWidget(self.central_widget)
@@ -61,10 +62,11 @@ class AppConfig(object):
         self.tab_widget.setTabText(self.tab_widget.indexOf(self.port), _translate("MainWindow", "Port mapping"))
         self.tab_widget.setTabText(self.tab_widget.indexOf(self.volume), _translate("MainWindow", "Volume mount"))
         self.tab_widget.setTabText(self.tab_widget.indexOf(self.environment), _translate("MainWindow", "Environment"))
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.others), _translate("MainWindow", "Others"))
+        # self.tab_widget.setTabText(self.tab_widget.indexOf(self.others), _translate("MainWindow", "Others"))
 
     def onTabChange(self, index):
         widget = self.tab_widget.widget(index)
+        self.dialog.setMinimumSize(widget.preferableSize())
         self.dialog.resize(widget.preferableSize())
         # prevWidget = self.tab_widget.currentWidget()
         # self.animation = QPropertyAnimation(self.dialog, b"maximumSize")
