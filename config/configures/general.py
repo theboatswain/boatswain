@@ -143,10 +143,6 @@ class GeneralAppConfig(AutoResizeWidget):
     def retranslateUi(self):
         self.container_name.setText(self._translate("General", self.container.name))
         self.repo_source.setText(self._translate("General", "Repo source:     Dockerhub"))
-        container_id = self.container.container_id
-        if container_id == '':
-            container_id = 'Not available'
-        self.container_id.setText(self._translate("General", "Container ID:     " + container_id))
         self.container_id.setTextInteractionFlags(Qt.TextSelectableByMouse)
         self.sync.setText(self._translate("General", "Sync"))
         self.img_tag_label.setText(self._translate("General", "Image tag:"))
@@ -192,3 +188,12 @@ class GeneralAppConfig(AutoResizeWidget):
         self.container.container_id = ""
         self.container.update()
         # Todo: Should we do the clean up? delete the downloaded image
+
+    def showEvent(self, QShowEvent):
+        super().showEvent(QShowEvent)
+        container_id = self.container.container_id
+        if container_id == '':
+            container_id = 'Not available'
+        self.container_id.setText(self._translate("General", "Container ID:     " + container_id))
+
+

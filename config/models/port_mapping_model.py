@@ -6,11 +6,12 @@ from PyQt5.QtCore import Qt
 from common.models.container import Container
 
 
-class UserEnvModel(QAbstractTableModel):
-    def __init__(self, data_in, header_data, container: Container, parent=None):
+class PortMappingModel(QAbstractTableModel):
+    def __init__(self, data_in, header_data, display_header, container: Container, parent=None):
         QAbstractTableModel.__init__(self, parent)
         self.array_data = data_in
         self.header_data = header_data
+        self.display_header = display_header
         self.container = container
 
     def rowCount(self, parent=None, *args, **kwargs):
@@ -43,7 +44,7 @@ class UserEnvModel(QAbstractTableModel):
 
     def headerData(self, col, orientation, role=None):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
-            return QVariant(self.header_data[col].title())
+            return QVariant(self.display_header[col].title())
         return QVariant()
 
     def sort(self, col, order=None):
@@ -63,7 +64,6 @@ class UserEnvModel(QAbstractTableModel):
             # Todo: Clean up the previous container
             self.container.container_id = ""
             self.container.save()
-
         self.array_data.pop(p_int)
         self.layoutChanged.emit()
 

@@ -60,9 +60,9 @@ class EnvironmentVariable(AutoResizeWidget):
 
         table_data = Environment.select().where(Environment.container == self.container)
         headers = ['name', 'value', 'description']
-        self.configureUserTable(self.user_table, headers, list(table_data))
+        self.configureEnvTable(self.user_table, headers, list(table_data), self.container)
         sys_headers = ['name', 'value']
-        self.configureUserTable(self.sys_env_table, sys_headers, self.getAllSysEnv())
+        self.configureEnvTable(self.sys_env_table, sys_headers, self.getAllSysEnv(), self.container)
         self.sys_env_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         if config_service.isAppConf(self.container, INCLUDING_ENV_SYSTEM, 'true'):
             self.include_sys_env.setChecked(True)
@@ -101,9 +101,9 @@ class EnvironmentVariable(AutoResizeWidget):
                 envs.append(Environment(name=item, value=os.environ[item]))
         return envs
 
-    def configureUserTable(self, tv: QTableView, header, data):
+    def configureEnvTable(self, tv: QTableView, header, data, container: Container):
         # set the table model
-        table_model = UserEnvModel(data, header, self)
+        table_model = UserEnvModel(data, header, container, self)
         tv.setModel(table_model)
 
         # hide grid
