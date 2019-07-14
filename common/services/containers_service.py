@@ -6,10 +6,11 @@ from docker.errors import NotFound, DockerException
 from common.models.container import Container
 from common.models.environment import Environment
 from common.models.port_mapping import PortMapping
+from common.models.volume_mount import VolumeMount
 from common.search.dockerhub_searcher import DockerHubSearcher
 from common.search.search_images import SearchImages
 from common.services import docker_service, config_service
-from common.utils.constants import INCLUDING_ENV_SYSTEM
+from common.utils.constants import INCLUDING_ENV_SYSTEM, CONTAINER_CONF_CHANGED
 
 logger = logging.getLogger(__name__)
 
@@ -75,6 +76,12 @@ def isContainerRunning(container: Container):
 
 
 def startContainer(container: Container):
+    if config_service.isAppConf(container, CONTAINER_CONF_CHANGED, 'true'):
+        container.container_id = ""
+        container.save()
+        config_service.setAppConf(container, CONTAINER_CONF_CHANGED, 'false')
+        # Todo: Should we do the clean up? delete the downloaded image
+
     if isContainerExists(container):
         docker_container = docker_service.getContainerInfo(container.container_id)
         docker_container.start()

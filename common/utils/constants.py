@@ -9,7 +9,7 @@ APP_DB = 'boatswain.db'
 
 # Settings
 INCLUDING_ENV_SYSTEM = 'including_env_system'
-
+CONTAINER_CONF_CHANGED = 'container_conf_changed'
 
 # Channels
 CONTAINER_CHANNEL = 'container_channel'

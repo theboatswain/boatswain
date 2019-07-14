@@ -5,10 +5,11 @@ from PyQt5.QtWidgets import QLabel, QGridLayout, QPushButton, QComboBox, QLineEd
 
 from common.models.container import Container
 from common.models.tag import Tag
-from common.services import containers_service
+from common.services import containers_service, config_service
 from common.services.worker_service import Worker, threadpool
 from common.utils import text_utils
 from common.utils.app_avatar import AppAvatar
+from common.utils.constants import CONTAINER_CONF_CHANGED
 from common.utils.custom_ui import BQSizePolicy, AutoResizeWidget
 
 
@@ -185,9 +186,8 @@ class GeneralAppConfig(AutoResizeWidget):
     def onImageTagChange(self, index):
         tag = self.image_tags.itemText(index).split(':')[1]
         self.container.tag = tag
-        self.container.container_id = ""
-        self.container.update()
-        # Todo: Should we do the clean up? delete the downloaded image
+        self.container.save()
+        config_service.setAppConf(self.container, CONTAINER_CONF_CHANGED, 'true')
 
     def showEvent(self, QShowEvent):
         super().showEvent(QShowEvent)
