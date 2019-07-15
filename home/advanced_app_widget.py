@@ -21,6 +21,8 @@ from PyQt5.QtWidgets import QWidget, QSizePolicy, QPushButton, QLabel, QComboBox
 
 from common.models.container import Container
 from common.models.tag import Tag
+from common.services import config_service
+from common.utils.constants import CONTAINER_CONF_CHANGED
 from common.utils.custom_ui import BQSizePolicy, ReloadableWidget
 from config.app_config import AppConfig
 
@@ -84,8 +86,8 @@ class AdvancedAppWidget(ReloadableWidget):
     def onImageTagChange(self, index):
         tag = self.tags.itemText(index).split(':')[1]
         self.container.tag = tag
-        self.container.container_id = ""
         self.container.update()
+        config_service.setAppConf(self.container, CONTAINER_CONF_CHANGED, 'true')
         # Todo: Should we do the clean up? delete the downloaded image
 
     @pyqtSlot(bool, name='on_advancedConfiguration_clicked')
