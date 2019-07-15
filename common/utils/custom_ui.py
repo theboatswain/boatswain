@@ -1,6 +1,8 @@
+from typing import List
+
 from PyQt5.QtCore import QSize, Qt, pyqtSignal, pyqtSlot
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QSizePolicy, QWidget, QStyle, QToolButton, QLineEdit, QFileDialog, QItemDelegate
+from PyQt5.QtGui import QIcon, QIntValidator
+from PyQt5.QtWidgets import QSizePolicy, QWidget, QStyle, QToolButton, QLineEdit, QFileDialog, QItemDelegate, QComboBox
 
 
 class BQSizePolicy(QSizePolicy):
@@ -48,6 +50,60 @@ class PathInputDelegate(QItemDelegate):
         file = str(QFileDialog.getExistingDirectory(self.parent(), "Select Directory"))
         if file:
             editor.setText(file)
+
+
+class InputNumberDelegate(QItemDelegate):
+
+    def __init__(self, parent):
+        QItemDelegate.__init__(self, parent)
+
+    def createEditor(self, parent, option, index):
+
+        editor = QLineEdit(parent)
+        editor.setValidator(QIntValidator(0, 9999999))
+        editor.setText(str(index.data()))
+        return editor
+
+    def setEditorData(self, editor, index):
+        editor.blockSignals(True)
+        editor.setText(str(index.data()))
+        editor.blockSignals(False)
+
+    def setModelData(self, editor, model, index):
+        model.setData(index, editor.text())
+
+    @pyqtSlot()
+    def currentIndexChanged(self):
+        self.commitData.emit(self.sender())
+
+
+class ComboBoxDelegate(QItemDelegate):
+    """ Combobox for QTableView
+        Still have problem of overlapping with MacOS dark mode
+    """
+
+    def __init__(self, parent, values: List[str]):
+        QItemDelegate.__init__(self, parent)
+        self.values = values
+
+    def createEditor(self, parent, option, index):
+
+        editor = QComboBox(parent)
+        editor.addItems(self.values)
+        # editor.setCurrentIndex(self.values.index(index.data()))
+        return editor
+
+    def setEditorData(self, editor, index):
+        editor.blockSignals(True)
+        editor.setCurrentIndex(self.values.index(index.data()))
+        editor.blockSignals(False)
+
+    def setModelData(self, editor: QComboBox, model, index):
+        model.setData(index, editor.currentText())
+
+    @pyqtSlot()
+    def currentIndexChanged(self):
+        self.commitData.emit(self.sender())
 
 
 class ButtonLineEdit(QLineEdit):
