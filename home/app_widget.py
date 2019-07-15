@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QHBoxLayout, QLabel, QPushButton, QWidget, QVBoxLayo
 
 from common.exceptions.docker_exceptions import DockerNotAvailableException
 from common.models.container import Container
-from common.services import containers_service, data_transporter_service, boatswain_daemon
+from common.services import containers_service, data_transporter_service, boatswain_daemon, system_service
 from common.services.worker_service import Worker, threadpool
 from common.utils import text_utils, docker_utils
 from common.utils.app_avatar import AppAvatar
@@ -123,7 +123,8 @@ class AppWidget(ReloadableWidget):
         addAction = menu.addAction("Add...")
         addAction.triggered.connect(lambda: data_transporter_service.fire(ADD_APP_CHANNEL, True))
         menu.addSeparator()
-        menu.addAction("Connect to terminal")
+        terminal = menu.addAction("Connect to terminal")
+        terminal.triggered.connect(lambda: system_service.startTerminalWithCommand('echo hello'))
         menu.addAction("Open log")
         menu.addSeparator()
         conf = menu.addAction("Configuration")
