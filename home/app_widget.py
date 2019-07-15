@@ -100,7 +100,7 @@ class AppWidget(ReloadableWidget):
 
     def onFailure(self, exception):
         if isinstance(exception, DockerNotAvailableException):
-            docker_utils.notify_docker_not_available()
+            docker_utils.notifyDockerNotAvailable()
 
     def onAppClicked(self, event: QMouseEvent):
         if event.button() == Qt.LeftButton:
@@ -124,7 +124,7 @@ class AppWidget(ReloadableWidget):
         addAction.triggered.connect(lambda: data_transporter_service.fire(ADD_APP_CHANNEL, True))
         menu.addSeparator()
         terminal = menu.addAction("Connect to terminal")
-        terminal.triggered.connect(lambda: system_service.startTerminalWithCommand('echo hello'))
+        terminal.triggered.connect(lambda: containers_service.connectToContainer(self.container_info))
         menu.addAction("Open log")
         menu.addSeparator()
         conf = menu.addAction("Configuration")

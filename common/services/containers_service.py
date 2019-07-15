@@ -9,7 +9,8 @@ from common.models.port_mapping import PortMapping
 from common.models.volume_mount import VolumeMount
 from common.search.dockerhub_searcher import DockerHubSearcher
 from common.search.search_images import SearchImages
-from common.services import docker_service, config_service
+from common.services import docker_service, config_service, system_service
+from common.utils import docker_utils
 from common.utils.constants import INCLUDING_ENV_SYSTEM, CONTAINER_CONF_CHANGED
 
 logger = logging.getLogger(__name__)
@@ -121,14 +122,22 @@ def stopContainer(container: Container):
     return False
 
 
-def isInstanceOf(container: Container, dockerId):
+def isInstanceOf(container: Container, docker_id):
     """
     Check if the given container and dockerId hash tag is from the same Container
     :param container: Container
-    :param dockerId: hash tag ID of a container
+    :param docker_id: hash tag ID of a container
     :return:
     """
     if container.container_id == '':
         return False
-    return dockerId.startswith(container.container_id)
+    return docker_id.startswith(container.container_id)
 
+
+def connectToContainer(container):
+    if isContainerRunning(container):
+        command = ['docker', 'exec', '-ti', container.container_id, '/bin/sh']
+        system_service.startTerminalWithCommand(' '.join(command))
+    else:
+        message = 'Container have to be running before connecting to it\'s shell'
+        docker_utils.notifyContainerNotRunning(container, message)
