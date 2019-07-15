@@ -3,14 +3,14 @@ from PyQt5.QtCore import QMetaObject, QSize, pyqtSlot, QItemSelectionModel
 from PyQt5.QtWidgets import QWidget, QLabel, QHBoxLayout, QVBoxLayout, QPushButton, QTableView, QAbstractItemView
 from common.models.container import Container
 from common.models.volume_mount import VolumeMount
-from common.utils.custom_ui import AutoResizeWidget, BQSizePolicy, PathInputDelegate
+from common.utils.custom_ui import AutoResizeWidget, BQSizePolicy, PathInputDelegate, ComboBoxDelegate
 from config.models.volume_mount_model import VolumeMountModel
 
 
 class VolumeMountConfig(AutoResizeWidget):
 
     def preferableSize(self) -> QSize:
-        return QSize(745, 314)
+        return QSize(745, 354)
 
     def __init__(self, parent, container: Container) -> None:
         super().__init__(parent)
@@ -45,6 +45,8 @@ class VolumeMountConfig(AutoResizeWidget):
         display_headers = ['Host Path', 'Mode', 'Container Path']
         self.configureVolumeTable(self.volume_mount_table, headers, display_headers, list(table_data), self.container)
         self.volume_mount_table.setItemDelegateForColumn(0, PathInputDelegate(self.volume_mount_table))
+        modes = ['rw', 'ro']
+        self.volume_mount_table.setItemDelegateForColumn(1, ComboBoxDelegate(self.volume_mount_table, modes))
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
@@ -85,8 +87,8 @@ class VolumeMountConfig(AutoResizeWidget):
         # set horizontal header properties
         hh = tv.horizontalHeader()
         hh.setStretchLastSection(True)
-        hh.resizeSection(0, 350)
-        hh.resizeSection(1, 50)
+        hh.setMinimumSectionSize(100)
+        tv.resizeColumnsToContents()
 
 
         # set row height

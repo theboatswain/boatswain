@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QTableView, QAbstractItemView, QVBoxLayout, QWidget,
 
 from common.models.container import Container
 from common.models.port_mapping import PortMapping
-from common.utils.custom_ui import AutoResizeWidget, BQSizePolicy
+from common.utils.custom_ui import AutoResizeWidget, BQSizePolicy, ComboBoxDelegate, InputNumberDelegate
 from config.models.port_mapping_model import PortMappingModel
 
 
@@ -70,6 +70,10 @@ class PortMappingConfig(AutoResizeWidget):
         headers = ['target_port', 'port', 'protocol', 'description']
         display_headers = ['Host Port', 'Container Port', 'Protocol', 'Description']
         self.configurePortTable(self.port_mapping_table, headers, display_headers, list(table_data), self.container)
+        protocols = ['tcp', 'udp']
+        self.port_mapping_table.setItemDelegateForColumn(2, ComboBoxDelegate(self.port_mapping_table, protocols))
+        self.port_mapping_table.setItemDelegateForColumn(1, InputNumberDelegate(self.port_mapping_table))
+        self.port_mapping_table.setItemDelegateForColumn(0, InputNumberDelegate(self.port_mapping_table))
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
