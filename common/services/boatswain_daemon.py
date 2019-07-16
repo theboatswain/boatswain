@@ -18,6 +18,7 @@
 from PyQt5.QtCore import QThread
 
 from common.services import docker_service, data_transporter_service
+from common.utils.logging import logger
 
 
 def generate_key(eventType, action):
@@ -29,12 +30,9 @@ def listen(eventType, action, func):
 
 
 class BoatswainDaemon(QThread):
-
-    def __init__(self):
-        self.events = docker_service.streamEvents()
-
     def run(self):
+        self.events = docker_service.streamEvents()
         for event in self.events:
             channel = generate_key(event['Type'], event['Action'])
             data_transporter_service.fire(channel, event)
-            # print(event)
+            logger.debug("Received an event: %s", event)

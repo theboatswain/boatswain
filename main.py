@@ -93,7 +93,6 @@ if __name__ == '__main__':
         data_transporter_service.listen(APP_EXIT_CHANNEL, lambda x: db.close())
 
         daemon = boatswain_daemon.BoatswainDaemon(window)
-        daemon.__init__()
         daemon.start()
 
         # Stop daemon before exit
