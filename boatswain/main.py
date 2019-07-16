@@ -39,16 +39,6 @@ from boatswain.common.utils.constants import APP_DATA_DIR, CONTAINER_CHANNEL, AP
     UNIX_BASE_URL
 
 
-def set_app_icon(app):
-    app_icon = QIcon()
-    app_icon.addFile('boatswain/home/icon/boatswain-16x16.png', QSize(16, 16))
-    app_icon.addFile('boatswain/home/icon/boatswain-24x24.png', QSize(24, 24))
-    app_icon.addFile('boatswain/home/icon/boatswain-32x32.png', QSize(32, 32))
-    app_icon.addFile('boatswain/home/icon/boatswain-48x48.png', QSize(48, 48))
-    app_icon.addFile('boatswain/home/icon/boatswain-256x256.png', QSize(256, 256))
-    app.setWindowIcon(app_icon)
-
-
 def show_warning_box():
     msg = QMessageBox()
     msg.setIcon(QMessageBox.Critical)
@@ -82,9 +72,6 @@ def main():
         # Connect to SQLite DB
         db.connect()
         db.create_tables([Container, Environment, PortMapping, VolumeMount, Tag, Configuration])
-
-        # Set default icon
-        set_app_icon(app)
 
         # Load home window
         window = Home()
