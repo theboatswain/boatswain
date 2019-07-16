@@ -19,7 +19,7 @@ import logging
 import os
 
 
-from common.utils.constants import APP_LOG_DIR
+from boatswain.common.utils.constants import APP_LOG_DIR
 
 log_file = os.path.join(APP_LOG_DIR, 'boatswain.log')
 if not os.path.isdir(APP_LOG_DIR):

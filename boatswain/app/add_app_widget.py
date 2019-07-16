@@ -19,8 +19,6 @@ from PyQt5.QtCore import QMetaObject, QCoreApplication, pyqtSlot, Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QPushButton, QWidget, QVBoxLayout
 
-from boatswain.common.models.environment import Environment
-from boatswain.common.models.port_mapping import PortMapping
 from boatswain.common.services import data_transporter_service, containers_service
 from boatswain.common.services.worker_service import Worker, threadpool
 from boatswain.common.utils import text_utils
@@ -31,10 +29,8 @@ from boatswain.common.utils.custom_ui import BQSizePolicy
 
 class AddAppWidget(QWidget):
 
-    def __init__(self, parent, name, description, supported_app, repo) -> None:
+    def __init__(self, parent, name, description, repo) -> None:
         super().__init__(parent)
-        # set supported app list
-        self.supported_app = supported_app
         self.repo = repo
 
         self.disable_button = False
@@ -88,22 +84,8 @@ class AddAppWidget(QWidget):
             return
         self.disable_button = True
         self.install.setText(self._translate("widget", "Installing"))
-
-        # Case of a supported app
-        if self.name.text() in self.supported_app:
-            app = self.supported_app[self.name.text()]
-            environments = []
-            for env in app['env']:
-                environments.append(Environment(name=env['name'], value=env['value']))
-            ports = []
-            for port in app['ports']:
-                ports.append(PortMapping(port=port['port'], protocol=port['protocol'], target_port=port['targetPort']))
-            worker = Worker(containers_service.installContainer, app['image'], self.repo,
-                            self.description.text(), app['tag'], environments, ports)
-        # Un-supported app
-        else:
-            worker = Worker(containers_service.installContainer, self.name.text(), self.repo,
-                            self.description.text(), "latest")
+        worker = Worker(containers_service.installContainer, self.name.text(), self.repo,
+                        self.description.text(), "latest")
         worker.signals.result.connect(self.on_app_installed)
         threadpool.start(worker)
 

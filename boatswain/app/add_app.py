@@ -15,18 +15,14 @@
 #
 #
 
-import json
-
 import yaml
 from PyQt5.QtCore import Qt, QCoreApplication, QMetaObject, QSize
 from PyQt5.QtWidgets import QWidget, QSizePolicy, QVBoxLayout, QFrame, QScrollArea, QLineEdit, QComboBox, QGridLayout
 
 from boatswain.app.add_app_widget import AddAppWidget
+from boatswain.app.default_search_result import search_result
 from boatswain.common.services import containers_service
 from boatswain.common.utils.custom_ui import BQSizePolicy
-
-SUPPORTED_APPS_YAML_FILE = 'boatswain/app/resources/supported_apps.yaml'
-DEFAULT_SEARCH_RESULT = 'boatswain/app/resources/default_search.json'
 
 
 class AddAppDialog(object):
@@ -45,8 +41,7 @@ class AddAppDialog(object):
         self.key_search.returnPressed.connect(self.search_app)
 
         # Loading default search images
-        with open(DEFAULT_SEARCH_RESULT, 'r') as f:
-            self.load_result(json.load(f))
+        self.load_result(search_result)
 
     def setup_ui(self, add_app_dialog):
         add_app_dialog.resize(792, 387)
@@ -96,11 +91,8 @@ class AddAppDialog(object):
 
     def load_result(self, docker_images):
         self.clean_search_results()
-        # Load supported apps info
-        with open(SUPPORTED_APPS_YAML_FILE, 'r') as stream:
-            supported_app = yaml.safe_load(stream)
         for item in docker_images:
-            widget = AddAppWidget(self.search_result_area, item['name'], item['description'], supported_app,
+            widget = AddAppWidget(self.search_result_area, item['name'], item['description'],
                                   item['from'])
             self.search_result_area.layout().addWidget(widget)
 
