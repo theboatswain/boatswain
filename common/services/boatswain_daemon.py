@@ -29,7 +29,9 @@ def listen(eventType, action, func):
 
 
 class BoatswainDaemon(QThread):
-    events = docker_service.streamEvents()
+
+    def __init__(self):
+        self.events = docker_service.streamEvents()
 
     def run(self):
         for event in self.events:
