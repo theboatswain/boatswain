@@ -15,14 +15,13 @@
 #
 #
 
-import docker
 import platform
+
+import docker
 from requests.exceptions import ConnectionError
 
 from boatswain.common.exceptions.docker_exceptions import DockerNotAvailableException
 from boatswain.common.models.container import Container
-from requests.exceptions import ConnectionError
-
 from boatswain.common.utils.constants import WINDOWS_BASE_URL, UNIX_BASE_URL
 
 system_platform = platform.system()

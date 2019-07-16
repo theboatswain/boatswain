@@ -23,6 +23,8 @@ APP_AUTHOR = 'theboatswain'
 APP_DATA_DIR = user_data_dir(APP_NAME, APP_AUTHOR)
 APP_LOG_DIR = user_log_dir(APP_NAME, APP_AUTHOR)
 
+PEM_FILE = os.path.join(APP_DATA_DIR, "cacert.pem")
+
 APP_DB = 'boatswain.db'
 
 # Settings
