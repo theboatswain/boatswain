@@ -59,6 +59,25 @@ def is_docker_running():
         return True
 
 
+def deFrostPem():
+    """
+    When the application is being frozen, all resource files will be encode into an executable file
+    And with the requests library, it required to have the cacert.pem file available and accessible as a normal file
+    thus caused the problem of invalid path: :/certifi/cacert.pem
+    This function will workaround the problem by read the content of the pem file and write it into app data folder
+    and then relink back the location of REQUESTS_CA_BUNDLE into this file
+    """
+    if not os.path.isfile(PEM_FILE):
+        with closing(QFile(':/certifi/cacert.pem')) as pem_file:
+            if pem_file.open(QFile.ReadOnly):
+                pem_data = bytes(pem_file.readAll()).decode('UTF-8')
+                with open(PEM_FILE, 'w') as the_file:
+                    the_file.write(pem_data)
+
+    if os.path.isfile(PEM_FILE):
+        os.environ['REQUESTS_CA_BUNDLE'] = PEM_FILE
+
+
 def main():
     app = QApplication(sys.argv)
     if is_docker_running():
@@ -68,6 +87,7 @@ def main():
             os.makedirs(APP_DATA_DIR)
 
         logger.info("App data path: %s" % APP_DATA_DIR)
+    deFrostPem()
 
         # Connect to SQLite DB
         db.connect()
