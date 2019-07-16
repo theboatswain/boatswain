@@ -33,3 +33,7 @@ CONTAINER_CONF_CHANGED = 'container_conf_changed'
 CONTAINER_CHANNEL = 'container_channel'
 APP_EXIT_CHANNEL = 'app_exit'
 ADD_APP_CHANNEL = 'add_app_channel'
+
+#Docker
+WINDOWS_BASE_URL = 'tcp://127.0.0.1:2375'
+UNIX_BASE_URL = 'unix://var/run/docker.sock'

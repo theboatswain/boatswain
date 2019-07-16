@@ -16,12 +16,16 @@
 #
 
 import docker
+import platform
+from requests.exceptions import ConnectionError
 
 from common.exceptions.docker_exceptions import DockerNotAvailableException
 from common.models.container import Container
-from requests.exceptions import ConnectionError
+from common.utils.constants import *
 
-client = docker.DockerClient(base_url='unix://var/run/docker.sock')
+system_platform = platform.system()
+base_url = WINDOWS_BASE_URL if system_platform == "Windows" else UNIX_BASE_URL
+client = docker.DockerClient(base_url=base_url)
 
 
 def searchDockerhubContainers(keyword):

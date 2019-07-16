@@ -15,11 +15,9 @@
 #
 #
 
-import os
-import sys
-
 import docker
 import requests
+import platform
 from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QMessageBox
@@ -32,7 +30,7 @@ from common.models.port_mapping import PortMapping
 from common.models.tag import Tag
 from common.models.volume_mount import VolumeMount
 from common.services import data_transporter_service, boatswain_daemon
-from common.utils.constants import APP_DATA_DIR, CONTAINER_CHANNEL, APP_EXIT_CHANNEL
+from common.utils.constants import *
 from common.utils.logging import logger
 from home.home import Home
 
@@ -55,11 +53,13 @@ def show_warning_box():
 
 
 def is_docker_running():
-    client = docker.DockerClient(base_url='unix://var/run/docker.sock')
+    system_platform = platform.system()
+    base_url = WINDOWS_BASE_URL if system_platform == "Windows" else UNIX_BASE_URL
+    client = docker.DockerClient(base_url=base_url)
     try:
         client.ping()
     except requests.exceptions.ConnectionError:
-        logger.warn('Could not start boatswain because of the docker is not running')
+        logger.warning('Could not start boatswain because of the docker is not running')
         return False
     else:
         return True
