@@ -1,3 +1,5 @@
 venv
 .idea
 __pycache__
+release
+sysroot-macos-64
