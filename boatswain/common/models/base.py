@@ -17,7 +17,7 @@
 
 import os
 
-from peewee import *
+from peewee import SqliteDatabase, Model
 
 from boatswain.common.utils.constants import APP_DATA_DIR, APP_DB
 

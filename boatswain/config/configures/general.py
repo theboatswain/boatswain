@@ -206,8 +206,8 @@ class GeneralAppConfig(AutoResizeWidget):
         self.container.save()
         config_service.setAppConf(self.container, CONTAINER_CONF_CHANGED, 'true')
 
-    def showEvent(self, QShowEvent):
-        super().showEvent(QShowEvent)
+    def showEvent(self, event):
+        super().showEvent(event)
         container_id = self.container.container_id
         if container_id == '':
             container_id = 'Not available'

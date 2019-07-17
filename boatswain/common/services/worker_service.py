@@ -17,7 +17,7 @@
 
 import traceback
 
-from PyQt5.QtCore import *
+from PyQt5.QtCore import QThreadPool, QObject, pyqtSignal, QRunnable, pyqtSlot
 
 from boatswain.common.exceptions.exceptions import KnownException
 

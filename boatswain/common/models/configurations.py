@@ -14,8 +14,9 @@
 #      along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
+from peewee import CharField, ForeignKeyField
 
-from boatswain.common.models.base import BaseModel, ForeignKeyField, CharField
+from boatswain.common.models.base import BaseModel
 from boatswain.common.models.container import Container
 
 

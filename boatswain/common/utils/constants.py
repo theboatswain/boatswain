@@ -14,8 +14,9 @@
 #      along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
+import os
 
-from appdirs import *
+from appdirs import user_data_dir, user_log_dir
 
 APP_NAME = 'boatswain'
 APP_AUTHOR = 'theboatswain'

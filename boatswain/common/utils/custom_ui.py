@@ -48,7 +48,7 @@ class PathInputDelegate(QItemDelegate):
 
         editor = ButtonLineEdit('boatswain/config/icons/directory.png', parent=parent)
         editor.setText(str(index.data()))
-        editor.buttonClicked.connect(lambda x: self.fileLooking(editor))
+        editor.button_clicked.connect(lambda x: self.fileLooking(editor))
         return editor
 
     def setEditorData(self, editor, index):
@@ -124,7 +124,7 @@ class ComboBoxDelegate(QItemDelegate):
 
 
 class ButtonLineEdit(QLineEdit):
-    buttonClicked = pyqtSignal(bool)
+    button_clicked = pyqtSignal(bool)
 
     def __init__(self, icon_file, parent=None):
         super(ButtonLineEdit, self).__init__(parent)
@@ -133,18 +133,18 @@ class ButtonLineEdit(QLineEdit):
         self.button.setIcon(QIcon(icon_file))
         self.button.setStyleSheet('border: 0px; padding: 0px;')
         self.button.setCursor(Qt.OpenHandCursor)
-        self.button.clicked.connect(self.buttonClicked.emit)
+        self.button.clicked.connect(self.button_clicked.emit)
 
-        frameWidth = self.style().pixelMetric(QStyle.PM_DefaultFrameWidth)
-        buttonSize = self.button.sizeHint()
+        frame_width = self.style().pixelMetric(QStyle.PM_DefaultFrameWidth)
+        button_size = self.button.sizeHint()
 
-        self.setStyleSheet('QLineEdit {padding-right: %dpx; }' % (buttonSize.width() + frameWidth + 1))
-        self.setMinimumSize(max(self.minimumSizeHint().width(), buttonSize.width() + frameWidth * 2 + 2),
-                            max(self.minimumSizeHint().height(), buttonSize.height() + frameWidth * 2 + 2))
+        self.setStyleSheet('QLineEdit {padding-right: %dpx; }' % (button_size.width() + frame_width + 1))
+        self.setMinimumSize(max(self.minimumSizeHint().width(), button_size.width() + frame_width * 2 + 2),
+                            max(self.minimumSizeHint().height(), button_size.height() + frame_width * 2 + 2))
 
     def resizeEvent(self, event):
-        buttonSize = self.button.sizeHint()
-        frameWidth = self.style().pixelMetric(QStyle.PM_DefaultFrameWidth)
-        self.button.move(self.rect().right() - frameWidth - buttonSize.width(),
-                         (self.rect().bottom() - buttonSize.height() + 1) / 2)
+        button_size = self.button.sizeHint()
+        frame_width = self.style().pixelMetric(QStyle.PM_DefaultFrameWidth)
+        self.button.move(self.rect().right() - frame_width - button_size.width(),
+                         (self.rect().bottom() - button_size.height() + 1) / 2)
         super(ButtonLineEdit, self).resizeEvent(event)

@@ -65,7 +65,7 @@ def deFrostPem():
         os.environ['REQUESTS_CA_BUNDLE'] = PEM_FILE
 
 
-def main():
+def run():
     app = QApplication(sys.argv)
     if not is_docker_running():
         return docker_utils.notifyDockerNotAvailable()
@@ -75,7 +75,7 @@ def main():
         os.makedirs(APP_DATA_DIR)
 
     deFrostPem()
-    logger.info("App data path: %s" % APP_DATA_DIR)
+    logger.info("App data path: %s", APP_DATA_DIR)
 
     # Connect to SQLite DB
     db.connect()
@@ -100,4 +100,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    run()

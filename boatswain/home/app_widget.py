@@ -137,8 +137,8 @@ class AppWidget(ReloadableWidget):
 
     def contextMenuEvent(self, event):
         menu = QMenu(self)
-        addAction = menu.addAction("Add...")
-        addAction.triggered.connect(lambda: data_transporter_service.fire(ADD_APP_CHANNEL, True))
+        add_action = menu.addAction("Add...")
+        add_action.triggered.connect(lambda: data_transporter_service.fire(ADD_APP_CHANNEL, True))
         menu.addSeparator()
         terminal = menu.addAction("Connect to terminal")
         terminal.triggered.connect(lambda: containers_service.connectToContainer(self.container_info))
