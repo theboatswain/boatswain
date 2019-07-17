@@ -99,7 +99,6 @@ class AppWidget(ReloadableWidget):
             - ports
             - environment
         """
-        # TODO having more statuses to be handled
         if not containers_service.isContainerRunning(self.container_info):
             self.status.setText('Starting')
             worker = Worker(containers_service.startContainer, self.container_info)

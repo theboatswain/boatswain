@@ -18,7 +18,7 @@ import os
 import sys
 from contextlib import closing
 
-from PyQt5.QtCore import QFile
+from PyQt5.QtCore import QFile, Qt
 from PyQt5.QtWidgets import QApplication
 
 from boatswain.common.exceptions.docker_exceptions import DockerNotAvailableException
@@ -36,7 +36,7 @@ from boatswain.common.utils.logging import logger
 from boatswain.home.home import Home
 
 
-def is_docker_running():
+def isDockerRunning():
     try:
         docker_service.ping()
     except DockerNotAvailableException:
@@ -67,9 +67,10 @@ def deFrostPem():
 
 def run():
     app = QApplication(sys.argv)
-    if not is_docker_running():
+    if not isDockerRunning():
         return docker_utils.notifyDockerNotAvailable()
 
+    app.setAttribute(Qt.AA_EnableHighDpiScaling)
     # Make sure app data dir always exists
     if not os.path.isdir(APP_DATA_DIR):
         os.makedirs(APP_DATA_DIR)
