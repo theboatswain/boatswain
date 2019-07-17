@@ -22,12 +22,12 @@ from boatswain.common.services import data_transporter_service, docker_service
 from boatswain.common.utils.logging import logger
 
 
-def generate_key(eventType, action):
-    return "DAEMON_" + eventType + "_" + action
+def generate_key(event_type, action):
+    return "DAEMON_" + event_type + "_" + action
 
 
-def listen(eventType, action, func):
-    data_transporter_service.listen(generate_key(eventType, action), func)
+def listen(event_type, action, func):
+    data_transporter_service.listen(generate_key(event_type, action), func)
 
 
 class BoatswainDaemon(QThread):

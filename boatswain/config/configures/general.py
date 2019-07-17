@@ -34,7 +34,7 @@ class GeneralAppConfig(AutoResizeWidget):
 
     def __init__(self, parent, container: Container) -> None:
         super().__init__(parent)
-        self.container = container        
+        self.container = container
         self.vertical_layout_2 = QVBoxLayout(self)
         self.vertical_layout_2.setContentsMargins(20, 11, 20, 11)
         self.vertical_layout_2.setSpacing(6)
@@ -206,11 +206,9 @@ class GeneralAppConfig(AutoResizeWidget):
         self.container.save()
         config_service.setAppConf(self.container, CONTAINER_CONF_CHANGED, 'true')
 
-    def showEvent(self, QShowEvent):
-        super().showEvent(QShowEvent)
+    def showEvent(self, event):
+        super().showEvent(event)
         container_id = self.container.container_id
         if container_id == '':
             container_id = 'Not available'
         self.container_id.setText(self._translate("General", "Container ID:     " + container_id))
-
-

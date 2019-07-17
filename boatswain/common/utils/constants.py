@@ -14,8 +14,9 @@
 #      along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
+import os
 
-from appdirs import *
+from appdirs import user_data_dir, user_log_dir
 
 APP_NAME = 'boatswain'
 APP_AUTHOR = 'theboatswain'
@@ -36,6 +37,6 @@ CONTAINER_CHANNEL = 'container_channel'
 APP_EXIT_CHANNEL = 'app_exit'
 ADD_APP_CHANNEL = 'add_app_channel'
 
-#Docker
+# Docker
 WINDOWS_BASE_URL = 'tcp://127.0.0.1:2375'
 UNIX_BASE_URL = 'unix://var/run/docker.sock'

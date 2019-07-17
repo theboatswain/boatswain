@@ -15,7 +15,6 @@
 #
 #
 
-import yaml
 from PyQt5.QtCore import Qt, QCoreApplication, QMetaObject, QSize
 from PyQt5.QtWidgets import QWidget, QSizePolicy, QVBoxLayout, QFrame, QScrollArea, QLineEdit, QComboBox, QGridLayout
 

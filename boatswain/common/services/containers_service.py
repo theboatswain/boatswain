@@ -54,7 +54,7 @@ def installContainer(image_name, repo='dockerhub', description='', tag='latest',
             env.save()
     if ports is not None:
         for port in ports:
-            port.container = container;
+            port.container = container
             port.save()
 
     updateContainerTags(container)
@@ -104,28 +104,27 @@ def startContainer(container: Container):
         docker_container = docker_service.getContainerInfo(container.container_id)
         docker_container.start()
         return container
-    else:
-        container_envs = {}
+    container_envs = {}
 
-        if config_service.isAppConf(container, INCLUDING_ENV_SYSTEM, 'true'):
-            for item in os.environ:
-                if item != 'PATH':
-                    container_envs[item] = os.environ[item]
+    if config_service.isAppConf(container, INCLUDING_ENV_SYSTEM, 'true'):
+        for item in os.environ:
+            if item != 'PATH':
+                container_envs[item] = os.environ[item]
 
-        for environment in Environment.select().where(Environment.container == container):
-            container_envs[environment.name] = environment.value
+    for environment in Environment.select().where(Environment.container == container):
+        container_envs[environment.name] = environment.value
 
-        ports = {}
-        for port in PortMapping.select().where(PortMapping.container == container):
-            ports[str(port.port) + '/' + port.protocol] = port.target_port
+    ports = {}
+    for port in PortMapping.select().where(PortMapping.container == container):
+        ports[str(port.port) + '/' + port.protocol] = port.target_port
 
-        volumes = {}
-        for volume in VolumeMount.select():
-            volumes[volume.host_path] = {'bind': volume.container_path, 'mode': volume.mode}
+    volumes = {}
+    for volume in VolumeMount.select():
+        volumes[volume.host_path] = {'bind': volume.container_path, 'mode': volume.mode}
 
-        docker_container = docker_service.run(container, ports, container_envs, volumes)
-        container.container_id = docker_container.short_id
-        return container
+    docker_container = docker_service.run(container, ports, container_envs, volumes)
+    container.container_id = docker_container.short_id
+    return container
 
 
 def stopContainer(container: Container):
@@ -135,7 +134,7 @@ def stopContainer(container: Container):
             docker_container.stop(timeout=20)
         return True
     except DockerException as e:
-        logger.error("Exception occurred when trying to stop container", e)
+        logger.error("Exception occurred when trying to stop container, %s", e)
     return False
 
 

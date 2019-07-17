@@ -15,6 +15,7 @@
 #
 #
 
+
 def getSimpleName(name: str):
     parts = name.split('-')
     max_characters = 3

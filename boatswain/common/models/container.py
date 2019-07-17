@@ -14,8 +14,7 @@
 #      along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
-
-from peewee import *
+from peewee import IntegerField, CharField, TextField, FloatField
 
 from boatswain.common.models.base import BaseModel
 
