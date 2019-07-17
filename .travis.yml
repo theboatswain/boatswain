@@ -5,4 +5,4 @@ python:
 install:
   - pip install pycodestyle
 script:
-  - pycodestyle --show-source --show-pep8
+  - pycodestyle --show-source --show-pep8 boatswain
