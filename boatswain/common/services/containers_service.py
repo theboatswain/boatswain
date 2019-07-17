@@ -104,6 +104,7 @@ def startContainer(container: Container):
         docker_container = docker_service.getContainerInfo(container.container_id)
         docker_container.start()
         return container
+
     container_envs = {}
 
     if config_service.isAppConf(container, INCLUDING_ENV_SYSTEM, 'true'):
