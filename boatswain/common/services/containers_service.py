@@ -54,7 +54,7 @@ def installContainer(image_name, repo='dockerhub', description='', tag='latest',
             env.save()
     if ports is not None:
         for port in ports:
-            port.container = container;
+            port.container = container
             port.save()
 
     updateContainerTags(container)

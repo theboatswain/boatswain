@@ -97,7 +97,7 @@ class AppWidget(ReloadableWidget):
             - Name (unique)
             - Detach mode should be enabled
             - ports
-            - environment 
+            - environment
         """
         # TODO having more statuses to be handled
         if not containers_service.isContainerRunning(self.container_info):

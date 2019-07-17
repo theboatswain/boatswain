@@ -79,16 +79,16 @@ class AddAppWidget(QWidget):
             self.disable_button = True
 
     @pyqtSlot(bool, name='on_install_clicked')
-    def install_app(self, checked):
+    def installApp(self, checked):
         if self.disable_button:
             return
         self.disable_button = True
         self.install.setText(self._translate("widget", "Installing"))
         worker = Worker(containers_service.installContainer, self.name.text(), self.repo,
                         self.description.text(), "latest")
-        worker.signals.result.connect(self.on_app_installed)
+        worker.signals.result.connect(self.onAppInstalled)
         threadpool.start(worker)
 
-    def on_app_installed(self, container):
+    def onAppInstalled(self, container):
         data_transporter_service.fire(CONTAINER_CHANNEL, container)
         self.install.setText(self._translate("widget", "Installed"))

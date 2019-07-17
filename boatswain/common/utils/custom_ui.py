@@ -146,5 +146,5 @@ class ButtonLineEdit(QLineEdit):
         buttonSize = self.button.sizeHint()
         frameWidth = self.style().pixelMetric(QStyle.PM_DefaultFrameWidth)
         self.button.move(self.rect().right() - frameWidth - buttonSize.width(),
-                         (self.rect().bottom() - buttonSize.height() + 1)/2)
+                         (self.rect().bottom() - buttonSize.height() + 1) / 2)
         super(ButtonLineEdit, self).resizeEvent(event)

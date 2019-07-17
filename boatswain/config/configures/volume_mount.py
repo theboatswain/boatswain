@@ -107,7 +107,6 @@ class VolumeMountConfig(AutoResizeWidget):
         hh.setMinimumSectionSize(100)
         tv.resizeColumnsToContents()
 
-
         # set row height
         tv.resizeRowsToContents()
 
