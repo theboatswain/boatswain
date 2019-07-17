@@ -5,4 +5,4 @@ install:
   - pip install flake8
   - pip install pep8-naming
 script:
-  - pycodestyle --show-source --show-pep8 boatswain
+  - flake8 boatswain
