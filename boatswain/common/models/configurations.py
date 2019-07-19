@@ -14,7 +14,7 @@
 #      along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
-from peewee import CharField, ForeignKeyField
+from peewee import CharField, ForeignKeyField, IntegerField
 
 from boatswain.common.models.base import BaseModel
 from boatswain.common.models.container import Container
@@ -22,6 +22,7 @@ from boatswain.common.models.container import Container
 
 class Configuration(BaseModel):
     """This class for saving any other configurations"""
+    id = IntegerField(primary_key=True)
     name = CharField()
     container = ForeignKeyField(Container, backref='configurations')
     value = CharField()
