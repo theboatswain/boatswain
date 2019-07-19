@@ -94,7 +94,7 @@ def run():
     # Close db before exit
     data_transporter_service.listen(APP_EXIT_CHANNEL, lambda x: db.close())
 
-    daemon = boatswain_daemon.BoatswainDaemon(window)
+    daemon = boatswain_daemon.BoatswainDaemon(window.ui)
     daemon.start()
 
     # Stop daemon before exit
