@@ -38,7 +38,7 @@ class AppWidget(ReloadableWidget):
 
     def reloadData(self):
         self.ui.name.setText(self._translate(self.template, self.container.name))
-        self.ui.app_info.reloadData()
+        self.ui.advanced_app.reloadData()
 
     def __init__(self, parent, container: Container) -> None:
         self.container = container
@@ -71,14 +71,14 @@ class AppWidget(ReloadableWidget):
 
     def onAppClicked(self, event: QMouseEvent):
         if event.button() == Qt.LeftButton:
-            if self.ui.app_info.maximumHeight() == 0:
-                self.animation = QPropertyAnimation(self.ui.app_info, b"maximumHeight")
+            if self.ui.advanced_app.maximumHeight() == 0:
+                self.animation = QPropertyAnimation(self.ui.advanced_app, b"maximumHeight")
                 self.animation.setDuration(300)
                 self.animation.setStartValue(0)
                 self.animation.setEndValue(self.ui.app_info_max_height)
                 self.animation.start()
             else:
-                self.animation = QPropertyAnimation(self.ui.app_info, b"maximumHeight")
+                self.animation = QPropertyAnimation(self.ui.advanced_app, b"maximumHeight")
                 self.animation.setDuration(300)
                 self.animation.setStartValue(self.ui.app_info_max_height)
                 self.animation.setEndValue(0)

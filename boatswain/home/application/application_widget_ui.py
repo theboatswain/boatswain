@@ -59,11 +59,11 @@ class AppWidgetUi(QWidget):
         self.status.setStyleSheet("border: 1px solid #999999; padding: 1px 10px; border-radius: 2px")
         self.horizontal_layout.addWidget(self.status)
 
-        self.app_info = AdvancedAppWidget(widget, container)
-        self.app_info_max_height = self.app_info.sizeHint().height() + 10
-        self.app_info.setMaximumHeight(0)
+        self.advanced_app = AdvancedAppWidget(widget, container)
+        self.app_info_max_height = self.advanced_app.sizeHint().height() + 10
+        self.advanced_app.setMaximumHeight(0)
 
-        self.vertical_layout.addWidget(self.app_info)
+        self.vertical_layout.addWidget(self.advanced_app)
         self.container_info = container
 
         line = QFrame(self)
@@ -81,7 +81,7 @@ class AppWidgetUi(QWidget):
         menu.addAction("Open log")
         menu.addSeparator()
         conf = menu.addAction("Configuration")
-        conf.triggered.connect(lambda: self.app_info.onAdvancedConfigurationClicked())
+        conf.triggered.connect(lambda: self.advanced_app.onAdvancedConfigurationClicked())
         pref_shortcut = menu.addAction("Preferences shortcut")
         pref_shortcut.triggered.connect(self.onPreferenceShortcutClicked)
         menu.addSeparator()
