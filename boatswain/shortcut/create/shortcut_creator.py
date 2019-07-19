@@ -14,15 +14,17 @@
 #      along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
-from peewee import CharField, ForeignKeyField, IntegerField
+from PyQt5.QtWidgets import QDialog, QWidget
 
-from boatswain.common.models.base import BaseModel
 from boatswain.common.models.container import Container
+from boatswain.shortcut.create.shortcut_creator_ui import ShortcutCreatorUi
 
 
-class Configuration(BaseModel):
-    """This class for saving any other configurations"""
-    id = IntegerField(primary_key=True)
-    name = CharField()
-    container = ForeignKeyField(Container, backref='configurations')
-    value = CharField()
+class ShortcutCreator:
+
+    def __init__(self, container: Container, widget: QWidget) -> None:
+        self.dialog = QDialog(widget)
+        self.dialog.ui = ShortcutCreatorUi(self.dialog, container)
+
+    def show(self):
+        self.dialog.exec_()

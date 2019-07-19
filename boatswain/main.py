@@ -27,6 +27,7 @@ from boatswain.common.models.configurations import Configuration
 from boatswain.common.models.container import Container
 from boatswain.common.models.environment import Environment
 from boatswain.common.models.port_mapping import PortMapping
+from boatswain.common.models.preferences_shortcut import PreferencesShortcut
 from boatswain.common.models.tag import Tag
 from boatswain.common.models.volume_mount import VolumeMount
 from boatswain.common.services import boatswain_daemon, data_transporter_service, docker_service
@@ -48,10 +49,10 @@ def isDockerRunning():
 
 def deFrostPem():
     """
-    When the application is being frozen, all resource files will be encode into an executable file
+    When the application is being frozen, all resource files will be encoded into an executable file
     And with the requests library, it required to have the cacert.pem file available and accessible as a normal file
     thus caused the problem of invalid path: :/certifi/cacert.pem
-    This function will workaround the problem by read the content of the pem file and write it into app data folder
+    This function will workaround the problem by reading the content of the pem file and write it into app data folder
     and then relink back the location of REQUESTS_CA_BUNDLE into this file
     """
     if not os.path.isfile(PEM_FILE):
@@ -80,10 +81,11 @@ def run():
 
     # Connect to SQLite DB
     db.connect()
-    db.create_tables([Container, Environment, PortMapping, VolumeMount, Tag, Configuration])
+    db.create_tables([Container, Environment, PortMapping, VolumeMount, Tag, Configuration, PreferencesShortcut])
 
     # Load home window
     window = Home()
+    window.show()
 
     # Load all installed containers
     for container in Container.select():
