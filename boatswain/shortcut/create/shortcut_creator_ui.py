@@ -23,7 +23,7 @@ from boatswain.common.models.container import Container
 from boatswain.common.utils.custom_ui import BQSizePolicy
 
 
-class PreferencesShortcutCreator:
+class ShortcutCreatorUi:
 
     def __init__(self, dialog: QDialog, container: Container) -> None:
         self.container = container

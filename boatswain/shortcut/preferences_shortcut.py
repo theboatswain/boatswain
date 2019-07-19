@@ -22,8 +22,8 @@ from PyQt5.QtWidgets import QDialog, QAbstractItemView, QTableView
 from boatswain.common.models.container import Container
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
 from boatswain.common.utils.custom_ui import BQSizePolicy
-from boatswain.shortcut.create.preference_shortcut_creator import PreferencesShortcutCreator
-from boatswain.shortcut.models.preferences_shortcut_model import PreferencesShortcutModel
+from boatswain.shortcut.create.shortcut_creator import ShortcutCreator
+from boatswain.shortcut.models.shortcut_model import ShortcutModel
 
 
 class PreferencesShortcutWidget(object):
@@ -80,13 +80,12 @@ class PreferencesShortcutWidget(object):
         self.delete_shortcut.setText(_translate("Shortcut", "Delete"))
 
     def onNewPortClicked(self, checked):
-        dialog = QDialog(self.dialog)
-        dialog.ui = PreferencesShortcutCreator(dialog, self.container)
-        dialog.exec_()
+        shortcut_creator = ShortcutCreator(self.container, self.dialog)
+        shortcut_creator.show()
 
     def configureVolumeTable(self, tv: QTableView, header, display_header, data, container: Container):
         # set the table model
-        table_model = PreferencesShortcutModel(data, header, display_header, container, self.dialog)
+        table_model = ShortcutModel(data, header, display_header, container, self.dialog)
         tv.setModel(table_model)
 
         # hide grid

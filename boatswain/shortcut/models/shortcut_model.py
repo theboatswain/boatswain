@@ -25,7 +25,7 @@ from boatswain.common.services import config_service
 from boatswain.common.utils.constants import CONTAINER_CONF_CHANGED
 
 
-class PreferencesShortcutModel(QAbstractTableModel):
+class ShortcutModel(QAbstractTableModel):
     def __init__(self, data_in, header_data, display_header, container: Container, parent=None):
         QAbstractTableModel.__init__(self, parent)
         self.array_data = data_in
@@ -47,14 +47,6 @@ class PreferencesShortcutModel(QAbstractTableModel):
         elif role != Qt.DisplayRole and role != Qt.EditRole:
             return QVariant()
         return QVariant(getattr(self.array_data[index.row()], self.header_data[index.column()]))
-
-    def setData(self, index, value, role=Qt.EditRole):
-        if role == Qt.EditRole:
-            setattr(self.array_data[index.row()], self.header_data[index.column()], value)
-            self.array_data[index.row()].save()
-            return True
-        else:
-            return False
 
     def headerData(self, col, orientation, role=None):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
@@ -80,4 +72,4 @@ class PreferencesShortcutModel(QAbstractTableModel):
         self.layoutChanged.emit()
 
     def flags(self, index):
-        return Qt.ItemIsEditable | Qt.ItemIsEnabled | Qt.ItemIsSelectable
+        return Qt.ItemIsEnabled | Qt.ItemIsSelectable
