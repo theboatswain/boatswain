@@ -17,7 +17,7 @@
 
 from PyQt5.QtCore import QMetaObject, QCoreApplication, Qt, QPropertyAnimation, pyqtSlot
 from PyQt5.QtGui import QMouseEvent
-from PyQt5.QtWidgets import QHBoxLayout, QLabel, QPushButton, QWidget, QVBoxLayout, QSizePolicy, QFrame, QMenu
+from PyQt5.QtWidgets import QHBoxLayout, QLabel, QPushButton, QWidget, QVBoxLayout, QSizePolicy, QFrame, QMenu, QDialog
 
 from boatswain.common.exceptions.docker_exceptions import DockerNotAvailableException
 from boatswain.common.models.container import Container
@@ -28,6 +28,7 @@ from boatswain.common.utils.app_avatar import AppAvatar
 from boatswain.common.utils.constants import ADD_APP_CHANNEL
 from boatswain.common.utils.custom_ui import BQSizePolicy, ReloadableWidget
 from boatswain.home.advanced_app_widget import AdvancedAppWidget
+from boatswain.shortcut.preferences_shortcut import PreferencesShortcutWidget
 
 
 class AppWidget(ReloadableWidget):
@@ -145,11 +146,18 @@ class AppWidget(ReloadableWidget):
         menu.addSeparator()
         conf = menu.addAction("Configuration")
         conf.triggered.connect(lambda: self.app_info.onAdvancedConfigurationClicked())
+        pref_shortcut = menu.addAction("Preferences shortcut")
+        pref_shortcut.triggered.connect(self.onPreferenceShortcutClicked)
         menu.addSeparator()
         menu.addAction("Restart")
         menu.addAction("Reset")
         menu.addAction("Delete")
         menu.exec_(self.mapToGlobal(event.pos()))
+
+    def onPreferenceShortcutClicked(self):
+        dialog = QDialog(self)
+        dialog.ui = PreferencesShortcutWidget(dialog, self.container_info)
+        dialog.exec_()
 
     def onContainerStart(self, event):
         if containers_service.isInstanceOf(self.container_info, event['id']):
