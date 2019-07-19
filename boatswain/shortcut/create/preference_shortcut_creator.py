@@ -28,10 +28,6 @@ class PreferencesShortcutCreator:
     def __init__(self, dialog: QDialog, container: Container) -> None:
         self.container = container
         self.dialog = dialog
-        self.setupUi(dialog)
-        dialog.setAttribute(Qt.WA_DeleteOnClose)
-
-    def setupUi(self, dialog):
         dialog.resize(749, 376)
         dialog.setSizePolicy(BQSizePolicy(h_stretch=1))
         dialog.setMinimumSize(QSize(749, 376))
@@ -83,7 +79,6 @@ class PreferencesShortcutCreator:
         self.type_label.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.mid_widget_layout.addWidget(self.type_label, 4, 0, 1, 1)
         self.shortcut_for_des = QtWidgets.QLabel(self.mid_widget)
-        self.shortcut_for_des.setMaximumSize(QtCore.QSize(16777215, 16777215))
         font = QtGui.QFont()
         font.setPointSize(11)
         self.shortcut_for_des.setFont(font)
@@ -130,11 +125,11 @@ class PreferencesShortcutCreator:
         self.vertical_layout.addWidget(self.bot_widget)
 
         self.retranslateUi(dialog)
-        QtCore.QMetaObject.connectSlotsByName(dialog)
+        dialog.setAttribute(Qt.WA_DeleteOnClose)
 
     def retranslateUi(self, dialog):
         _translate = QtCore.QCoreApplication.translate
-        dialog.setWindowTitle(_translate("PreferenceShortcut", "PreferenceShortcut"))
+        dialog.setWindowTitle(_translate("PreferenceShortcut", "Preference Shortcut"))
         self.title.setText(_translate("PreferenceShortcut", "Creating a new preference shortcut"))
         self.shortcut_label.setPlaceholderText(_translate("PreferenceShortcut", "i.e Mysql password"))
         self.data_type_label.setText(_translate("PreferenceShortcut", "Datatype:"))

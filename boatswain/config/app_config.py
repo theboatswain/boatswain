@@ -32,12 +32,7 @@ class AppConfig(object):
         super().__init__()
         self.title = title
         self.container = container
-        self.setupUi(dialog)
-        self.dialog = dialog
-        dialog.setWindowTitle(self.title)
-        dialog.setAttribute(Qt.WA_DeleteOnClose)
 
-    def setupUi(self, dialog):
         dialog.resize(745, 445)
         dialog.setSizePolicy(BQSizePolicy(h_stretch=1))
         dialog.setMinimumSize(QSize(745, 445))
@@ -72,6 +67,10 @@ class AppConfig(object):
         self.retranslateUi()
         self.tab_widget.setCurrentIndex(0)
         self.tab_widget.currentChanged.connect(self.onTabChange)
+
+        self.dialog = dialog
+        dialog.setWindowTitle(self.title)
+        dialog.setAttribute(Qt.WA_DeleteOnClose)
 
     def retranslateUi(self):
         _translate = QCoreApplication.translate

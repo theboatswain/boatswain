@@ -49,10 +49,10 @@ def isDockerRunning():
 
 def deFrostPem():
     """
-    When the application is being frozen, all resource files will be encode into an executable file
+    When the application is being frozen, all resource files will be encoded into an executable file
     And with the requests library, it required to have the cacert.pem file available and accessible as a normal file
     thus caused the problem of invalid path: :/certifi/cacert.pem
-    This function will workaround the problem by read the content of the pem file and write it into app data folder
+    This function will workaround the problem by reading the content of the pem file and write it into app data folder
     and then relink back the location of REQUESTS_CA_BUNDLE into this file
     """
     if not os.path.isfile(PEM_FILE):
@@ -85,6 +85,7 @@ def run():
 
     # Load home window
     window = Home()
+    window.show()
 
     # Load all installed containers
     for container in Container.select():

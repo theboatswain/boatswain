@@ -31,10 +31,6 @@ class PreferencesShortcutWidget(object):
     def __init__(self, dialog, container: Container) -> None:
         self.container = container
         self.dialog = dialog
-        self.setupUi(dialog)
-        # dialog.setAttribute(Qt.WA_DeleteOnClose)
-
-    def setupUi(self, dialog):
         dialog.resize(745, 314)
         dialog.setSizePolicy(BQSizePolicy(h_stretch=1))
         dialog.setMinimumSize(QSize(745, 314))
@@ -73,6 +69,7 @@ class PreferencesShortcutWidget(object):
         display_headers = ['Label', 'Default value', 'Type', 'Shortcut', 'Mapping to']
         table_data = PreferencesShortcut.select().where(PreferencesShortcut.container == self.container)
         self.configureVolumeTable(self.shortcut_table, headers, display_headers, list(table_data), self.container)
+        dialog.setAttribute(Qt.WA_DeleteOnClose)
 
     def retranslateUi(self, dialog: QDialog):
         _translate = QtCore.QCoreApplication.translate

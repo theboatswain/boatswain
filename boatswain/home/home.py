@@ -32,8 +32,10 @@ class Home(QMainWindow):
 
     def __init__(self):
         super(Home, self).__init__()
+        self.resize(460, 639)
+        self.setSizePolicy(BQSizePolicy(h_stretch=1))
+        self.setMinimumSize(QSize(460, 639))
         self.setupUi(self)
-        self.show()
         data_transporter_service.listen(CONTAINER_CHANNEL, self.addAppFromContainer)
         data_transporter_service.listen(ADD_APP_CHANNEL, self.addAppClicked)
         self.app_list = QWidget(self)
@@ -46,9 +48,6 @@ class Home(QMainWindow):
         self.scroll_area.setWidget(self.app_list)
 
     def setupUi(self, parent_widget):
-        parent_widget.resize(460, 639)
-        parent_widget.setSizePolicy(BQSizePolicy(h_stretch=1))
-        parent_widget.setMinimumSize(QSize(460, 639))
         central_widget = QWidget(parent_widget)
         central_widget.setSizePolicy(BQSizePolicy(h_stretch=1))
         main_layout = QVBoxLayout(central_widget)
