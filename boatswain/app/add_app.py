@@ -91,8 +91,7 @@ class AddAppDialog(object):
     def load_result(self, docker_images):
         self.clean_search_results()
         for item in docker_images:
-            widget = AddAppWidget(self.search_result_area, item['name'], item['description'],
-                                  item['from'])
+            widget = AddAppWidget(self.search_result_area, item['name'], item['description'], item['from'])
             self.search_result_area.layout().addWidget(widget)
 
     def clean_search_results(self):

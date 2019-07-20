@@ -15,30 +15,25 @@
 #
 #
 
-from PyQt5.QtCore import QCoreApplication, Qt, QPropertyAnimation
+from PyQt5.QtCore import QCoreApplication, Qt
 from PyQt5.QtGui import QMouseEvent
-from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QDialog, QMenu
 
 from boatswain.common.exceptions.docker_exceptions import DockerNotAvailableException
 from boatswain.common.models.container import Container
-from boatswain.common.services import containers_service
+from boatswain.common.services import containers_service, data_transporter_service, boatswain_daemon
 from boatswain.common.services.worker_service import Worker, threadpool
 from boatswain.common.utils import docker_utils
-from boatswain.common.utils.custom_ui import ReloadableWidget
+from boatswain.common.utils.constants import ADD_APP_CHANNEL
 from boatswain.home.application.application_widget_ui import AppWidgetUi
 from boatswain.shortcut.preferences_shortcut import PreferencesShortcutWidget
 
 
-class AppWidget(ReloadableWidget):
+class AppWidget:
     """ Class to customise app's widgets """
 
     _translate = QCoreApplication.translate
     template = 'AppWidget'
-    animation: QPropertyAnimation
-
-    def reloadData(self):
-        self.ui.name.setText(self._translate(self.template, self.container.name))
-        self.ui.advanced_app.reloadData()
 
     def __init__(self, parent, container: Container) -> None:
         self.container = container
@@ -47,7 +42,13 @@ class AppWidget(ReloadableWidget):
         status = "Stop" if containers_service.isContainerRunning(container) else "Start"
         self.ui.status.setText(self._translate(self.template, status))
         self.ui.status.clicked.connect(self.controlApp)
-        self.reloadData()
+        self.ui.name.setText(self._translate(self.template, self.container.name))
+
+        self.ui.widget.mouseReleaseEvent = self.onAppClicked
+        self.ui.contextMenuEvent = self.contextMenuEvent
+        containers_service.listenContainerChange(container, self.onContainerChange)
+        boatswain_daemon.listen('container', 'start', self.onContainerStart)
+        boatswain_daemon.listen('container', 'stop', self.onContainerStop)
 
     def controlApp(self):
         if not containers_service.isContainerRunning(self.container):
@@ -68,21 +69,11 @@ class AppWidget(ReloadableWidget):
     def onFailure(self, exception):
         if isinstance(exception, DockerNotAvailableException):
             docker_utils.notifyDockerNotAvailable()
+        # Todo: Handle more exceptions
 
     def onAppClicked(self, event: QMouseEvent):
         if event.button() == Qt.LeftButton:
-            if self.ui.advanced_app.maximumHeight() == 0:
-                self.animation = QPropertyAnimation(self.ui.advanced_app, b"maximumHeight")
-                self.animation.setDuration(300)
-                self.animation.setStartValue(0)
-                self.animation.setEndValue(self.ui.app_info_max_height)
-                self.animation.start()
-            else:
-                self.animation = QPropertyAnimation(self.ui.advanced_app, b"maximumHeight")
-                self.animation.setDuration(300)
-                self.animation.setStartValue(self.ui.app_info_max_height)
-                self.animation.setEndValue(0)
-                self.animation.start()
+            self.ui.advanced_app.toggleWindow()
 
     def onPreferenceShortcutClicked(self):
         dialog = QDialog(self)
@@ -97,3 +88,25 @@ class AppWidget(ReloadableWidget):
     def onContainerStop(self, event):
         if containers_service.isInstanceOf(self.container, event['id']):
             self.ui.status.setText('Start')
+
+    def contextMenuEvent(self, event):
+        menu = QMenu(self.ui)
+        add_action = menu.addAction(self._translate(self.template, "Add..."))
+        add_action.triggered.connect(lambda: data_transporter_service.fire(ADD_APP_CHANNEL, True))
+        menu.addSeparator()
+        terminal = menu.addAction(self._translate(self.template, "Connect to terminal"))
+        terminal.triggered.connect(lambda: containers_service.connectToContainer(self.container))
+        menu.addAction(self._translate(self.template, "Open log"))
+        menu.addSeparator()
+        conf = menu.addAction(self._translate(self.template, "Configuration"))
+        conf.triggered.connect(lambda: self.ui.advanced_app.onAdvancedConfigurationClicked())
+        pref_shortcut = menu.addAction(self._translate(self.template, "Preferences shortcut"))
+        pref_shortcut.triggered.connect(self.onPreferenceShortcutClicked)
+        menu.addSeparator()
+        menu.addAction(self._translate(self.template, "Restart"))
+        menu.addAction(self._translate(self.template, "Reset"))
+        menu.addAction(self._translate(self.template, "Delete"))
+        menu.exec_(self.ui.mapToGlobal(event.pos()))
+
+    def onContainerChange(self, data=None):
+        self.ui.name.setText(self._translate(self.template, self.container.name))

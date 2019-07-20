@@ -36,6 +36,7 @@ CONTAINER_CONF_CHANGED = 'container_conf_changed'
 CONTAINER_CHANNEL = 'container_channel'
 APP_EXIT_CHANNEL = 'app_exit'
 ADD_APP_CHANNEL = 'add_app_channel'
+CONTAINER_CONF_CHANGED_CHANNEL = 'container_conf_channel'
 
 # Docker
 WINDOWS_BASE_URL = 'tcp://127.0.0.1:2375'

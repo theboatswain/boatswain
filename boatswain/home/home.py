@@ -52,7 +52,7 @@ class Home:
 
     def addAppFromContainer(self, container: Container):
         widget = AppWidget(self.ui.app_list, container)
-        self.ui.app_list.layout().addWidget(widget)
+        self.ui.app_list.layout().addWidget(widget.ui)
 
     def show(self):
         self.ui.show()
