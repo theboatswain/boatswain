@@ -22,7 +22,7 @@ from boatswain.common.models.container import Container
 from boatswain.common.utils.custom_ui import BQSizePolicy
 from boatswain.config.environment.environment_config import EnvironmentConfig
 from boatswain.config.configures.general import GeneralAppConfig
-from boatswain.config.configures.port_mapping import PortMappingConfig
+from boatswain.config.port.port_mapping_config import PortMappingConfig
 from boatswain.config.configures.volume_mount import VolumeMountConfig
 
 
@@ -49,9 +49,9 @@ class AppConfigUi(object):
         self.tab_widget = QTabWidget(self.central_widget)
         self.tab_widget.setDocumentMode(False)
         self.general = GeneralAppConfig(self.central_widget, self.container)
-        self.tab_widget.addTab(self.general, "")
+        self.tab_widget.addTab(self.general.ui, "")
         self.port = PortMappingConfig(self.central_widget, self.container)
-        self.tab_widget.addTab(self.port, "")
+        self.tab_widget.addTab(self.port.ui, "")
         self.volume = VolumeMountConfig(self.central_widget, self.container)
         self.tab_widget.addTab(self.volume, "")
         self.environment = EnvironmentConfig(self.central_widget, self.container)

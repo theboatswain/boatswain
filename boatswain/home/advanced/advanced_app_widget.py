@@ -16,7 +16,6 @@
 #
 
 from PyQt5.QtCore import QPropertyAnimation
-from PyQt5.QtWidgets import QDialog
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.tag import Tag
@@ -34,13 +33,19 @@ class AdvancedAppWidget:
         self.container = container
         self.ui = AdvancedAppWidgetUi(parent, container)
         self.ui.advanced_configuration.clicked.connect(self.onAdvancedConfigurationClicked)
-        self.ui.tags.currentIndexChanged.connect(self.onImageTagChange)
         self.app_info_max_height = self.ui.sizeHint().height() + 10
         self.ui.setMaximumHeight(0)
-        containers_service.listenContainerChange(container, self.onContainerChange)
-        self.onContainerChange()
+
+        for index, tag in enumerate(Tag.select().where(Tag.container == self.container)):
+            self.ui.tags.addItem(self.container.image_name + ":" + tag.name)
+            if tag.name == self.container.tag:
+                self.ui.tags.setCurrentIndex(index)
+        self.ui.tags.currentIndexChanged.connect(self.onImageTagChange)
+        containers_service.listen(self.container, 'tag_index', lambda x: self.ui.tags.setCurrentIndex(x))
 
     def onImageTagChange(self, index):
+        if index < 0:
+            return
         tag = self.ui.tags.itemText(index).split(':')[1]
         self.container.tag = tag
         self.container.update()
@@ -64,10 +69,3 @@ class AdvancedAppWidget:
             self.animation.setStartValue(self.app_info_max_height)
             self.animation.setEndValue(0)
             self.animation.start()
-
-    def onContainerChange(self):
-        self.ui.tags.clear()
-        for index, tag in enumerate(Tag.select().where(Tag.container == self.container)):
-            self.ui.tags.addItem(self.container.image_name + ":" + tag.name)
-            if tag.name == self.container.tag:
-                self.ui.tags.setCurrentIndex(index)
