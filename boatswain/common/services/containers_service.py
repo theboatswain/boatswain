@@ -161,11 +161,11 @@ def connectToContainer(container):
         docker_utils.notifyContainerNotRunning(container, message)
 
 
-def listenContainerChange(container: Container, func):
-    key = CONTAINER_CONF_CHANGED_CHANNEL + '_' + str(container.id)
+def listen(container: Container, name, func):
+    key = CONTAINER_CONF_CHANGED_CHANNEL + '_' + str(container.id) + '_' + name
     data_transporter_service.listen(key, func)
 
 
-def fireContainerChange(container: Container):
-    key = CONTAINER_CONF_CHANGED_CHANNEL + '_' + str(container.id)
-    data_transporter_service.fire(key, True)
+def fire(container: Container, name, value):
+    key = CONTAINER_CONF_CHANGED_CHANNEL + '_' + str(container.id) + '_' + name
+    data_transporter_service.fire(key, value)

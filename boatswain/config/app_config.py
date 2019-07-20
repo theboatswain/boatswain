@@ -45,7 +45,7 @@ class AppConfig:
 
     def retranslateUi(self):
         general_tab_name = self._translate(self.template, "General")
-        self.ui.tab_widget.setTabText(self.ui.tab_widget.indexOf(self.ui.general), general_tab_name)
+        self.ui.tab_widget.setTabText(self.ui.tab_widget.indexOf(self.ui.general.ui), general_tab_name)
         port_tab_name = self._translate(self.template, "Port mapping")
         self.ui.tab_widget.setTabText(self.ui.tab_widget.indexOf(self.ui.port.ui), port_tab_name)
         volume_tab_name = self._translate(self.template, "Volume mount")

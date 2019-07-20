@@ -46,9 +46,9 @@ class AppWidget:
 
         self.ui.widget.mouseReleaseEvent = self.onAppClicked
         self.ui.contextMenuEvent = self.contextMenuEvent
-        containers_service.listenContainerChange(container, self.onContainerChange)
         boatswain_daemon.listen('container', 'start', self.onContainerStart)
         boatswain_daemon.listen('container', 'stop', self.onContainerStop)
+        containers_service.listen(self.container, 'name', lambda x: self.ui.name.setText(x))
 
     def controlApp(self):
         if not containers_service.isContainerRunning(self.container):
@@ -107,6 +107,3 @@ class AppWidget:
         menu.addAction(self._translate(self.template, 'Reset'))
         menu.addAction(self._translate(self.template, 'Delete'))
         menu.exec_(self.ui.mapToGlobal(event.pos()))
-
-    def onContainerChange(self, data=None):
-        self.ui.name.setText(self._translate(self.template, self.container.name))
