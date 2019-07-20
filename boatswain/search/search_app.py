@@ -19,8 +19,8 @@ from PyQt5.QtCore import Qt, QCoreApplication
 from PyQt5.QtWidgets import QDialog
 
 from boatswain.common.services import containers_service
-from boatswain.search.add_app_widget import AddAppWidget
-from boatswain.search.default_search_result import search_result
+from boatswain.search.application.short_app_widget import ShortAppWidget
+from boatswain.resources.default_search_result import search_result
 from boatswain.search.search_app_ui import SearchAppDialogUi
 
 
@@ -59,8 +59,8 @@ class SearchAppDialog(object):
     def loadResult(self, docker_images):
         self.cleanSearchResults()
         for item in docker_images:
-            widget = AddAppWidget(self.ui.search_result_area, item['name'], item['description'], item['from'])
-            self.ui.search_result_area.layout().addWidget(widget)
+            widget = ShortAppWidget(self.ui.search_result_area, item['name'], item['description'], item['from'])
+            self.ui.search_result_area.layout().addWidget(widget.ui)
 
     def cleanSearchResults(self):
         while self.ui.search_result_area.layout().count():
