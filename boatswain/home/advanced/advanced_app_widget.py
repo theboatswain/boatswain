@@ -23,7 +23,7 @@ from boatswain.common.models.tag import Tag
 from boatswain.common.services import config_service, containers_service
 from boatswain.common.utils.constants import CONTAINER_CONF_CHANGED
 from boatswain.config.app_config import AppConfig
-from boatswain.home.advanced.advanced_widget_ui import AdvancedAppWidgetUi
+from boatswain.home.advanced.advanced_app_widget_ui import AdvancedAppWidgetUi
 
 
 class AdvancedAppWidget:

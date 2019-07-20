@@ -14,6 +14,7 @@
 #      along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSizePolicy, QHBoxLayout, QLabel, QPushButton, QFrame
 

@@ -14,6 +14,7 @@
 #      along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
+
 import os
 import sys
 from contextlib import closing
@@ -21,7 +22,6 @@ from contextlib import closing
 from PyQt5.QtCore import QFile, Qt
 from PyQt5.QtWidgets import QApplication
 
-from boatswain.common.exceptions.docker_exceptions import DockerNotAvailableException
 from boatswain.common.models.base import db
 from boatswain.common.models.configurations import Configuration
 from boatswain.common.models.container import Container
@@ -35,16 +35,6 @@ from boatswain.common.utils import docker_utils
 from boatswain.common.utils.constants import APP_DATA_DIR, CONTAINER_CHANNEL, APP_EXIT_CHANNEL, PEM_FILE
 from boatswain.common.utils.logging import logger
 from boatswain.home.home import Home
-
-
-def isDockerRunning():
-    try:
-        docker_service.ping()
-    except DockerNotAvailableException:
-        logger.warning('Could not start boatswain because of the docker is not running')
-        return False
-    else:
-        return True
 
 
 def deFrostPem():
@@ -68,7 +58,7 @@ def deFrostPem():
 
 def run():
     app = QApplication(sys.argv)
-    if not isDockerRunning():
+    if not docker_service.isDockerRunning():
         return docker_utils.notifyDockerNotAvailable()
 
     app.setAttribute(Qt.AA_EnableHighDpiScaling)
@@ -94,6 +84,7 @@ def run():
     # Close db before exit
     data_transporter_service.listen(APP_EXIT_CHANNEL, lambda x: db.close())
 
+    # Create daemon to listen to docker events
     daemon = boatswain_daemon.BoatswainDaemon(window.ui)
     daemon.start()
 

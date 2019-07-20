@@ -82,30 +82,30 @@ class AppWidget:
 
     def onContainerStart(self, event):
         if containers_service.isInstanceOf(self.container, event['id']):
-            self.ui.status.setText('Stop')
+            self.ui.status.setText(self._translate(self.template, 'Stop'))
             # Todo: Add a green dot beside app's avatar
 
     def onContainerStop(self, event):
         if containers_service.isInstanceOf(self.container, event['id']):
-            self.ui.status.setText('Start')
+            self.ui.status.setText(self._translate(self.template, 'Start'))
 
     def contextMenuEvent(self, event):
         menu = QMenu(self.ui)
-        add_action = menu.addAction(self._translate(self.template, "Add..."))
+        add_action = menu.addAction(self._translate(self.template, 'Add...'))
         add_action.triggered.connect(lambda: data_transporter_service.fire(ADD_APP_CHANNEL, True))
         menu.addSeparator()
-        terminal = menu.addAction(self._translate(self.template, "Connect to terminal"))
+        terminal = menu.addAction(self._translate(self.template, 'Connect to terminal'))
         terminal.triggered.connect(lambda: containers_service.connectToContainer(self.container))
-        menu.addAction(self._translate(self.template, "Open log"))
+        menu.addAction(self._translate(self.template, 'Open log'))
         menu.addSeparator()
-        conf = menu.addAction(self._translate(self.template, "Configuration"))
+        conf = menu.addAction(self._translate(self.template, 'Configuration'))
         conf.triggered.connect(lambda: self.ui.advanced_app.onAdvancedConfigurationClicked())
-        pref_shortcut = menu.addAction(self._translate(self.template, "Preferences shortcut"))
+        pref_shortcut = menu.addAction(self._translate(self.template, 'Preferences shortcut'))
         pref_shortcut.triggered.connect(self.onPreferenceShortcutClicked)
         menu.addSeparator()
-        menu.addAction(self._translate(self.template, "Restart"))
-        menu.addAction(self._translate(self.template, "Reset"))
-        menu.addAction(self._translate(self.template, "Delete"))
+        menu.addAction(self._translate(self.template, 'Restart'))
+        menu.addAction(self._translate(self.template, 'Reset'))
+        menu.addAction(self._translate(self.template, 'Delete'))
         menu.exec_(self.ui.mapToGlobal(event.pos()))
 
     def onContainerChange(self, data=None):

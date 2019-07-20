@@ -15,14 +15,13 @@
 #
 #
 from PyQt5.QtCore import QCoreApplication
-from PyQt5.QtWidgets import QDialog
 
-from boatswain.app.add_app import AddAppDialog
 from boatswain.common.models.container import Container
 from boatswain.common.services import data_transporter_service
 from boatswain.common.utils.constants import CONTAINER_CHANNEL, ADD_APP_CHANNEL
 from boatswain.home.application.application_widget import AppWidget
 from boatswain.home.home_ui import HomeUi
+from boatswain.search.search_app import SearchAppDialog
 
 
 class Home:
@@ -46,9 +45,8 @@ class Home:
         data_transporter_service.listen(ADD_APP_CHANNEL, self.addAppClicked)
 
     def addAppClicked(self):
-        dialog = QDialog()
-        dialog.ui = AddAppDialog("Add app", dialog)
-        dialog.exec_()
+        dialog = SearchAppDialog("Add app", self.ui)
+        dialog.show()
 
     def addAppFromContainer(self, container: Container):
         widget = AppWidget(self.ui.app_list, container)
