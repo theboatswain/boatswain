@@ -48,9 +48,8 @@ class AdvancedAppWidget:
         # Todo: Should we do the clean up? delete the downloaded image
 
     def onAdvancedConfigurationClicked(self):
-        dialog = QDialog(self.ui)
-        dialog.ui = AppConfig("%s - configuration" % self.container.name, dialog, self.container)
-        dialog.exec_()
+        app_config = AppConfig(self.ui, self.container)
+        app_config.show()
 
     def toggleWindow(self):
         if self.ui.maximumHeight() == 0:

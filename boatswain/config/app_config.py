@@ -15,73 +15,46 @@
 #
 #
 
-from PyQt5.QtCore import QCoreApplication, Qt, QSize
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTabWidget, QDialog
+from PyQt5.QtCore import QCoreApplication, Qt
+from PyQt5.QtWidgets import QDialog
 
 from boatswain.common.models.container import Container
-from boatswain.common.utils.custom_ui import BQSizePolicy
-from boatswain.config.configures.environment import EnvironmentVariable
-from boatswain.config.configures.general import GeneralAppConfig
-from boatswain.config.configures.port_mapping import PortMappingConfig
-from boatswain.config.configures.volume_mount import VolumeMountConfig
+from boatswain.config.app_config_ui import AppConfigUi
 
 
-class AppConfig(object):
+class AppConfig:
 
-    def __init__(self, title, dialog: QDialog, container: Container) -> None:
-        super().__init__()
-        self.title = title
+    _translate = QCoreApplication.translate
+    template = 'AppConfig'
+
+    def __init__(self, parent, container: Container) -> None:
         self.container = container
 
-        dialog.resize(745, 445)
-        dialog.setSizePolicy(BQSizePolicy(h_stretch=1))
-        dialog.setMinimumSize(QSize(745, 445))
-        dialog.setSizeGripEnabled(False)
-        dialog.setModal(False)
+        self.dialog = QDialog(parent)
 
-        main_layout = QVBoxLayout(dialog)
-        main_layout.setContentsMargins(0, 0, 0, 0)
-        main_layout.setSpacing(0)
-
-        self.central_widget = QWidget(dialog)
-        self.vertical_layout = QVBoxLayout(self.central_widget)
-        self.vertical_layout.setContentsMargins(11, 11, 11, 15)
-        self.vertical_layout.setSpacing(6)
-        self.tab_widget = QTabWidget(self.central_widget)
-        self.tab_widget.setObjectName("tabs")
-        self.tab_widget.setDocumentMode(False)
-        self.general = GeneralAppConfig(self.central_widget, self.container)
-        self.tab_widget.addTab(self.general, "")
-        self.port = PortMappingConfig(self.central_widget, self.container)
-        self.tab_widget.addTab(self.port, "")
-        self.volume = VolumeMountConfig(self.central_widget, self.container)
-        self.tab_widget.addTab(self.volume, "")
-        self.environment = EnvironmentVariable(self.central_widget, self.container)
-        self.tab_widget.addTab(self.environment, "")
-        # self.others = AutoResizeWidget(self.central_widget)
-        # self.tab_widget.addTab(self.others, "")
-        self.vertical_layout.addWidget(self.tab_widget)
-
-        main_layout.addWidget(self.central_widget)
+        self.dialog = self.dialog
+        self.ui = AppConfigUi(self.dialog, container)
+        self.dialog.ui = self.ui
 
         self.retranslateUi()
-        self.tab_widget.setCurrentIndex(0)
-        self.tab_widget.currentChanged.connect(self.onTabChange)
+        self.ui.tab_widget.setCurrentIndex(0)
+        self.ui.tab_widget.currentChanged.connect(self.onTabChange)
 
-        self.dialog = dialog
-        dialog.setWindowTitle(self.title)
-        dialog.setAttribute(Qt.WA_DeleteOnClose)
+        self.dialog.setWindowTitle("%s - configuration" % self.container.name)
+        self.dialog.setAttribute(Qt.WA_DeleteOnClose)
 
     def retranslateUi(self):
-        _translate = QCoreApplication.translate
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.general), _translate("MainWindow", "General"))
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.port), _translate("MainWindow", "Port mapping"))
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.volume), _translate("MainWindow", "Volume mount"))
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.environment), _translate("MainWindow", "Environment"))
-        # self.tab_widget.setTabText(self.tab_widget.indexOf(self.others), _translate("MainWindow", "Others"))
+        general_tab_name = self._translate(self.template, "General")
+        self.ui.tab_widget.setTabText(self.ui.tab_widget.indexOf(self.ui.general), general_tab_name)
+        port_tab_name = self._translate(self.template, "Port mapping")
+        self.ui.tab_widget.setTabText(self.ui.tab_widget.indexOf(self.ui.port), port_tab_name)
+        volume_tab_name = self._translate(self.template, "Volume mount")
+        self.ui.tab_widget.setTabText(self.ui.tab_widget.indexOf(self.ui.volume), volume_tab_name)
+        environment_tab_name = self._translate(self.template, "Environment")
+        self.ui.tab_widget.setTabText(self.ui.tab_widget.indexOf(self.ui.environment), environment_tab_name)
 
     def onTabChange(self, index):
-        widget = self.tab_widget.widget(index)
+        widget = self.ui.tab_widget.widget(index)
         self.dialog.setMinimumSize(widget.preferableSize())
         self.dialog.resize(widget.preferableSize())
         # prevWidget = self.tab_widget.currentWidget()
@@ -90,3 +63,6 @@ class AppConfig(object):
         # self.animation.setStartValue(prevWidget.preferableSize())
         # self.animation.setEndValue(widget.preferableSize())
         # self.animation.start()
+
+    def show(self):
+        self.dialog.exec_()
