@@ -51,7 +51,7 @@ class AppConfig:
         volume_tab_name = self._translate(self.template, "Volume mount")
         self.ui.tab_widget.setTabText(self.ui.tab_widget.indexOf(self.ui.volume), volume_tab_name)
         environment_tab_name = self._translate(self.template, "Environment")
-        self.ui.tab_widget.setTabText(self.ui.tab_widget.indexOf(self.ui.environment), environment_tab_name)
+        self.ui.tab_widget.setTabText(self.ui.tab_widget.indexOf(self.ui.environment.ui), environment_tab_name)
 
     def onTabChange(self, index):
         widget = self.ui.tab_widget.widget(index)

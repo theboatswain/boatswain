@@ -28,8 +28,9 @@ from boatswain.home.advanced.advanced_app_widget import AdvancedAppWidget
 class AppWidgetUi(QWidget):
     """ Class to customise app's widgets """
 
-    def __init__(self, parent, container: Container) -> None:
+    def __init__(self, parent, container: Container, handler) -> None:
         super().__init__(parent)
+        self.handler = handler
         self.vertical_layout = QVBoxLayout(self)
         self.vertical_layout.setContentsMargins(0, 0, 2, 0)
         self.vertical_layout.setSpacing(0)

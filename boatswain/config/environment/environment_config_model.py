@@ -25,7 +25,7 @@ from boatswain.common.services import config_service
 from boatswain.common.utils.constants import CONTAINER_CONF_CHANGED
 
 
-class UserEnvModel(QAbstractTableModel):
+class EnvironmentConfigModel(QAbstractTableModel):
     def __init__(self, data_in, header_data, container: Container, parent=None):
         QAbstractTableModel.__init__(self, parent)
         self.array_data = data_in

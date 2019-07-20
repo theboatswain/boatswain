@@ -20,7 +20,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTabWidget, QDialog
 
 from boatswain.common.models.container import Container
 from boatswain.common.utils.custom_ui import BQSizePolicy
-from boatswain.config.configures.environment import EnvironmentVariable
+from boatswain.config.environment.environment_config import EnvironmentConfig
 from boatswain.config.configures.general import GeneralAppConfig
 from boatswain.config.configures.port_mapping import PortMappingConfig
 from boatswain.config.configures.volume_mount import VolumeMountConfig
@@ -54,8 +54,8 @@ class AppConfigUi(object):
         self.tab_widget.addTab(self.port, "")
         self.volume = VolumeMountConfig(self.central_widget, self.container)
         self.tab_widget.addTab(self.volume, "")
-        self.environment = EnvironmentVariable(self.central_widget, self.container)
-        self.tab_widget.addTab(self.environment, "")
+        self.environment = EnvironmentConfig(self.central_widget, self.container)
+        self.tab_widget.addTab(self.environment.ui, "")
         # self.others = AutoResizeWidget(self.central_widget)
         # self.tab_widget.addTab(self.others, "")
         self.vertical_layout.addWidget(self.tab_widget)

@@ -37,7 +37,7 @@ class AppWidget:
 
     def __init__(self, parent, container: Container) -> None:
         self.container = container
-        self.ui = AppWidgetUi(parent, container)
+        self.ui = AppWidgetUi(parent, container, self)
 
         status = "Stop" if containers_service.isContainerRunning(container) else "Start"
         self.ui.status.setText(self._translate(self.template, status))
