@@ -121,7 +121,7 @@ def startContainer(container: Container):
         ports[str(port.port) + '/' + port.protocol] = port.target_port
 
     volumes = {}
-    for volume in VolumeMount.select():
+    for volume in VolumeMount.select().where(VolumeMount.container == container):
         volumes[volume.host_path] = {'bind': volume.container_path, 'mode': volume.mode}
 
     docker_container = docker_service.run(container, ports, container_envs, volumes)
