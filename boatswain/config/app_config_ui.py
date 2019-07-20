@@ -23,7 +23,7 @@ from boatswain.common.utils.custom_ui import BQSizePolicy
 from boatswain.config.environment.environment_config import EnvironmentConfig
 from boatswain.config.general.general_config import GeneralAppConfig
 from boatswain.config.port.port_mapping_config import PortMappingConfig
-from boatswain.config.configures.volume_mount import VolumeMountConfig
+from boatswain.config.volume.volume_mount_config import VolumeMountConfig
 
 
 class AppConfigUi(object):
@@ -53,7 +53,7 @@ class AppConfigUi(object):
         self.port = PortMappingConfig(self.central_widget, self.container)
         self.tab_widget.addTab(self.port.ui, "")
         self.volume = VolumeMountConfig(self.central_widget, self.container)
-        self.tab_widget.addTab(self.volume, "")
+        self.tab_widget.addTab(self.volume.ui, "")
         self.environment = EnvironmentConfig(self.central_widget, self.container)
         self.tab_widget.addTab(self.environment.ui, "")
         # self.others = AutoResizeWidget(self.central_widget)
