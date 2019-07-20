@@ -69,6 +69,9 @@ class AppWidget:
     def onFailure(self, exception):
         if isinstance(exception, DockerNotAvailableException):
             docker_utils.notifyDockerNotAvailable()
+        if isinstance(exception, APIError):
+            message = exception.response.json()
+            docker_utils.notifyDockerException(message['message'])
         # Todo: Handle more exceptions
 
     def onAppClicked(self, event: QMouseEvent):
