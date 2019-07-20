@@ -14,30 +14,3 @@
 #      along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
-import os
-
-from appdirs import user_data_dir, user_log_dir
-
-APP_NAME = 'boatswain'
-APP_AUTHOR = 'theboatswain'
-
-APP_DATA_DIR = user_data_dir(APP_NAME, APP_AUTHOR)
-APP_LOG_DIR = user_log_dir(APP_NAME, APP_AUTHOR)
-
-PEM_FILE = os.path.join(APP_DATA_DIR, "cacert.pem")
-
-APP_DB = 'boatswain.db'
-
-# Settings
-INCLUDING_ENV_SYSTEM = 'including_env_system'
-CONTAINER_CONF_CHANGED = 'container_conf_changed'
-
-# Channels
-CONTAINER_CHANNEL = 'container_channel'
-APP_EXIT_CHANNEL = 'app_exit'
-ADD_APP_CHANNEL = 'add_app_channel'
-CONTAINER_CONF_CHANGED_CHANNEL = 'container_conf_channel'
-
-# Docker
-WINDOWS_BASE_URL = 'tcp://127.0.0.1:2375'
-UNIX_BASE_URL = 'unix://var/run/docker.sock'

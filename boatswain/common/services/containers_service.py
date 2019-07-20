@@ -26,9 +26,10 @@ from boatswain.common.models.port_mapping import PortMapping
 from boatswain.common.models.volume_mount import VolumeMount
 from boatswain.common.search.dockerhub_searcher import DockerHubSearcher
 from boatswain.common.search.search_images import SearchImages
-from boatswain.common.services import docker_service, system_service, config_service
+from boatswain.common.services import docker_service, system_service, config_service, data_transporter_service
 from boatswain.common.utils import docker_utils
-from boatswain.common.utils.constants import INCLUDING_ENV_SYSTEM, CONTAINER_CONF_CHANGED
+from boatswain.common.utils.constants import INCLUDING_ENV_SYSTEM, CONTAINER_CONF_CHANGED, \
+    CONTAINER_CONF_CHANGED_CHANNEL
 
 logger = logging.getLogger(__name__)
 
@@ -120,7 +121,7 @@ def startContainer(container: Container):
         ports[str(port.port) + '/' + port.protocol] = port.target_port
 
     volumes = {}
-    for volume in VolumeMount.select():
+    for volume in VolumeMount.select().where(VolumeMount.container == container):
         volumes[volume.host_path] = {'bind': volume.container_path, 'mode': volume.mode}
 
     docker_container = docker_service.run(container, ports, container_envs, volumes)
@@ -158,3 +159,13 @@ def connectToContainer(container):
     else:
         message = 'Container have to be running before connecting to it\'s shell'
         docker_utils.notifyContainerNotRunning(container, message)
+
+
+def listen(container: Container, name, func):
+    key = CONTAINER_CONF_CHANGED_CHANNEL + '_' + str(container.id) + '_' + name
+    data_transporter_service.listen(key, func)
+
+
+def fire(container: Container, name, value):
+    key = CONTAINER_CONF_CHANGED_CHANNEL + '_' + str(container.id) + '_' + name
+    data_transporter_service.fire(key, value)

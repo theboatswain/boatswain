@@ -15,25 +15,20 @@
 #
 #
 
-from PyQt5.QtCore import QMetaObject, QCoreApplication, pyqtSlot, Qt
+from PyQt5.QtCore import QCoreApplication, Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QPushButton, QWidget, QVBoxLayout
 
-from boatswain.common.services import data_transporter_service, containers_service
-from boatswain.common.services.worker_service import Worker, threadpool
 from boatswain.common.utils import text_utils
 from boatswain.common.utils.app_avatar import AppAvatar
-from boatswain.common.utils.constants import CONTAINER_CHANNEL
 from boatswain.common.utils.custom_ui import BQSizePolicy
 
 
-class AddAppWidget(QWidget):
+class ShortAppWidgetUi(QWidget):
 
-    def __init__(self, parent, name, description, repo) -> None:
-        super().__init__(parent)
-        self.repo = repo
-
-        self.disable_button = False
+    def __init__(self, parent_widget, name, description, ui_handler) -> None:
+        super().__init__(parent_widget)
+        self.ui_handler = ui_handler
         self.horizontal_layout = QHBoxLayout(self)
         self.horizontal_layout.setContentsMargins(0, 0, 0, 0)
         self._translate = QCoreApplication.translate
@@ -55,7 +50,6 @@ class AddAppWidget(QWidget):
         if len(description) > 0:
             self.description = QLabel(self)
             self.description.setWordWrap(True)
-            self.description.setText(self._translate("widget", description))
             self.info_layout.addWidget(self.description)
         self.info_widget.setSizePolicy(BQSizePolicy(h_stretch=2))
         self.horizontal_layout.addWidget(self.info_widget)
@@ -66,29 +60,5 @@ class AddAppWidget(QWidget):
         self.from_repo.setFont(font)
         self.horizontal_layout.addWidget(self.from_repo)
         self.install = QPushButton(self)
-        self.install.setObjectName("install")
         self.install.setFocusPolicy(Qt.NoFocus)
         self.horizontal_layout.addWidget(self.install)
-        self.from_repo.setText(self._translate("widget", "From Dockerhub"))
-        self.install.setText(self._translate("widget", "Install"))
-        self.name.setText(self._translate("widget", name))
-        QMetaObject.connectSlotsByName(self)
-
-        if containers_service.isAppInstalled(name):
-            self.install.setText(self._translate("widget", "Installed"))
-            self.disable_button = True
-
-    @pyqtSlot(bool, name='on_install_clicked')
-    def installApp(self, checked):
-        if self.disable_button:
-            return
-        self.disable_button = True
-        self.install.setText(self._translate("widget", "Installing"))
-        worker = Worker(containers_service.installContainer, self.name.text(), self.repo,
-                        self.description.text(), "latest")
-        worker.signals.result.connect(self.onAppInstalled)
-        threadpool.start(worker)
-
-    def onAppInstalled(self, container):
-        data_transporter_service.fire(CONTAINER_CHANNEL, container)
-        self.install.setText(self._translate("widget", "Installed"))

@@ -29,7 +29,7 @@ class BQSizePolicy(QSizePolicy):
         self.setVerticalStretch(v_stretch)
 
 
-class ReloadableWidget(QWidget):
+class ReloadableWidget:
     def reloadData(self):
         raise NotImplementedError()
 

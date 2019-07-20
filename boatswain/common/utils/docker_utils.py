@@ -30,6 +30,16 @@ def notifyDockerNotAvailable():
     msg.exec_()
 
 
+def notifyDockerException(message):
+    msg = QMessageBox()
+    msg.setIcon(QMessageBox.Critical)
+
+    msg.setText("Exception occurred!!!")
+    msg.setInformativeText(message)
+    msg.setStandardButtons(QMessageBox.Ok)
+    msg.exec_()
+
+
 def notifyContainerNotRunning(container: Container, message):
     msg = QMessageBox()
     msg.setIcon(QMessageBox.Critical)

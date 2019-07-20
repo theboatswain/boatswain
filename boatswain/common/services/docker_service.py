@@ -23,6 +23,7 @@ from requests.exceptions import ConnectionError
 from boatswain.common.exceptions.docker_exceptions import DockerNotAvailableException
 from boatswain.common.models.container import Container
 from boatswain.common.utils.constants import WINDOWS_BASE_URL, UNIX_BASE_URL
+from boatswain.common.utils.logging import logger
 
 system_platform = platform.system()
 base_url = WINDOWS_BASE_URL if system_platform == "Windows" else UNIX_BASE_URL
@@ -60,3 +61,13 @@ def ping():
         client.ping()
     except ConnectionError:
         raise DockerNotAvailableException()
+
+
+def isDockerRunning():
+    try:
+        ping()
+    except DockerNotAvailableException:
+        logger.warning('Could not start boatswain because of the docker is not running')
+        return False
+    else:
+        return True
