@@ -18,6 +18,7 @@
 from PyQt5.QtCore import QCoreApplication, Qt
 from PyQt5.QtGui import QMouseEvent
 from PyQt5.QtWidgets import QDialog, QMenu
+from docker.errors import APIError
 
 from boatswain.common.exceptions.docker_exceptions import DockerNotAvailableException
 from boatswain.common.models.container import Container
@@ -39,8 +40,7 @@ class AppWidget:
         self.container = container
         self.ui = AppWidgetUi(parent, container, self)
 
-        status = "Stop" if containers_service.isContainerRunning(container) else "Start"
-        self.ui.status.setText(self._translate(self.template, status))
+        self.autoSetContainerStatus()
         self.ui.status.clicked.connect(self.controlApp)
         self.ui.name.setText(self._translate(self.template, self.container.name))
 
@@ -48,6 +48,7 @@ class AppWidget:
         self.ui.contextMenuEvent = self.contextMenuEvent
         boatswain_daemon.listen('container', 'start', self.onContainerStart)
         boatswain_daemon.listen('container', 'stop', self.onContainerStop)
+        boatswain_daemon.listen('container', 'die', self.onContainerStop)
         containers_service.listen(self.container, 'name', lambda x: self.ui.name.setText(x))
 
     def controlApp(self):
@@ -64,7 +65,7 @@ class AppWidget:
     def onAppStarted(self, container):
         self.container = container
         self.container.save()
-        self.ui.status.setText('Stop')
+        self.autoSetContainerStatus()
 
     def onFailure(self, exception):
         if isinstance(exception, DockerNotAvailableException):
@@ -72,6 +73,7 @@ class AppWidget:
         if isinstance(exception, APIError):
             message = exception.response.json()
             docker_utils.notifyDockerException(message['message'])
+        self.autoSetContainerStatus()
         # Todo: Handle more exceptions
 
     def onAppClicked(self, event: QMouseEvent):
@@ -85,12 +87,12 @@ class AppWidget:
 
     def onContainerStart(self, event):
         if containers_service.isInstanceOf(self.container, event['id']):
-            self.ui.status.setText(self._translate(self.template, 'Stop'))
+            self.autoSetContainerStatus()
             # Todo: Add a green dot beside app's avatar
 
     def onContainerStop(self, event):
         if containers_service.isInstanceOf(self.container, event['id']):
-            self.ui.status.setText(self._translate(self.template, 'Start'))
+            self.autoSetContainerStatus()
 
     def contextMenuEvent(self, event):
         menu = QMenu(self.ui)
@@ -110,3 +112,7 @@ class AppWidget:
         menu.addAction(self._translate(self.template, 'Reset'))
         menu.addAction(self._translate(self.template, 'Delete'))
         menu.exec_(self.ui.mapToGlobal(event.pos()))
+
+    def autoSetContainerStatus(self):
+        status = "Stop" if containers_service.isContainerRunning(self.container) else "Start"
+        self.ui.status.setText(self._translate(self.template, status))

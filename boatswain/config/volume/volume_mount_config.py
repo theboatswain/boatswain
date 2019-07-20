@@ -62,6 +62,7 @@ class VolumeMountConfig:
         flags = QItemSelectionModel.ClearAndSelect | QItemSelectionModel.Rows
         index = self.ui.mount_table.model().index(self.ui.mount_table.model().rowCount() - 1, 0)
         self.ui.mount_table.selectionModel().select(index, flags)
+        # Todo: Prevent Duplicate mount point exception
 
     def onDeleteMountClicked(self):
         indicates = self.ui.mount_table.selectionModel().selectedRows()
