@@ -35,6 +35,7 @@ from boatswain.common.utils import docker_utils
 from boatswain.common.utils.constants import APP_DATA_DIR, CONTAINER_CHANNEL, APP_EXIT_CHANNEL, PEM_FILE
 from boatswain.common.utils.logging import logger
 from boatswain.home.home import Home
+from boatswain.resources import resources
 
 
 def deFrostPem():
@@ -57,6 +58,7 @@ def deFrostPem():
 
 
 def run():
+    resources.qInitResources()
     app = QApplication(sys.argv)
     if not docker_service.isDockerRunning():
         return docker_utils.notifyDockerNotAvailable()

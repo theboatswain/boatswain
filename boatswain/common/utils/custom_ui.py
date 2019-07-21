@@ -46,7 +46,7 @@ class PathInputDelegate(QItemDelegate):
 
     def createEditor(self, parent, option, index):
 
-        editor = ButtonLineEdit('boatswain/config/icons/directory.png', parent=parent)
+        editor = ButtonLineEdit(':/icons/folder.svg', parent=parent)
         editor.setText(str(index.data()))
         editor.button_clicked.connect(lambda x: self.fileLooking(editor))
         return editor

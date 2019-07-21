@@ -17,7 +17,7 @@
 
 from PyQt5.QtCore import QCoreApplication, Qt
 from PyQt5.QtGui import QMouseEvent
-from PyQt5.QtWidgets import QDialog, QMenu
+from PyQt5.QtWidgets import QMenu
 from docker.errors import APIError
 
 from boatswain.common.exceptions.docker_exceptions import DockerNotAvailableException
@@ -27,7 +27,7 @@ from boatswain.common.services.worker_service import Worker, threadpool
 from boatswain.common.utils import docker_utils
 from boatswain.common.utils.constants import ADD_APP_CHANNEL
 from boatswain.home.application.application_widget_ui import AppWidgetUi
-from boatswain.shortcut.preferences_shortcut import PreferencesShortcutWidget
+from boatswain.shortcut.preferences_shortcut_config import PreferencesShortcutConfig
 
 
 class AppWidget:
@@ -81,9 +81,8 @@ class AppWidget:
             self.ui.advanced_app.toggleWindow()
 
     def onPreferenceShortcutClicked(self):
-        dialog = QDialog(self)
-        dialog.ui = PreferencesShortcutWidget(dialog, self.ui.container_info)
-        dialog.exec_()
+        shortcut = PreferencesShortcutConfig(self.ui, self.ui.container_info)
+        shortcut.show()
 
     def onContainerStart(self, event):
         if containers_service.isInstanceOf(self.container, event['id']):
