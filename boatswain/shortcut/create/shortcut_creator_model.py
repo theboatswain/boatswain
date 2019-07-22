@@ -21,8 +21,6 @@ from PyQt5.QtCore import QVariant
 from PyQt5.QtCore import Qt
 
 from boatswain.common.models.container import Container
-from boatswain.common.services import config_service
-from boatswain.common.utils.constants import CONTAINER_CONF_CHANGED
 
 
 class ShortcutCreatorModel(QAbstractTableModel):
@@ -60,14 +58,13 @@ class ShortcutCreatorModel(QAbstractTableModel):
             self.array_data.sort(key=lambda x: getattr(x, self.header_data[col]))
         self.layoutChanged.emit()
 
-    def addRecord(self, record):
-        self.array_data.append(record)
+    def updateData(self, array_data):
+        self.array_data = array_data
         self.layoutChanged.emit()
 
     def removeRow(self, p_int, parent=None, *args, **kwargs):
         if self.array_data[p_int].container is not None:
             self.array_data[p_int].delete_instance()
-            config_service.setAppConf(self.container, CONTAINER_CONF_CHANGED, 'true')
         self.array_data.pop(p_int)
         self.layoutChanged.emit()
 

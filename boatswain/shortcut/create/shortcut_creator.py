@@ -16,11 +16,12 @@
 #
 
 from PyQt5 import QtCore
-from PyQt5.QtCore import QPoint
+from PyQt5.QtCore import QPoint, QModelIndex
 from PyQt5.QtGui import QIntValidator
-from PyQt5.QtWidgets import QDialog, QWidget, QToolTip
+from PyQt5.QtWidgets import QDialog, QWidget, QToolTip, QMessageBox
 
 from boatswain.common.models.container import Container
+from boatswain.common.models.preferences_shortcut import PreferencesShortcut
 from boatswain.shortcut.create.shortcut_creator_ui import ShortcutCreatorUi
 
 
@@ -30,8 +31,9 @@ class ShortcutCreator:
     shortcut_types = ['Volume Mount', 'Port Mapping', 'Environment']
     data_types = ['String', 'Folder', 'File', 'File & Folder', 'Number']
     
-    def __init__(self, container: Container, widget: QWidget) -> None:
+    def __init__(self, container: Container, widget: QWidget, shortcut: PreferencesShortcut) -> None:
         self.dialog = QDialog(widget)
+        self.container = container
         self.ui = ShortcutCreatorUi(self.dialog, container)
         self.dialog.ui = self.ui
         self.retranslateUi()
@@ -39,20 +41,37 @@ class ShortcutCreator:
         self.ui.container_name.setDisabled(True)
         for shortcut_type in self.shortcut_types:
             self.ui.shortcut_type.addItem(shortcut_type)
+            if shortcut_type == shortcut.shortcut:
+                self.ui.shortcut_type.setCurrentText(shortcut_type)
         for data_type in self.data_types:
             self.ui.data_type.addItem(data_type)
+            if data_type == shortcut.pref_type:
+                self.ui.data_type.setCurrentText(data_type)
+        self.ui.mapping_to.setText(shortcut.mapping_to)
+        self.ui.default_value.setText(shortcut.default_value)
+        self.shortcut = shortcut
+        self.ui.shortcut_label.setText(shortcut.label)
         self.dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.ui.next_button.clicked.connect(self.next)
         self.ui.back_button.clicked.connect(lambda x: self.ui.stacked_widget.setCurrentIndex(0))
         self.ui.shortcut_type.currentTextChanged.connect(self.onShortcutTypeChange)
         self.ui.data_type.currentTextChanged.connect(self.onDatatypeChange)
+        self.ui.finish_button.clicked.connect(self.finish)
+        self.ui.cancel_button.clicked.connect(self.cancel)
+        self.ui.cancel_button_2.clicked.connect(self.cancel)
 
     def show(self):
-        self.dialog.exec_()
+        return self.dialog.exec_()
+
+    def cancel(self):
+        button_reply = QMessageBox.question(self.dialog, 'Preference shortcut', "Are you sure?",
+                                            QMessageBox.Ok | QMessageBox.Cancel, QMessageBox.Cancel)
+        if button_reply == QMessageBox.Ok:
+            self.dialog.close()
 
     def next(self):
         if not self.ui.shortcut_label.text():
-            message = self._translate(self.template, 'Label can not be emptied')
+            message = self._translate(self.template, 'Label can not be empty')
             QToolTip.showText(self.ui.shortcut_label.mapToGlobal(QPoint()), message)
             return
         if self.ui.shortcut_type.currentText() == 'Port Mapping':
@@ -62,6 +81,33 @@ class ShortcutCreator:
         self.describeValues()
         self.ui.stacked_widget.setCurrentIndex(1)
 
+    def finish(self):
+        if not self.ui.mapping_to.text():
+            message = self._translate(self.template, 'The value of \'Mapping to\' can not be empty')
+            QToolTip.showText(self.ui.mapping_to.mapToGlobal(QPoint()), message)
+            return
+        shortcut_type = self.ui.shortcut_type.currentText()
+        mapping_to = self.ui.mapping_to.text()
+        if self.findShortcut(self.container, shortcut_type, mapping_to):
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Critical)
+
+            msg.setText(self._translate(self.template, "Preference shortcut already exists!!!"))
+            msg.setInformativeText('Preference shortcut with type: %s, mapping to: %s is already exist!\n\n'
+                                   'Please choose another one' % (shortcut_type, mapping_to))
+            msg.setStandardButtons(QMessageBox.Ok)
+            return msg.exec_()
+        order = PreferencesShortcut.select().where(PreferencesShortcut.container == self.container).count() * 1000
+        shortcut = PreferencesShortcut(container=self.container,
+                                       label=self.ui.shortcut_label.text(),
+                                       default_value=self.ui.default_value.text(),
+                                       pref_type=self.ui.data_type.currentText(),
+                                       shortcut=self.ui.shortcut_type.currentText(),
+                                       mapping_to=self.ui.mapping_to.text(),
+                                       order=order)
+        shortcut.save()
+        self.dialog.accept()
+
     def onShortcutTypeChange(self, shortcut_type):
         if shortcut_type == 'Port Mapping':
             self.ui.data_type.setCurrentText('Number')
@@ -69,6 +115,12 @@ class ShortcutCreator:
         else:
             self.ui.data_type.setCurrentText('String')
             self.ui.data_type.setDisabled(False)
+
+    def findShortcut(self, container, shortcut_type, mapping_to):
+        return PreferencesShortcut.select().where(
+            (PreferencesShortcut.container == container)
+            & (PreferencesShortcut.shortcut == shortcut_type)
+            & (PreferencesShortcut.mapping_to == mapping_to))
 
     def onDatatypeChange(self, data_type):
         if data_type == 'Number':
@@ -115,18 +167,16 @@ class ShortcutCreator:
         self.dialog.setWindowTitle(self._translate(self.template, "Preference Shortcut"))
         self.ui.shortcut_label.setPlaceholderText(self._translate(self.template, "i.e Root dir"))
         self.ui.data_type_label.setText(self._translate(self.template, "Datatype:"))
-        self.ui.label_des.setText(self._translate(self.template,
-                                                  "Label will be appeared in the expanding window to let you know the "
-                                                  "meaning of this preference"))
+        self.ui.label_des.setText(self._translate(self.template, "Label will be appeared in the expanding window "
+                                                                 "to let you know the meaning of this preference"))
         self.ui.type_label.setText(self._translate(self.template, "Shortcut type:"))
         self.ui.shortcut_for_des.setText(
             self._translate(self.template, "This preference shortcut will be applied to the specified application"))
         self.ui.shortcut_for_label.setText(self._translate(self.template, "Preference shortcut for:"))
         self.ui.label.setText(self._translate(self.template, "Label:"))
-        self.ui.data_type_des.setText(self._translate(self.template,
-                                                      "Type of the input data, we will decide which kind of "
-                                                      "input element in the expanding window "
-                                                      "based on this information"))
+        self.ui.data_type_des.setText(self._translate(self.template, "Type of the input data, we will decide which "
+                                                                     "kind of input element in the expanding window "
+                                                                     "based on this information"))
         self.ui.cancel_button.setText(self._translate(self.template, "Cancel"))
         self.ui.next_button.setText(self._translate(self.template, "Next"))
 

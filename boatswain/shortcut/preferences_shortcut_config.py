@@ -16,7 +16,7 @@
 #
 
 from PyQt5 import QtCore
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QModelIndex
 from PyQt5.QtWidgets import QDialog, QAbstractItemView, QTableView
 
 from boatswain.common.models.container import Container
@@ -35,14 +35,17 @@ class PreferencesShortcutConfig(object):
         self.dialog = QDialog(parent)
         self.ui = PreferencesShortcutConfigUi(self.dialog, container, self)
         self.dialog.ui = self.ui
-        self.ui.new_shortcut.clicked.connect(self.onNewPortClicked)
+        self.ui.new_shortcut.clicked.connect(self.onNewShortcutClicked)
+        self.ui.delete_shortcut.clicked.connect(self.onDeleteShortcutClicked)
 
         self.retranslateUi()
         headers = ['label', 'default_value', 'pref_type', 'shortcut', 'mapping_to']
         display_headers = ['Label', 'Default value', 'Type', 'Shortcut', 'Mapping to']
         table_data = PreferencesShortcut.select().where(PreferencesShortcut.container == self.container)
-        self.configureVolumeTable(self.ui.shortcut_table, headers, display_headers, list(table_data), self.container)
+        self.table_model = ShortcutCreatorModel(list(table_data), headers, display_headers, container, self.dialog)
+        self.configureVolumeTable(self.ui.shortcut_table, self.table_model)
         self.dialog.setAttribute(Qt.WA_DeleteOnClose)
+        self.ui.shortcut_table.doubleClicked.connect(self.onDoubleClickItem)
 
     def retranslateUi(self):
         self.dialog.setWindowTitle(self._translate(self.template, "Preferences shortcut") + " - " + self.container.name)
@@ -51,16 +54,32 @@ class PreferencesShortcutConfig(object):
         self.ui.new_shortcut.setText(self._translate(self.template, "Add"))
         self.ui.delete_shortcut.setText(self._translate(self.template, "Delete"))
 
-    def onNewPortClicked(self):
-        shortcut_creator = ShortcutCreator(self.container, self.dialog)
-        shortcut_creator.show()
+    def onNewShortcutClicked(self):
+        shortcut_creator = ShortcutCreator(self.container, self.dialog, PreferencesShortcut())
+        if shortcut_creator.show():
+            table_data = PreferencesShortcut.select().where(PreferencesShortcut.container == self.container)
+            self.table_model.updateData(list(table_data))
+            self.ui.shortcut_table.resizeRowToContents(self.ui.shortcut_table.model().rowCount() - 1)
+
+    def onDeleteShortcutClicked(self):
+        indicates = self.ui.shortcut_table.selectionModel().selectedRows()
+        for item in sorted(indicates, reverse=True):
+            self.ui.shortcut_table.model().removeRow(item.row())
+
+    def onDoubleClickItem(self, index: QModelIndex):
+        data = self.table_model.array_data[index.row()]
+        shortcut_creator = ShortcutCreator(self.container, self.dialog, data)
+        if shortcut_creator.show():
+            table_data = PreferencesShortcut.select().where(PreferencesShortcut.container == self.container)
+            self.table_model.updateData(list(table_data))
+            self.ui.shortcut_table.resizeRowToContents(self.ui.shortcut_table.model().rowCount() - 1)
 
     def show(self):
         self.dialog.exec_()
 
-    def configureVolumeTable(self, tv: QTableView, header, display_header, data, container: Container):
+    def configureVolumeTable(self, tv: QTableView, table_model):
         # set the table model
-        table_model = ShortcutCreatorModel(data, header, display_header, container, self.dialog)
+
         tv.setModel(table_model)
 
         # hide grid
