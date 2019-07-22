@@ -29,6 +29,8 @@ logging.basicConfig(filename=log_file,
                     filemode='a',
                     format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
                     datefmt='%H:%M:%S',
-                    level=logging.DEBUG)
+                    level=logging.INFO)
+
+print('Log file: ' + log_file)
 
 logger = logging.getLogger('boatswain')
