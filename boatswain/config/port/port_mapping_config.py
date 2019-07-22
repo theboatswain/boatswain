@@ -69,7 +69,7 @@ class PortMappingConfig:
 
     def onDeletePortClicked(self):
         indicates = self.ui.mapping_table.selectionModel().selectedRows()
-        for item in sorted(indicates):
+        for item in sorted(indicates, reverse=True):
             self.ui.mapping_table.model().removeRow(item.row())
 
     def configurePortTable(self, tv: QTableView, header, display_header, data, container: Container):

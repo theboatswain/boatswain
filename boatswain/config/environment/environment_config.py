@@ -73,7 +73,7 @@ class EnvironmentConfig:
 
     def onDeleteEnvClicked(self):
         indicates = self.ui.user_table.selectionModel().selectedRows()
-        for item in sorted(indicates):
+        for item in sorted(indicates, reverse=True):
             self.ui.user_table.model().removeRow(item.row())
 
     def onIncludeSysEnvCheck(self, state):
