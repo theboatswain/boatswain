@@ -135,6 +135,8 @@ class ButtonLineEdit(QLineEdit):
         self.button.setCursor(Qt.OpenHandCursor)
         self.button.clicked.connect(self.button_clicked.emit)
 
+        self.setAttribute(Qt.WA_MacShowFocusRect, 0)
+
         frame_width = self.style().pixelMetric(QStyle.PM_DefaultFrameWidth)
         button_size = self.button.sizeHint()
 

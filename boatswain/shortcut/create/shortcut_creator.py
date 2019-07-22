@@ -37,7 +37,6 @@ class ShortcutCreator:
         self.retranslateUi()
         self.ui.container_name.addItem(container.name)
         self.ui.container_name.setDisabled(True)
-        self.ui.shortcut_label.setStyleSheet("padding: 2 2 2 5;")
         for shortcut_type in self.shortcut_types:
             self.ui.shortcut_type.addItem(shortcut_type)
         for data_type in self.data_types:

@@ -79,6 +79,7 @@ class ShortcutCreatorUi:
         self.gridLayout.addWidget(self.shortcut_for_label, 0, 0, 1, 1)
         self.shortcut_label = QtWidgets.QLineEdit(self.main_widget)
         self.shortcut_label.setAttribute(Qt.WA_MacShowFocusRect, 0)
+        self.shortcut_label.setStyleSheet("padding: 2 2 2 5;")
         self.gridLayout.addWidget(self.shortcut_label, 2, 1, 1, 1)
         self.shortcut_for_des = QtWidgets.QLabel(self.main_widget)
         self.shortcut_for_des.setSizePolicy(BQSizePolicy())
@@ -143,6 +144,7 @@ class ShortcutCreatorUi:
         self.gridLayout_2.setHorizontalSpacing(6)
         self.gridLayout_2.setVerticalSpacing(5)
         self.mapping_to = QtWidgets.QLineEdit(self.widget)
+        self.mapping_to.setAttribute(Qt.WA_MacShowFocusRect, 0)
         self.gridLayout_2.addWidget(self.mapping_to, 2, 1, 1, 1)
         self.default_value = ButtonLineEdit(':/icons/folder.svg', self.widget)
         self.default_value.setSizePolicy(BQSizePolicy(h_stretch=2,
