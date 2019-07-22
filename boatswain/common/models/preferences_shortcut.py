@@ -17,3 +17,5 @@ class PreferencesShortcut(BaseModel):
     shortcut = CharField()
     # depend on the shortcut type
     mapping_to = CharField()
+    # order
+    order = IntegerField()
