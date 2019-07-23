@@ -59,12 +59,14 @@ class VolumeMountConfig:
         flags = QItemSelectionModel.ClearAndSelect | QItemSelectionModel.Rows
         index = self.ui.mount_table.model().index(self.ui.mount_table.model().rowCount() - 1, 0)
         self.ui.mount_table.selectionModel().select(index, flags)
+        self.ui.mount_table.resizeRowsToContents()
         # Todo: Prevent Duplicate mount point exception
 
     def onDeleteMountClicked(self):
         indicates = self.ui.mount_table.selectionModel().selectedRows()
         for item in sorted(indicates, reverse=True):
             self.ui.mount_table.model().removeRow(item.row())
+        self.ui.mount_table.resizeRowsToContents()
 
     def configureVolumeTable(self, tv: QTableView, header, display_header, data, container: Container):
         # set the table model

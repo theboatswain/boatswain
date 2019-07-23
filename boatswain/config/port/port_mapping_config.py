@@ -66,11 +66,13 @@ class PortMappingConfig:
         flags = QItemSelectionModel.ClearAndSelect | QItemSelectionModel.Rows
         index = self.ui.mapping_table.model().index(self.ui.mapping_table.model().rowCount() - 1, 0)
         self.ui.mapping_table.selectionModel().select(index, flags)
+        self.ui.mapping_table.resizeRowsToContents()
 
     def onDeletePortClicked(self):
         indicates = self.ui.mapping_table.selectionModel().selectedRows()
         for item in sorted(indicates, reverse=True):
             self.ui.mapping_table.model().removeRow(item.row())
+        self.ui.mapping_table.resizeRowsToContents()
 
     def configurePortTable(self, tv: QTableView, header, display_header, data, container: Container):
         # set the table model

@@ -70,11 +70,13 @@ class EnvironmentConfig:
         flags = QItemSelectionModel.ClearAndSelect | QItemSelectionModel.Rows
         index = self.ui.user_table.model().index(self.ui.user_table.model().rowCount() - 1, 0)
         self.ui.user_table.selectionModel().select(index, flags)
+        self.ui.user_table.resizeRowsToContents()
 
     def onDeleteEnvClicked(self):
         indicates = self.ui.user_table.selectionModel().selectedRows()
         for item in sorted(indicates, reverse=True):
             self.ui.user_table.model().removeRow(item.row())
+        self.ui.user_table.resizeRowsToContents()
 
     def onIncludeSysEnvCheck(self, state):
         val = 'true' if state == Qt.Checked else 'false'

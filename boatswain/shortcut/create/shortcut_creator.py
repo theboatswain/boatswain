@@ -60,6 +60,8 @@ class ShortcutCreator:
         self.ui.cancel_button.clicked.connect(self.cancel)
         self.ui.cancel_button_2.clicked.connect(self.cancel)
         self.ui.default_value.button_clicked.connect(self.onFindDirClicked)
+        if shortcut.pref_type in ['File', 'Folder']:
+            self.ui.default_value.button.setVisible(True)
 
     def show(self):
         return self.dialog.exec_()
@@ -82,6 +84,9 @@ class ShortcutCreator:
         self.describeValues()
         self.ui.stacked_widget.setCurrentIndex(1)
 
+    def isCreateMode(self):
+        return self.shortcut.label is None
+
     def finish(self):
         if not self.ui.mapping_to.text():
             message = self._translate(self.template, 'The value of \'Mapping to\' can not be empty')
@@ -89,7 +94,9 @@ class ShortcutCreator:
             return
         shortcut_type = self.ui.shortcut_type.currentText()
         mapping_to = self.ui.mapping_to.text()
-        if self.findShortcut(self.container, shortcut_type, mapping_to):
+
+        # Is create mode
+        if self.isCreateMode() and self.findShortcut(self.container, shortcut_type, mapping_to):
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Critical)
 
@@ -98,15 +105,19 @@ class ShortcutCreator:
                                    'Please choose another one' % (shortcut_type, mapping_to))
             msg.setStandardButtons(QMessageBox.Ok)
             return msg.exec_()
-        order = PreferencesShortcut.select().where(PreferencesShortcut.container == self.container).count() * 1000
-        shortcut = PreferencesShortcut(container=self.container,
-                                       label=self.ui.shortcut_label.text(),
-                                       default_value=self.ui.default_value.text(),
-                                       pref_type=self.ui.data_type.currentText(),
-                                       shortcut=self.ui.shortcut_type.currentText(),
-                                       mapping_to=self.ui.mapping_to.text(),
-                                       order=order)
-        shortcut.save()
+
+        if self.isCreateMode():
+            order = PreferencesShortcut.select().where(PreferencesShortcut.container == self.container).count() * 1000
+            self.shortcut.order = order
+
+        self.shortcut.container = self.container
+        self.shortcut.label = self.ui.shortcut_label.text()
+        self.shortcut.default_value = self.ui.default_value.text()
+        self.shortcut.pref_type = self.ui.data_type.currentText()
+        self.shortcut.shortcut = self.ui.shortcut_type.currentText()
+        self.shortcut.mapping_to = self.ui.mapping_to.text()
+
+        self.shortcut.save()
         self.dialog.accept()
 
     def onShortcutTypeChange(self, shortcut_type):

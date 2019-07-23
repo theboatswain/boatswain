@@ -33,6 +33,7 @@ class AdvancedAppWidget:
     template = 'AdvancedAppWidget'
     animation: QPropertyAnimation
     tags: QComboBox
+    app_info_max_height: int
 
     def __init__(self, parent, container: Container) -> None:
         self.container = container

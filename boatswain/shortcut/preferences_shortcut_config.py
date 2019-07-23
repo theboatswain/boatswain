@@ -59,12 +59,13 @@ class PreferencesShortcutConfig(object):
         if shortcut_creator.show():
             table_data = PreferencesShortcut.select().where(PreferencesShortcut.container == self.container)
             self.table_model.updateData(list(table_data))
-            self.ui.shortcut_table.resizeRowToContents(self.ui.shortcut_table.model().rowCount() - 1)
+            self.ui.shortcut_table.resizeRowsToContents()
 
     def onDeleteShortcutClicked(self):
         indicates = self.ui.shortcut_table.selectionModel().selectedRows()
         for item in sorted(indicates, reverse=True):
             self.ui.shortcut_table.model().removeRow(item.row())
+        self.ui.shortcut_table.resizeRowsToContents()
 
     def onDoubleClickItem(self, index: QModelIndex):
         data = self.table_model.array_data[index.row()]
@@ -72,8 +73,7 @@ class PreferencesShortcutConfig(object):
         if shortcut_creator.show():
             table_data = PreferencesShortcut.select().where(PreferencesShortcut.container == self.container)
             self.table_model.updateData(list(table_data))
-            self.ui.shortcut_table.resizeRowToContents(self.ui.shortcut_table.model().rowCount() - 1)
-            self.ui.shortcut_table.resizeColumnsToContents()
+            self.ui.shortcut_table.resizeRowsToContents()
 
     def show(self):
         self.dialog.exec_()
