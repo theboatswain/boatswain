@@ -73,6 +73,7 @@ class PreferencesShortcutConfig(object):
             table_data = PreferencesShortcut.select().where(PreferencesShortcut.container == self.container)
             self.table_model.updateData(list(table_data))
             self.ui.shortcut_table.resizeRowToContents(self.ui.shortcut_table.model().rowCount() - 1)
+            self.ui.shortcut_table.resizeColumnsToContents()
 
     def show(self):
         self.dialog.exec_()

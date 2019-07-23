@@ -18,7 +18,7 @@
 from PyQt5 import QtCore
 from PyQt5.QtCore import QPoint, QModelIndex
 from PyQt5.QtGui import QIntValidator
-from PyQt5.QtWidgets import QDialog, QWidget, QToolTip, QMessageBox
+from PyQt5.QtWidgets import QDialog, QWidget, QToolTip, QMessageBox, QFileDialog
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
@@ -29,7 +29,7 @@ class ShortcutCreator:
     _translate = QtCore.QCoreApplication.translate
     template = 'PreferenceShortcut'
     shortcut_types = ['Volume Mount', 'Port Mapping', 'Environment']
-    data_types = ['String', 'Folder', 'File', 'File & Folder', 'Number']
+    data_types = ['String', 'Folder', 'File', 'Number']
     
     def __init__(self, container: Container, widget: QWidget, shortcut: PreferencesShortcut) -> None:
         self.dialog = QDialog(widget)
@@ -59,6 +59,7 @@ class ShortcutCreator:
         self.ui.finish_button.clicked.connect(self.finish)
         self.ui.cancel_button.clicked.connect(self.cancel)
         self.ui.cancel_button_2.clicked.connect(self.cancel)
+        self.ui.default_value.button_clicked.connect(self.onFindDirClicked)
 
     def show(self):
         return self.dialog.exec_()
@@ -121,6 +122,16 @@ class ShortcutCreator:
             (PreferencesShortcut.container == container)
             & (PreferencesShortcut.shortcut == shortcut_type)
             & (PreferencesShortcut.mapping_to == mapping_to))
+
+    def onFindDirClicked(self, arg):
+        if self.ui.data_type.currentText() == 'File':
+            fname = QFileDialog.getOpenFileName(self.dialog, 'Open file')
+            if fname[0]:
+                self.ui.default_value.setText(fname[0])
+        elif self.ui.data_type.currentText() == 'Folder':
+            file = str(QFileDialog.getExistingDirectory(self.dialog, "Select Directory"))
+            if file:
+                self.ui.default_value.setText(file)
 
     def onDatatypeChange(self, data_type):
         if data_type == 'Number':
