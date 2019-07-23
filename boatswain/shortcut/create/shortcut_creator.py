@@ -22,6 +22,8 @@ from PyQt5.QtWidgets import QDialog, QWidget, QToolTip, QMessageBox, QFileDialog
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
+from boatswain.common.services import config_service
+from boatswain.common.utils.constants import SHORTCUT_CONF_CHANGED_CHANNEL
 from boatswain.shortcut.create.shortcut_creator_ui import ShortcutCreatorUi
 
 
@@ -118,6 +120,7 @@ class ShortcutCreator:
         self.shortcut.mapping_to = self.ui.mapping_to.text()
 
         self.shortcut.save()
+        config_service.setAppConf(self.container, SHORTCUT_CONF_CHANGED_CHANNEL, 'true')
         self.dialog.accept()
 
     def onShortcutTypeChange(self, shortcut_type):

@@ -16,7 +16,7 @@
 #
 
 from PyQt5.QtCore import QPropertyAnimation, QCoreApplication
-from PyQt5.QtWidgets import QLabel, QComboBox, QSizePolicy, QWidget, QLineEdit, QPushButton
+from PyQt5.QtWidgets import QLabel, QComboBox, QSizePolicy, QWidget, QLineEdit, QPushButton, QFileDialog
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
@@ -69,6 +69,16 @@ class AdvancedAppWidget:
             self.animation.setEndValue(0)
             self.animation.start()
 
+    def findFileOrFolder(self, shotcut: PreferencesShortcut, input_box: QLineEdit):
+        if shotcut.pref_type == 'File':
+            fname = QFileDialog.getOpenFileName(self.ui, 'Open file')
+            path = fname[0] if fname[0] else ''
+        else:
+            file = str(QFileDialog.getExistingDirectory(self.ui, "Select Directory"))
+            path = file if file else ''
+        if path:
+            input_box.setText(path)
+
     def drawShortcut(self, shortcut: PreferencesShortcut, row):
         label = QLabel(self.ui.widget)
         label.setText(self._translate(self.template, shortcut.label) + ':')
@@ -81,6 +91,7 @@ class AdvancedAppWidget:
             finder = QPushButton(self.ui.widget)
             finder.setText('...')
             finder.setMaximumWidth(40)
+            finder.clicked.connect(lambda x: self.findFileOrFolder(shortcut, input_box))
             self.ui.grid_layout.addWidget(finder, row, 3, 1, 2)
         else:
             hidden_widget = QWidget(self.ui.widget)
@@ -110,14 +121,22 @@ class AdvancedAppWidget:
             self.drawShortcut(shortcut, index)
         self.drawTagShortcut(len(shortcuts))
 
+        is_collapsed = self.ui.maximumHeight() == 0
         self.ui.setMaximumHeight(9999999)
         self.app_info_max_height = self.ui.sizeHint().height() + 10
-        self.ui.setMaximumHeight(0)
+        if is_collapsed:
+            self.ui.setMaximumHeight(0)
+        else:
+            self.ui.setMaximumHeight(self.app_info_max_height)
 
     def cleanShortcuts(self):
         while self.ui.grid_layout.count():
             item = self.ui.grid_layout.takeAt(0)
             item.widget().deleteLater()
+
+    def redrawShortcuts(self):
+        self.cleanShortcuts()
+        self.drawShortcuts()
 
     def listenTagChange(self, index):
         self.tags.setCurrentIndex(index)
