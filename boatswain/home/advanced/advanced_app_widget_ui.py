@@ -16,8 +16,7 @@
 #
 
 from PyQt5.QtCore import QCoreApplication
-from PyQt5.QtWidgets import QWidget, QSizePolicy, QPushButton, QLabel, QComboBox, QFrame, QVBoxLayout, QHBoxLayout, \
-    QGridLayout
+from PyQt5.QtWidgets import QWidget, QSizePolicy, QPushButton, QFrame, QVBoxLayout, QHBoxLayout, QGridLayout
 
 from boatswain.common.models.container import Container
 from boatswain.common.utils.custom_ui import BQSizePolicy

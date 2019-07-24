@@ -21,7 +21,7 @@ from PyQt5.QtWidgets import QLabel, QComboBox, QSizePolicy, QWidget, QLineEdit, 
 from boatswain.common.models.container import Container
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
 from boatswain.common.models.tag import Tag
-from boatswain.common.services import config_service, containers_service
+from boatswain.common.services import config_service, containers_service, shortcut_service
 from boatswain.common.utils.constants import CONTAINER_CONF_CHANGED, SHORTCUT_CONF_CHANGED_CHANNEL
 from boatswain.common.utils.custom_ui import BQSizePolicy
 from boatswain.config.app_config import AppConfig
@@ -86,6 +86,7 @@ class AdvancedAppWidget:
         self.ui.grid_layout.addWidget(label, row, 0, 1, 1)
         input_box = QLineEdit(self.ui.widget)
         input_box.setText(shortcut.default_value)
+        input_box.textChanged.connect(lambda x: self.setShortcutValue(shortcut, x))
         input_box.setStyleSheet('border: none; background-color: transparent')
         self.ui.grid_layout.addWidget(input_box, row, 1, 1, 2)
         if shortcut.pref_type in ['File', 'Folder']:
@@ -141,3 +142,8 @@ class AdvancedAppWidget:
 
     def listenTagChange(self, index):
         self.tags.setCurrentIndex(index)
+
+    def setShortcutValue(self, shortcut: PreferencesShortcut, value):
+        shortcut.default_value = value
+        shortcut.save()
+        config_service.setAppConf(shortcut.container, CONTAINER_CONF_CHANGED, 'true')

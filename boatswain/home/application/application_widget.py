@@ -22,10 +22,10 @@ from docker.errors import APIError
 
 from boatswain.common.exceptions.docker_exceptions import DockerNotAvailableException
 from boatswain.common.models.container import Container
-from boatswain.common.services import containers_service, data_transporter_service, boatswain_daemon, config_service
+from boatswain.common.services import containers_service, data_transporter_service, boatswain_daemon
 from boatswain.common.services.worker_service import Worker, threadpool
 from boatswain.common.utils import docker_utils
-from boatswain.common.utils.constants import ADD_APP_CHANNEL, SHORTCUT_CONF_CHANGED_CHANNEL
+from boatswain.common.utils.constants import ADD_APP_CHANNEL
 from boatswain.home.application.application_widget_ui import AppWidgetUi
 from boatswain.shortcut.preferences_shortcut_config import PreferencesShortcutConfig
 

@@ -16,14 +16,14 @@
 #
 
 from PyQt5 import QtCore
-from PyQt5.QtCore import QPoint, QModelIndex
+from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import QDialog, QWidget, QToolTip, QMessageBox, QFileDialog
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
-from boatswain.common.services import config_service, containers_service
-from boatswain.common.utils.constants import SHORTCUT_CONF_CHANGED_CHANNEL
+from boatswain.common.services import containers_service, shortcut_service, config_service
+from boatswain.common.utils.constants import SHORTCUT_CONF_CHANGED_CHANNEL, CONTAINER_CONF_CHANGED
 from boatswain.shortcut.create.shortcut_creator_ui import ShortcutCreatorUi
 
 
@@ -32,7 +32,7 @@ class ShortcutCreator:
     template = 'PreferenceShortcut'
     shortcut_types = ['Volume Mount', 'Port Mapping', 'Environment']
     data_types = ['String', 'Folder', 'File', 'Number']
-    
+
     def __init__(self, container: Container, widget: QWidget, shortcut: PreferencesShortcut) -> None:
         self.dialog = QDialog(widget)
         self.container = container
@@ -120,6 +120,7 @@ class ShortcutCreator:
         self.shortcut.mapping_to = self.ui.mapping_to.text()
 
         self.shortcut.save()
+        config_service.setAppConf(self.shortcut.container, CONTAINER_CONF_CHANGED, 'true')
         containers_service.fire(self.container, SHORTCUT_CONF_CHANGED_CHANNEL, True)
         self.dialog.accept()
 
@@ -132,10 +133,9 @@ class ShortcutCreator:
             self.ui.data_type.setDisabled(False)
 
     def findShortcut(self, container, shortcut_type, mapping_to):
-        return PreferencesShortcut.select().where(
-            (PreferencesShortcut.container == container)
-            & (PreferencesShortcut.shortcut == shortcut_type)
-            & (PreferencesShortcut.mapping_to == mapping_to))
+        condition = (PreferencesShortcut.container == container) & (PreferencesShortcut.shortcut == shortcut_type)
+        condition = condition & (PreferencesShortcut.mapping_to == mapping_to)
+        return PreferencesShortcut.select().where(condition)
 
     def onFindDirClicked(self, arg):
         if self.ui.data_type.currentText() == 'File':
@@ -171,10 +171,10 @@ class ShortcutCreator:
         elif self.ui.shortcut_type.currentText() == 'Port Mapping':
             self.ui.default_value_des.setText(self._translate(
                 self.template, "The default host port number of this preference shortcut port mapping, "
-                               "which will be mapped into the container port described in the 'Mapping to' section. \n"                               
+                               "which will be mapped into the container port described in the 'Mapping to' section. \n"
                                "This value can be changed in the expanding window."))
             self.ui.mapping_to_des.setText(self._translate(
-                self.template, "The container port number of this preference shortcut port mapping. \n"                               
+                self.template, "The container port number of this preference shortcut port mapping. \n"
                                "This value can't be changed in the expanding window."))
 
         elif self.ui.shortcut_type.currentText() == 'Volume Mount':

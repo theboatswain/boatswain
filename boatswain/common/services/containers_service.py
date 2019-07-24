@@ -26,7 +26,8 @@ from boatswain.common.models.port_mapping import PortMapping
 from boatswain.common.models.volume_mount import VolumeMount
 from boatswain.common.search.dockerhub_searcher import DockerHubSearcher
 from boatswain.common.search.search_images import SearchImages
-from boatswain.common.services import docker_service, system_service, config_service, data_transporter_service
+from boatswain.common.services import docker_service, system_service, config_service, data_transporter_service, \
+    shortcut_service
 from boatswain.common.utils import docker_utils
 from boatswain.common.utils.constants import INCLUDING_ENV_SYSTEM, CONTAINER_CONF_CHANGED, \
     CONTAINER_CONF_CHANGED_CHANNEL
@@ -109,20 +110,24 @@ def startContainer(container: Container):
     container_envs = {}
 
     if config_service.isAppConf(container, INCLUDING_ENV_SYSTEM, 'true'):
-        for item in os.environ:
-            if item != 'PATH':
-                container_envs[item] = os.environ[item]
+        container_envs = {key: os.environ[key] for key in os.environ if key != 'PATH'}
 
     for environment in Environment.select().where(Environment.container == container):
         container_envs[environment.name] = environment.value
+
+    container_envs = {**container_envs, **shortcut_service.getShortcutContainerEnvs(container)}
 
     ports = {}
     for port in PortMapping.select().where(PortMapping.container == container):
         ports[str(port.port) + '/' + port.protocol] = port.target_port
 
+    ports = {**ports, **shortcut_service.getShortcutPortMapping(container)}
+
     volumes = {}
     for volume in VolumeMount.select().where(VolumeMount.container == container):
         volumes[volume.host_path] = {'bind': volume.container_path, 'mode': volume.mode}
+
+    volumes = {**volumes, **shortcut_service.getShortcutVolumeMounts(container)}
 
     docker_container = docker_service.run(container, ports, container_envs, volumes)
     container.container_id = docker_container.short_id
