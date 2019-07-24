@@ -22,7 +22,7 @@ from boatswain.common.models.container import Container
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
 from boatswain.common.models.tag import Tag
 from boatswain.common.services import config_service, containers_service
-from boatswain.common.utils.constants import CONTAINER_CONF_CHANGED
+from boatswain.common.utils.constants import CONTAINER_CONF_CHANGED, SHORTCUT_CONF_CHANGED_CHANNEL
 from boatswain.common.utils.custom_ui import BQSizePolicy
 from boatswain.config.app_config import AppConfig
 from boatswain.home.advanced.advanced_app_widget_ui import AdvancedAppWidgetUi
@@ -41,6 +41,7 @@ class AdvancedAppWidget:
         self.ui.advanced_configuration.clicked.connect(self.onAdvancedConfigurationClicked)
         self.drawShortcuts()
         containers_service.listen(self.container, 'tag_index', self.listenTagChange)
+        containers_service.listen(self.container, SHORTCUT_CONF_CHANGED_CHANNEL, self.redrawShortcuts)
 
     def onImageTagChange(self, full_tag_name):
         if not full_tag_name:
@@ -102,7 +103,7 @@ class AdvancedAppWidget:
         label = QLabel(self.ui.widget)
         self.ui.grid_layout.addWidget(label, row, 0, 1, 1)
         self.tags = QComboBox(self.ui.widget)
-        self.tags.setSizePolicy(BQSizePolicy(h_stretch=2, height=QSizePolicy.Fixed))
+        self.tags.setSizePolicy(BQSizePolicy(h_stretch=4, height=QSizePolicy.Fixed))
         self.ui.grid_layout.addWidget(self.tags, row, 1, 1, 2)
         hidden_widget = QWidget(self.ui.widget)
         hidden_widget.setSizePolicy(BQSizePolicy(h_stretch=1))
@@ -123,7 +124,7 @@ class AdvancedAppWidget:
 
         is_collapsed = self.ui.maximumHeight() == 0
         self.ui.setMaximumHeight(9999999)
-        self.app_info_max_height = self.ui.sizeHint().height() + 10
+        self.app_info_max_height = self.ui.sizeHint().height() + 50
         if is_collapsed:
             self.ui.setMaximumHeight(0)
         else:
@@ -134,7 +135,7 @@ class AdvancedAppWidget:
             item = self.ui.grid_layout.takeAt(0)
             item.widget().deleteLater()
 
-    def redrawShortcuts(self):
+    def redrawShortcuts(self, args=None):
         self.cleanShortcuts()
         self.drawShortcuts()
 

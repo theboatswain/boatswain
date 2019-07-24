@@ -83,9 +83,6 @@ class AppWidget:
     def onPreferenceShortcutClicked(self):
         shortcut = PreferencesShortcutConfig(self.ui, self.ui.container_info)
         shortcut.show()
-        if config_service.isAppConf(self.container, SHORTCUT_CONF_CHANGED_CHANNEL, 'true'):
-            self.ui.advanced_app.redrawShortcuts()
-            config_service.setAppConf(self.container, SHORTCUT_CONF_CHANGED_CHANNEL, 'false')
 
     def onContainerStart(self, event):
         if containers_service.isInstanceOf(self.container, event['id']):

@@ -21,7 +21,7 @@ from PyQt5.QtWidgets import QDialog, QAbstractItemView, QTableView
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
-from boatswain.common.services import config_service
+from boatswain.common.services import config_service, containers_service
 from boatswain.common.utils.constants import SHORTCUT_CONF_CHANGED_CHANNEL
 from boatswain.shortcut.create.shortcut_creator import ShortcutCreator
 from boatswain.shortcut.create.shortcut_creator_model import ShortcutCreatorModel
@@ -68,7 +68,7 @@ class PreferencesShortcutConfig(object):
         for item in sorted(indicates, reverse=True):
             self.ui.shortcut_table.model().removeRow(item.row())
         self.ui.shortcut_table.resizeRowsToContents()
-        config_service.setAppConf(self.container, SHORTCUT_CONF_CHANGED_CHANNEL, 'true')
+        containers_service.fire(self.container, SHORTCUT_CONF_CHANGED_CHANNEL, True)
 
     def onDoubleClickItem(self, index: QModelIndex):
         data = self.table_model.array_data[index.row()]
