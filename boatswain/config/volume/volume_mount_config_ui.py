@@ -25,7 +25,8 @@ from boatswain.common.utils.custom_ui import AutoResizeWidget, BQSizePolicy
 class VolumeMountConfigUi(AutoResizeWidget):
 
     def preferableSize(self) -> QSize:
-        return QSize(745, 354)
+        size = super().preferableSize()
+        return QSize(size.width(), size.height() * 0.8)
 
     def __init__(self, parent, container: Container, handler) -> None:
         super().__init__(parent)

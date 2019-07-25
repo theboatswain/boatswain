@@ -19,6 +19,7 @@ from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTabWidget, QDialog
 
 from boatswain.common.models.container import Container
+from boatswain.common.services import system_service
 from boatswain.common.utils.custom_ui import BQSizePolicy
 from boatswain.config.environment.environment_config import EnvironmentConfig
 from boatswain.config.general.general_config import GeneralAppConfig
@@ -32,9 +33,11 @@ class AppConfigUi(object):
         super().__init__()
         self.container = container
 
-        dialog.resize(745, 445)
+        height = system_service.screen_height / 2
+        width = height * 1.6
+        dialog.resize(width, height)
         dialog.setSizePolicy(BQSizePolicy(h_stretch=1))
-        dialog.setMinimumSize(QSize(745, 445))
+        dialog.setMinimumSize(QSize(width, height))
         dialog.setSizeGripEnabled(False)
         dialog.setModal(False)
 

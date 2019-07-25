@@ -19,6 +19,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import QSize
 
 from boatswain.common.models.container import Container
+from boatswain.common.services import system_service
 from boatswain.common.utils.custom_ui import BQSizePolicy
 
 
@@ -28,9 +29,11 @@ class PreferencesShortcutConfigUi(object):
         self.container = container
         self.handler = handler
         self.dialog = dialog
-        dialog.resize(745, 314)
+        height = system_service.screen_height / 2.2
+        width = height * 2
+        dialog.resize(width, height)
         dialog.setSizePolicy(BQSizePolicy(h_stretch=1))
-        dialog.setMinimumSize(QSize(745, 314))
+        dialog.setMinimumSize(QSize(width, height))
         dialog.setSizeGripEnabled(False)
         dialog.setModal(False)
         self.verticalLayout = QtWidgets.QVBoxLayout(dialog)

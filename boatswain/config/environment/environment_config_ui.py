@@ -14,6 +14,7 @@
 #      along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
+
 from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTableView, QCheckBox
 
@@ -59,4 +60,5 @@ class EnvironmentConfigUi(AutoResizeWidget):
         self.vertical_layout.addWidget(self.sys_env_table)
 
     def preferableSize(self) -> QSize:
-        return QSize(745, 555)
+        size = super().preferableSize()
+        return QSize(size.width(), size.height() * 1.2)

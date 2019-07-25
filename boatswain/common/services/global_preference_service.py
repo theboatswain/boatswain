@@ -2,6 +2,7 @@ from PyQt5.QtCore import QSize
 from peewee import DoesNotExist
 
 from boatswain.common.models.preference import Preference
+from boatswain.common.services import system_service
 from boatswain.common.utils.constants import HOME_WIDTH, HOME_HEIGHT
 
 
@@ -21,7 +22,9 @@ def setHomeWindowSize(size: QSize):
 
 
 def getMinimumHomeWindowSize():
-    return QSize(460, 639)
+    height = system_service.screen_height * 4 / 5
+    width = height / 1.6
+    return QSize(width, height)
 
 
 def getHomeWindowSize():

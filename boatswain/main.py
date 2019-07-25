@@ -31,7 +31,7 @@ from boatswain.common.models.preference import Preference
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
 from boatswain.common.models.tag import Tag
 from boatswain.common.models.volume_mount import VolumeMount
-from boatswain.common.services import boatswain_daemon, data_transporter_service, docker_service
+from boatswain.common.services import boatswain_daemon, data_transporter_service, docker_service, system_service
 from boatswain.common.utils import docker_utils
 from boatswain.common.utils.constants import APP_DATA_DIR, CONTAINER_CHANNEL, APP_EXIT_CHANNEL, PEM_FILE
 from boatswain.common.utils.logging import logger
@@ -61,8 +61,13 @@ def deFrostPem():
 def run():
     resources.qInitResources()
     app = QApplication(sys.argv)
+
     if not docker_service.isDockerRunning():
         return docker_utils.notifyDockerNotAvailable()
+
+    screen_resolution = app.desktop().screenGeometry()
+    system_service.screen_width = screen_resolution.width()
+    system_service.screen_height = screen_resolution.height()
 
     app.setAttribute(Qt.AA_EnableHighDpiScaling)
     # Make sure app data dir always exists
