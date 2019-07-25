@@ -54,7 +54,6 @@ def getShortcutVolumeMounts(container: Container):
                         'bind': '<container path>'
                         'mode': 'rw'}
                     }
-    :rtype: 
     """
     result = {}
     shortcuts = PreferencesShortcut.select().where(
@@ -62,4 +61,3 @@ def getShortcutVolumeMounts(container: Container):
     for item in shortcuts:
         result[item.default_value] = {'bind': item.mapping_to, 'mode': 'rw'}
     return result
-

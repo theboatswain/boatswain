@@ -22,7 +22,7 @@ from PyQt5.QtWidgets import QDialog, QWidget, QToolTip, QMessageBox, QFileDialog
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
-from boatswain.common.services import containers_service, shortcut_service, config_service
+from boatswain.common.services import containers_service, config_service
 from boatswain.common.utils.constants import SHORTCUT_CONF_CHANGED_CHANNEL, CONTAINER_CONF_CHANGED
 from boatswain.shortcut.create.shortcut_creator_ui import ShortcutCreatorUi
 

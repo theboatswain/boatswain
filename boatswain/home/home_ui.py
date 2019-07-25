@@ -15,7 +15,7 @@
 #
 #
 
-from PyQt5.QtCore import QCoreApplication, QSize, Qt, QRect
+from PyQt5.QtCore import QCoreApplication, Qt, QRect
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QComboBox, QSizePolicy, QLineEdit, QPushButton, \
     QMainWindow, QFrame, QScrollArea, QMenuBar, QMenu, QStatusBar, QAction, QApplication
 

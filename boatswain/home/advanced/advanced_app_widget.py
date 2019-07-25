@@ -21,7 +21,7 @@ from PyQt5.QtWidgets import QLabel, QComboBox, QSizePolicy, QWidget, QLineEdit, 
 from boatswain.common.models.container import Container
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
 from boatswain.common.models.tag import Tag
-from boatswain.common.services import config_service, containers_service, shortcut_service
+from boatswain.common.services import config_service, containers_service
 from boatswain.common.utils.constants import CONTAINER_CONF_CHANGED, SHORTCUT_CONF_CHANGED_CHANNEL
 from boatswain.common.utils.custom_ui import BQSizePolicy, PathViewWidget
 from boatswain.config.app_config import AppConfig
