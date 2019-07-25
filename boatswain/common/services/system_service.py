@@ -21,6 +21,9 @@ import tempfile
 
 from PyQt5.QtCore import QProcess
 
+screen_width: int
+screen_height: int
+
 
 def startTerminalWithCommand(command):
     current_platform = platform.system()

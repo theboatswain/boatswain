@@ -20,6 +20,7 @@ from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtWidgets import QDialog, QSizePolicy
 
 from boatswain.common.models.container import Container
+from boatswain.common.services import system_service
 from boatswain.common.utils.custom_ui import BQSizePolicy, ButtonLineEdit
 
 
@@ -28,9 +29,11 @@ class ShortcutCreatorUi:
     def __init__(self, dialog: QDialog, container: Container) -> None:
         self.container = container
         self.dialog = dialog
-        dialog.resize(749, 376)
+        height = system_service.screen_height / 2.2
+        width = height * 2
+        dialog.resize(width, height)
         dialog.setSizePolicy(BQSizePolicy(h_stretch=1))
-        dialog.setMinimumSize(QSize(749, 376))
+        dialog.setMinimumSize(QSize(width, height))
         dialog.setSizeGripEnabled(False)
         dialog.setModal(False)
         self.verticalLayout = QtWidgets.QVBoxLayout(dialog)

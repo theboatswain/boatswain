@@ -18,6 +18,7 @@
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtWidgets import QWidget, QSizePolicy, QVBoxLayout, QFrame, QScrollArea, QLineEdit, QComboBox, QGridLayout
 
+from boatswain.common.services import system_service
 from boatswain.common.utils.custom_ui import BQSizePolicy
 
 
@@ -25,9 +26,11 @@ class SearchAppDialogUi(object):
 
     def __init__(self, dialog) -> None:
         super().__init__()
-        dialog.resize(792, 387)
+        height = system_service.screen_height / 2
+        width = height * 2
+        dialog.resize(width, height)
         dialog.setSizePolicy(BQSizePolicy(h_stretch=1))
-        dialog.setMinimumSize(QSize(792, 387))
+        dialog.setMinimumSize(QSize(width, height))
         dialog.setSizeGripEnabled(False)
         dialog.setModal(False)
         main_layout = QVBoxLayout(dialog)

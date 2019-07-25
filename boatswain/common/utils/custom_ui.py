@@ -23,6 +23,7 @@ from PyQt5.QtGui import QIcon, QIntValidator, QPixmap, QResizeEvent
 from PyQt5.QtWidgets import QSizePolicy, QWidget, QStyle, QToolButton, QLineEdit, QFileDialog, QItemDelegate, QComboBox, \
     QLabel
 
+from boatswain.common.services import system_service
 from boatswain.common.utils import utils
 
 
@@ -40,7 +41,9 @@ class ReloadableWidget:
 
 class AutoResizeWidget(QWidget):
     def preferableSize(self) -> QSize:
-        return QSize(745, 445)
+        height = system_service.screen_height / 2
+        width = height * 1.6
+        return QSize(width, height)
 
 
 class PathInputDelegate(QItemDelegate):
