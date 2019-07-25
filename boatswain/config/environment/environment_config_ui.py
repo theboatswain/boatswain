@@ -14,11 +14,11 @@
 #      along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
+
 from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTableView, QCheckBox
 
 from boatswain.common.models.container import Container
-from boatswain.common.services import system_service
 from boatswain.common.utils.custom_ui import BQSizePolicy, AutoResizeWidget
 
 
