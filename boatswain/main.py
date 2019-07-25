@@ -27,6 +27,7 @@ from boatswain.common.models.configurations import Configuration
 from boatswain.common.models.container import Container
 from boatswain.common.models.environment import Environment
 from boatswain.common.models.port_mapping import PortMapping
+from boatswain.common.models.preference import Preference
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
 from boatswain.common.models.tag import Tag
 from boatswain.common.models.volume_mount import VolumeMount
@@ -35,6 +36,7 @@ from boatswain.common.utils import docker_utils
 from boatswain.common.utils.constants import APP_DATA_DIR, CONTAINER_CHANNEL, APP_EXIT_CHANNEL, PEM_FILE
 from boatswain.common.utils.logging import logger
 from boatswain.home.home import Home
+from boatswain.resources import resources
 
 
 def deFrostPem():
@@ -57,6 +59,7 @@ def deFrostPem():
 
 
 def run():
+    resources.qInitResources()
     app = QApplication(sys.argv)
     if not docker_service.isDockerRunning():
         return docker_utils.notifyDockerNotAvailable()
@@ -71,7 +74,8 @@ def run():
 
     # Connect to SQLite DB
     db.connect()
-    db.create_tables([Container, Environment, PortMapping, VolumeMount, Tag, Configuration, PreferencesShortcut])
+    db.create_tables([Container, Environment, PortMapping, VolumeMount, Tag, Configuration, PreferencesShortcut,
+                      Preference])
 
     # Load home window
     window = Home()

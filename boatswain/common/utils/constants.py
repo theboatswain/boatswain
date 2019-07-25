@@ -37,7 +37,13 @@ CONTAINER_CHANNEL = 'container_channel'
 APP_EXIT_CHANNEL = 'app_exit'
 ADD_APP_CHANNEL = 'add_app_channel'
 CONTAINER_CONF_CHANGED_CHANNEL = 'container_conf_channel'
+SHORTCUT_CONF_CHANGED_CHANNEL = 'shortcut_conf_channel'
 
 # Docker
 WINDOWS_BASE_URL = 'tcp://127.0.0.1:2375'
 UNIX_BASE_URL = 'unix://var/run/docker.sock'
+
+
+# Global conf
+HOME_WIDTH = 'home_width'
+HOME_HEIGHT = 'home_height'

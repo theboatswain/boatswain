@@ -15,7 +15,7 @@
 #
 #
 
-from PyQt5.QtCore import QCoreApplication, QSize, Qt, QRect
+from PyQt5.QtCore import QCoreApplication, Qt, QRect
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QComboBox, QSizePolicy, QLineEdit, QPushButton, \
     QMainWindow, QFrame, QScrollArea, QMenuBar, QMenu, QStatusBar, QAction, QApplication
 
@@ -29,9 +29,7 @@ class HomeUi(QMainWindow):
 
     def __init__(self):
         super(HomeUi, self).__init__()
-        self.resize(460, 639)
         self.setSizePolicy(BQSizePolicy(h_stretch=1))
-        self.setMinimumSize(QSize(460, 639))
 
         central_widget = QWidget(self)
         central_widget.setSizePolicy(BQSizePolicy(h_stretch=1))

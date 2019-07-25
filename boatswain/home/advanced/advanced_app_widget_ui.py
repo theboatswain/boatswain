@@ -16,7 +16,7 @@
 #
 
 from PyQt5.QtCore import QCoreApplication
-from PyQt5.QtWidgets import QWidget, QSizePolicy, QPushButton, QLabel, QComboBox, QFrame, QVBoxLayout, QHBoxLayout
+from PyQt5.QtWidgets import QWidget, QSizePolicy, QPushButton, QFrame, QVBoxLayout, QHBoxLayout, QGridLayout
 
 from boatswain.common.models.container import Container
 from boatswain.common.utils.custom_ui import BQSizePolicy
@@ -36,17 +36,9 @@ class AdvancedAppWidgetUi(QWidget):
         line.setFrameShadow(QFrame.Sunken)
         self.layout.addWidget(line)
         self.widget = QWidget(self)
-        self.horizontal_layout = QHBoxLayout(self.widget)
-        self.horizontal_layout.setContentsMargins(0, 0, 0, 0)
-        self.horizontal_layout.setSpacing(6)
-        self.label = QLabel(self.widget)
-        self.horizontal_layout.addWidget(self.label)
-        self.tags = QComboBox(self.widget)
-        self.tags.setSizePolicy(BQSizePolicy(h_stretch=2, height=QSizePolicy.Fixed))
-        self.horizontal_layout.addWidget(self.tags)
-        self.widget_2 = QWidget(self.widget)
-        self.widget_2.setSizePolicy(BQSizePolicy(h_stretch=1))
-        self.horizontal_layout.addWidget(self.widget_2)
+        self.grid_layout = QGridLayout(self.widget)
+        self.grid_layout.setContentsMargins(0, 0, 0, 0)
+        self.grid_layout.setSpacing(6)
         self.layout.addWidget(self.widget)
         self.widget_3 = QWidget(self)
         self.horizontal_layout_2 = QHBoxLayout(self.widget_3)
@@ -63,5 +55,4 @@ class AdvancedAppWidgetUi(QWidget):
 
     def retranslateUi(self):
         _translate = QCoreApplication.translate
-        self.label.setText(_translate("AdvancedWidget", "Image tag:"))
         self.advanced_configuration.setText(_translate("AdvancedWidget", "Advanced configuration"))
