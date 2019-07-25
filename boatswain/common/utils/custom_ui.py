@@ -17,9 +17,13 @@
 
 from typing import List
 
-from PyQt5.QtCore import QSize, Qt, pyqtSignal, pyqtSlot
-from PyQt5.QtGui import QIcon, QIntValidator
-from PyQt5.QtWidgets import QSizePolicy, QWidget, QStyle, QToolButton, QLineEdit, QFileDialog, QItemDelegate, QComboBox
+from PyQt5 import QtWidgets, QtGui
+from PyQt5.QtCore import QSize, Qt, pyqtSignal, pyqtSlot, QEvent, QPropertyAnimation
+from PyQt5.QtGui import QIcon, QIntValidator, QPixmap, QResizeEvent
+from PyQt5.QtWidgets import QSizePolicy, QWidget, QStyle, QToolButton, QLineEdit, QFileDialog, QItemDelegate, QComboBox, \
+    QLabel
+
+from boatswain.common.utils import utils
 
 
 class BQSizePolicy(QSizePolicy):
@@ -121,6 +125,102 @@ class ComboBoxDelegate(QItemDelegate):
     @pyqtSlot()
     def currentIndexChanged(self):
         self.commitData.emit(self.sender())
+
+
+class FolderIcon(QWidget):
+    def __init__(self, parent: QWidget, label_text: str):
+        super().__init__(parent)
+        self.horizontal_layout = QtWidgets.QHBoxLayout(self)
+        self.horizontal_layout.setContentsMargins(0, 0, 0, 0)
+        self.horizontal_layout.setSpacing(2)
+        self.icon = QLabel(self)
+        self.icon.setPixmap(QPixmap(':/icons/folder.svg').scaled(QSize(16, 16), Qt.KeepAspectRatio))
+        self.horizontal_layout.addWidget(self.icon)
+        self.label = QLabel(self)
+        self.label.setText(label_text)
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        self.label.setFont(font)
+        self.current_label_visible = True
+        self.horizontal_layout.addWidget(self.label)
+
+    def predictWidth(self):
+        label_size = self.label.maximumWidth() if self.label.maximumWidth() == 0 else self.label.sizeHint().width()
+        return self.icon.sizeHint().width() + 2 + label_size
+
+    def enterEvent(self, event: QEvent):
+        if self.label.maximumWidth() == 0:
+            self.current_label_visible = False
+            self.animation = QPropertyAnimation(self.label, b"maximumWidth")
+            self.animation.setDuration(100)
+            self.animation.setStartValue(0)
+            self.animation.setEndValue(self.label.sizeHint().width())
+            self.animation.start()
+
+    def leaveEvent(self, event: QEvent):
+        if not self.current_label_visible:
+            self.animation = QPropertyAnimation(self.label, b"maximumWidth")
+            self.animation.setDuration(100)
+            self.animation.setStartValue(self.label.sizeHint().width())
+            self.animation.setEndValue(0)
+            self.animation.start()
+            self.current_label_visible = True
+
+
+class PathViewWidget(QWidget):
+
+    def __init__(self, parent: QWidget):
+        super().__init__(parent)
+        self.horizontal_layout = QtWidgets.QHBoxLayout(self)
+        self.horizontal_layout.setContentsMargins(3, 0, 0, 0)
+        self.horizontal_layout.setSpacing(0)
+        self.labels = []
+        self.current_width = 0
+
+    def setPath(self, path):
+        self.clearPath()
+        self.path = path
+        self.labels.clear()
+        parts = utils.split_all(path)
+        for index, part in enumerate(parts):
+            if part == '/':
+                continue
+
+            label = FolderIcon(self, part)
+            label.label.setMaximumWidth(0)
+            self.horizontal_layout.addWidget(label)
+            self.labels.append(label)
+            if index < len(parts) - 1:
+                separator = QLabel()
+                separator.setText('>')
+                self.horizontal_layout.addWidget(separator)
+
+    def clearPath(self):
+        while self.horizontal_layout.count():
+            item = self.horizontal_layout.takeAt(0)
+            item.widget().deleteLater()
+
+    def calculateCurrentWidth(self):
+        current_width = 0
+        for label in self.labels:
+            current_width += label.predictWidth()
+        return current_width
+
+    def resizePaths(self):
+        i = len(self.labels) - 1
+        while self.calculateCurrentWidth() < self.max_width - 100 and i >= 0:
+            self.labels[i].label.setMaximumWidth(999)
+            i -= 1
+
+        j = 0
+        while self.calculateCurrentWidth() > self.max_width - 100 and j < len(self.labels):
+            self.labels[j].label.setMaximumWidth(0)
+            j += 1
+
+    def resizeEvent(self, event: QResizeEvent):
+        self.max_width = event.size().width()
+        self.resizePaths()
+        QWidget.resizeEvent(self, event)
 
 
 class ButtonLineEdit(QLineEdit):

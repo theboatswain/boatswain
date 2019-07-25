@@ -23,7 +23,7 @@ from boatswain.common.models.preferences_shortcut import PreferencesShortcut
 from boatswain.common.models.tag import Tag
 from boatswain.common.services import config_service, containers_service, shortcut_service
 from boatswain.common.utils.constants import CONTAINER_CONF_CHANGED, SHORTCUT_CONF_CHANGED_CHANNEL
-from boatswain.common.utils.custom_ui import BQSizePolicy
+from boatswain.common.utils.custom_ui import BQSizePolicy, PathViewWidget
 from boatswain.config.app_config import AppConfig
 from boatswain.home.advanced.advanced_app_widget_ui import AdvancedAppWidgetUi
 
@@ -70,7 +70,7 @@ class AdvancedAppWidget:
             self.animation.setEndValue(0)
             self.animation.start()
 
-    def findFileOrFolder(self, shotcut: PreferencesShortcut, input_box: QLineEdit):
+    def findFileOrFolder(self, shotcut: PreferencesShortcut, input_box: PathViewWidget):
         if shotcut.pref_type == 'File':
             fname = QFileDialog.getOpenFileName(self.ui, 'Open file')
             path = fname[0] if fname[0] else ''
@@ -78,24 +78,29 @@ class AdvancedAppWidget:
             file = str(QFileDialog.getExistingDirectory(self.ui, "Select Directory"))
             path = file if file else ''
         if path:
-            input_box.setText(path)
+            input_box.setPath(path)
+            input_box.resizePaths()
+            self.setShortcutValue(shotcut, path)
 
     def drawShortcut(self, shortcut: PreferencesShortcut, row):
         label = QLabel(self.ui.widget)
         label.setText(self._translate(self.template, shortcut.label) + ':')
         self.ui.grid_layout.addWidget(label, row, 0, 1, 1)
-        input_box = QLineEdit(self.ui.widget)
-        input_box.setText(shortcut.default_value)
-        input_box.textChanged.connect(lambda x: self.setShortcutValue(shortcut, x))
-        input_box.setStyleSheet('border: none; background-color: transparent')
-        self.ui.grid_layout.addWidget(input_box, row, 1, 1, 2)
         if shortcut.pref_type in ['File', 'Folder']:
+            input_box = PathViewWidget(self.ui.widget)
+            input_box.setPath(shortcut.default_value)
+            self.ui.grid_layout.addWidget(input_box, row, 1, 1, 2)
             finder = QPushButton(self.ui.widget)
             finder.setText('...')
             finder.setMaximumWidth(40)
             finder.clicked.connect(lambda x: self.findFileOrFolder(shortcut, input_box))
             self.ui.grid_layout.addWidget(finder, row, 3, 1, 2)
         else:
+            input_box = QLineEdit(self.ui.widget)
+            input_box.setText(shortcut.default_value)
+            input_box.textChanged.connect(lambda x: self.setShortcutValue(shortcut, x))
+            input_box.setStyleSheet('border: none; background-color: transparent')
+            self.ui.grid_layout.addWidget(input_box, row, 1, 1, 2)
             hidden_widget = QWidget(self.ui.widget)
             hidden_widget.setSizePolicy(BQSizePolicy(h_stretch=1))
             self.ui.grid_layout.addWidget(hidden_widget, row, 3, 1, 2)
