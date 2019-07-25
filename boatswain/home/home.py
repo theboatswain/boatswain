@@ -15,9 +15,11 @@
 #
 #
 from PyQt5.QtCore import QCoreApplication
+from PyQt5.QtGui import QResizeEvent
+from PyQt5.QtWidgets import QMainWindow
 
 from boatswain.common.models.container import Container
-from boatswain.common.services import data_transporter_service
+from boatswain.common.services import data_transporter_service, global_preference_service
 from boatswain.common.utils.constants import CONTAINER_CHANNEL, ADD_APP_CHANNEL
 from boatswain.home.application.application_widget import AppWidget
 from boatswain.home.home_ui import HomeUi
@@ -34,7 +36,8 @@ class Home:
     def __init__(self):
         super(Home, self).__init__()
         self.ui = HomeUi()
-
+        self.ui.resize(global_preference_service.getHomeWindowSize())
+        self.ui.setMinimumSize(global_preference_service.getMinimumHomeWindowSize())
         self.ui.add_app.clicked.connect(self.addAppClicked)
         self.ui.action_add.triggered.connect(self.addAppClicked)
 
@@ -43,6 +46,7 @@ class Home:
 
         data_transporter_service.listen(CONTAINER_CHANNEL, self.addAppFromContainer)
         data_transporter_service.listen(ADD_APP_CHANNEL, self.addAppClicked)
+        self.ui.resizeEvent = self.resizeEvent
 
     def addAppClicked(self):
         dialog = SearchAppDialog("Add app", self.ui)
@@ -54,3 +58,7 @@ class Home:
 
     def show(self):
         self.ui.show()
+
+    def resizeEvent(self, event: QResizeEvent):
+        global_preference_service.setHomeWindowSize(event.size())
+        QMainWindow.resizeEvent(self.ui, event)

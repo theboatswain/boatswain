@@ -42,3 +42,8 @@ SHORTCUT_CONF_CHANGED_CHANNEL = 'shortcut_conf_channel'
 # Docker
 WINDOWS_BASE_URL = 'tcp://127.0.0.1:2375'
 UNIX_BASE_URL = 'unix://var/run/docker.sock'
+
+
+# Global conf
+HOME_WIDTH = 'home_width'
+HOME_HEIGHT = 'home_height'

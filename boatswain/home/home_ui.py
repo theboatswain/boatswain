@@ -29,9 +29,7 @@ class HomeUi(QMainWindow):
 
     def __init__(self):
         super(HomeUi, self).__init__()
-        self.resize(460, 639)
         self.setSizePolicy(BQSizePolicy(h_stretch=1))
-        self.setMinimumSize(QSize(460, 639))
 
         central_widget = QWidget(self)
         central_widget.setSizePolicy(BQSizePolicy(h_stretch=1))
