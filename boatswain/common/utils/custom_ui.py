@@ -20,8 +20,8 @@ from typing import List
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QSize, Qt, pyqtSignal, pyqtSlot, QEvent, QPropertyAnimation
 from PyQt5.QtGui import QIcon, QIntValidator, QPixmap, QResizeEvent
-from PyQt5.QtWidgets import QSizePolicy, QWidget, QStyle, QToolButton, QLineEdit, QFileDialog, QItemDelegate, QComboBox, \
-    QLabel
+from PyQt5.QtWidgets import QSizePolicy, QWidget, QStyle, QToolButton, QLineEdit, QFileDialog, QItemDelegate, \
+    QComboBox, QLabel, QScrollArea, QFrame
 
 from boatswain.common.services import system_service
 from boatswain.common.utils import utils
@@ -155,7 +155,7 @@ class FolderIcon(QWidget):
         if self.label.maximumWidth() == 0:
             self.current_label_visible = False
             self.animation = QPropertyAnimation(self.label, b"maximumWidth")
-            self.animation.setDuration(100)
+            self.animation.setDuration(150)
             self.animation.setStartValue(0)
             self.animation.setEndValue(self.label.sizeHint().width())
             self.animation.start()
@@ -163,7 +163,7 @@ class FolderIcon(QWidget):
     def leaveEvent(self, event: QEvent):
         if not self.current_label_visible:
             self.animation = QPropertyAnimation(self.label, b"maximumWidth")
-            self.animation.setDuration(100)
+            self.animation.setDuration(150)
             self.animation.setStartValue(self.label.sizeHint().width())
             self.animation.setEndValue(0)
             self.animation.start()
@@ -174,9 +174,30 @@ class PathViewWidget(QWidget):
 
     def __init__(self, parent: QWidget):
         super().__init__(parent)
-        self.horizontal_layout = QtWidgets.QHBoxLayout(self)
-        self.horizontal_layout.setContentsMargins(3, 0, 0, 0)
+
+        self.main_layout = QtWidgets.QHBoxLayout(self)
+        self.main_layout.setContentsMargins(0, 0, 0, 0)
+        self.main_layout.setSpacing(0)
+
+        self.scroll_area = QScrollArea(self)
+        self.scroll_area.setStyleSheet('QScrollBar {width:0px;}')
+        self.scroll_area.setSizePolicy(BQSizePolicy(h_stretch=1))
+        self.scroll_area.setFrameShape(QFrame.NoFrame)
+        self.scroll_area.setFrameShadow(QFrame.Plain)
+        self.scroll_area.setWidgetResizable(True)
+        self.scroll_area.setContentsMargins(3, 0, 0, 0)
+
+        self.app_list = QWidget(self)
+        self.app_list.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
+        self.horizontal_layout = QtWidgets.QHBoxLayout(self.app_list)
+        self.horizontal_layout.setContentsMargins(0, 0, 0, 0)
         self.horizontal_layout.setSpacing(0)
+        self.horizontal_layout.setAlignment(Qt.AlignLeft)
+        self.app_list.setLayout(self.horizontal_layout)
+        self.scroll_area.setWidget(self.app_list)
+
+        self.main_layout.addWidget(self.scroll_area)
+
         self.labels = []
         self.current_width = 0
 
@@ -195,7 +216,7 @@ class PathViewWidget(QWidget):
             self.labels.append(label)
             if index < len(parts) - 1:
                 separator = QLabel()
-                separator.setText('>')
+                separator.setText(' > ')
                 self.horizontal_layout.addWidget(separator)
 
     def clearPath(self):
@@ -211,12 +232,12 @@ class PathViewWidget(QWidget):
 
     def resizePaths(self):
         i = len(self.labels) - 1
-        while self.calculateCurrentWidth() < self.max_width - 100 and i >= 0:
+        while self.calculateCurrentWidth() < self.max_width - 50 and i >= 0:
             self.labels[i].label.setMaximumWidth(999)
             i -= 1
 
         j = 0
-        while self.calculateCurrentWidth() > self.max_width - 100 and j < len(self.labels):
+        while self.calculateCurrentWidth() > self.max_width - 50 and j < len(self.labels):
             self.labels[j].label.setMaximumWidth(0)
             j += 1
 
