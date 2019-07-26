@@ -11,9 +11,10 @@
 #      GNU General Public License for more details.
 #
 #      You should have received a copy of the GNU General Public License
-#      along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+#      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
+
 from boatswain.common.models.container import Container
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
 
