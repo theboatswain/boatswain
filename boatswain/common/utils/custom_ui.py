@@ -232,12 +232,12 @@ class PathViewWidget(QWidget):
 
     def resizePaths(self):
         i = len(self.labels) - 1
-        while self.calculateCurrentWidth() < self.max_width - 100 and i >= 0:
+        while self.calculateCurrentWidth() < self.max_width - 50 and i >= 0:
             self.labels[i].label.setMaximumWidth(999)
             i -= 1
 
         j = 0
-        while self.calculateCurrentWidth() > self.max_width - 100 and j < len(self.labels):
+        while self.calculateCurrentWidth() > self.max_width - 50 and j < len(self.labels):
             self.labels[j].label.setMaximumWidth(0)
             j += 1
 
