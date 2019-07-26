@@ -59,6 +59,7 @@ def deFrostPem():
 
 
 def run():
+    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
     resources.qInitResources()
     app = QApplication(sys.argv)
 

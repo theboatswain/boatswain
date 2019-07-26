@@ -141,9 +141,9 @@ class FolderIcon(QWidget):
         self.horizontal_layout.addWidget(self.icon)
         self.label = QLabel(self)
         self.label.setText(label_text)
-        font = QtGui.QFont()
-        font.setPointSize(11)
-        self.label.setFont(font)
+        # font = QtGui.QFont()
+        # font.setPointSize(11)
+        # self.label.setFont(font)
         self.current_label_visible = True
         self.horizontal_layout.addWidget(self.label)
 
