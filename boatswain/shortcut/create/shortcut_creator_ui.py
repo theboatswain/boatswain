@@ -15,7 +15,7 @@
 #
 #
 
-from PyQt5 import QtCore, QtWidgets, QtGui
+from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtWidgets import QDialog, QSizePolicy
 
@@ -63,9 +63,9 @@ class ShortcutCreatorUi:
         self.label.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.gridLayout.addWidget(self.label, 2, 0, 1, 1)
         self.label_des = QtWidgets.QLabel(self.main_widget)
-        font = QtGui.QFont()
-        font.setPointSize(12)
-        self.label_des.setFont(font)
+        # font = QtGui.QFont()
+        # font.setPointSize(12)
+        # self.label_des.setFont(font)
         self.label_des.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.label_des.setWordWrap(True)
         self.label_des.setIndent(2)
@@ -86,7 +86,7 @@ class ShortcutCreatorUi:
         self.gridLayout.addWidget(self.shortcut_label, 2, 1, 1, 1)
         self.shortcut_for_des = QtWidgets.QLabel(self.main_widget)
         self.shortcut_for_des.setSizePolicy(BQSizePolicy())
-        self.shortcut_for_des.setFont(font)
+        # self.shortcut_for_des.setFont(font)
         self.shortcut_for_des.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.shortcut_for_des.setWordWrap(True)
         self.shortcut_for_des.setIndent(2)
@@ -102,7 +102,7 @@ class ShortcutCreatorUi:
         self.data_type = QtWidgets.QComboBox(self.main_widget)
         self.gridLayout.addWidget(self.data_type, 5, 1, 1, 1)
         self.data_type_des = QtWidgets.QLabel(self.main_widget)
-        self.data_type_des.setFont(font)
+        # self.data_type_des.setFont(font)
         self.data_type_des.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.data_type_des.setWordWrap(True)
         self.data_type_des.setIndent(2)
@@ -164,12 +164,12 @@ class ShortcutCreatorUi:
         self.hidden_3.setSizePolicy(BQSizePolicy(h_stretch=2))
         self.gridLayout_2.addWidget(self.hidden_3, 0, 2, 1, 1)
         self.default_value_des = QtWidgets.QLabel(self.widget)
-        self.default_value_des.setFont(font)
+        # self.default_value_des.setFont(font)
         self.default_value_des.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.default_value_des.setWordWrap(True)
         self.gridLayout_2.addWidget(self.default_value_des, 1, 1, 1, 2)
         self.mapping_to_des = QtWidgets.QLabel(self.widget)
-        self.mapping_to_des.setFont(font)
+        # self.mapping_to_des.setFont(font)
         self.mapping_to_des.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.gridLayout_2.addWidget(self.mapping_to_des, 3, 1, 1, 2)
         self.verticalLayout_5.addWidget(self.widget)

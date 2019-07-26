@@ -29,7 +29,7 @@ class AdvancedAppWidgetUi(QWidget):
         self.container = container
         self.setSizePolicy(BQSizePolicy(height=QSizePolicy.Fixed))
         self.layout = QVBoxLayout(self)
-        self.layout.setContentsMargins(20, 0, 3, 0)
+        self.layout.setContentsMargins(20, 0, 3, 5)
         self.layout.setSpacing(6)
         line = QFrame(self)
         line.setFrameShape(QFrame.HLine)
