@@ -17,7 +17,7 @@
 
 from typing import List
 
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtWidgets
 from PyQt5.QtCore import QSize, Qt, pyqtSignal, pyqtSlot, QEvent, QPropertyAnimation
 from PyQt5.QtGui import QIcon, QIntValidator, QPixmap, QResizeEvent
 from PyQt5.QtWidgets import QSizePolicy, QWidget, QStyle, QToolButton, QLineEdit, QFileDialog, QItemDelegate, QComboBox, \
