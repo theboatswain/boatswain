@@ -70,7 +70,6 @@ def run():
     system_service.screen_width = screen_resolution.width()
     system_service.screen_height = screen_resolution.height()
 
-    app.setAttribute(Qt.AA_EnableHighDpiScaling)
     # Make sure app data dir always exists
     if not os.path.isdir(APP_DATA_DIR):
         os.makedirs(APP_DATA_DIR)
