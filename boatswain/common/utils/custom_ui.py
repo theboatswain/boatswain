@@ -176,7 +176,7 @@ class PathViewWidget(QWidget):
         super().__init__(parent)
 
         self.main_layout = QtWidgets.QHBoxLayout(self)
-        self.main_layout.setContentsMargins(0, 0, 0, 0)
+        self.main_layout.setContentsMargins(3, 0, 0, 0)
         self.main_layout.setSpacing(0)
 
         self.scroll_area = QScrollArea(self)
@@ -185,7 +185,7 @@ class PathViewWidget(QWidget):
         self.scroll_area.setFrameShape(QFrame.NoFrame)
         self.scroll_area.setFrameShadow(QFrame.Plain)
         self.scroll_area.setWidgetResizable(True)
-        self.scroll_area.setContentsMargins(3, 0, 0, 0)
+        self.scroll_area.setContentsMargins(0, 0, 0, 0)
 
         self.app_list = QWidget(self)
         self.app_list.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)

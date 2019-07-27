@@ -45,7 +45,7 @@ class AppWidgetUi(QWidget):
         name_part = container.image_name.split('/')
         if len(name_part) > 1:
             img_name = name_part[1]
-        self.pic = AppAvatar(text_utils.getSimpleName(img_name), parent=self.widget, radius=21)
+        self.pic = AppAvatar(text_utils.getSimpleName(img_name), parent=self.widget, radius=20)
         self.horizontal_layout.addWidget(self.pic)
         self.name = QLabel(self.widget)
         self.name.setSizePolicy(BQSizePolicy(h_stretch=2))

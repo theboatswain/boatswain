@@ -51,13 +51,6 @@ class ShortcutCreatorModel(QAbstractTableModel):
             return QVariant(self.display_header[col].title())
         return QVariant()
 
-    def sort(self, col, order=None):
-        if order == Qt.DescendingOrder:
-            self.array_data.sort(key=lambda x: getattr(x, self.header_data[col]), reverse=True)
-        else:
-            self.array_data.sort(key=lambda x: getattr(x, self.header_data[col]))
-        self.layoutChanged.emit()
-
     def updateData(self, array_data):
         self.array_data = array_data
         self.layoutChanged.emit()

@@ -92,7 +92,9 @@ class AdvancedAppWidget:
             self.ui.grid_layout.addWidget(input_box, row, 1, 1, 2)
             finder = QPushButton(self.ui.widget)
             finder.setText('...')
-            finder.setMaximumWidth(40)
+            finder.setFlat(True)
+            finder.setStyleSheet("border: 1px solid #999999; padding: 0px 4px; border-radius: 2px")
+            finder.setMaximumWidth(25)
             finder.clicked.connect(lambda x: self.findFileOrFolder(shortcut, input_box))
             self.ui.grid_layout.addWidget(finder, row, 3, 1, 2)
         else:
@@ -123,7 +125,9 @@ class AdvancedAppWidget:
         label.setText(self._translate(self.template, "Image tag:"))
 
     def drawShortcuts(self):
-        shortcuts = PreferencesShortcut.select().where(PreferencesShortcut.container == self.container)
+        shortcuts = PreferencesShortcut.select()\
+            .where(PreferencesShortcut.container == self.container)\
+            .order_by(PreferencesShortcut.order.asc())
         for index, shortcut in enumerate(shortcuts):
             self.drawShortcut(shortcut, index)
         self.drawTagShortcut(len(shortcuts))
