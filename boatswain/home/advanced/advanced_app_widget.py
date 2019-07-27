@@ -123,7 +123,9 @@ class AdvancedAppWidget:
         label.setText(self._translate(self.template, "Image tag:"))
 
     def drawShortcuts(self):
-        shortcuts = PreferencesShortcut.select().where(PreferencesShortcut.container == self.container)
+        shortcuts = PreferencesShortcut.select()\
+            .where(PreferencesShortcut.container == self.container)\
+            .order_by(PreferencesShortcut.order.asc())
         for index, shortcut in enumerate(shortcuts):
             self.drawShortcut(shortcut, index)
         self.drawTagShortcut(len(shortcuts))

@@ -24,13 +24,15 @@ from boatswain.common.models.preferences_shortcut import PreferencesShortcut
 from boatswain.common.services import containers_service, config_service
 from boatswain.common.utils.constants import SHORTCUT_CONF_CHANGED_CHANNEL, CONTAINER_CONF_CHANGED
 from boatswain.shortcut.create.shortcut_creator import ShortcutCreator
-from boatswain.shortcut.create.shortcut_creator_model import ShortcutCreatorModel
+from boatswain.shortcut.preferences_shortcut_config_model import ShortcutCreatorModel
 from boatswain.shortcut.preferences_shortcut_config_ui import PreferencesShortcutConfigUi
 
 
 class PreferencesShortcutConfig(object):
     _translate = QtCore.QCoreApplication.translate
     template = 'PreferencesShortcutConfig'
+    DOWN = 1
+    UP = -1
 
     def __init__(self, parent, container: Container) -> None:
         self.container = container
@@ -45,24 +47,26 @@ class PreferencesShortcutConfig(object):
         display_headers = ['Label', 'Default value', 'Type', 'Shortcut', 'Mapping to']
         table_data = PreferencesShortcut.select().where(PreferencesShortcut.container == self.container)
         self.table_model = ShortcutCreatorModel(list(table_data), headers, display_headers, container, self.dialog)
-        self.configureVolumeTable(self.ui.shortcut_table, self.table_model)
+        self.configurePreferenceTable(self.ui.shortcut_table, self.table_model)
         self.dialog.setAttribute(Qt.WA_DeleteOnClose)
         self.ui.shortcut_table.doubleClicked.connect(self.onDoubleClickItem)
+        self.ui.move_up.clicked.connect(lambda x: self.moveCurrentRow(self.UP))
+        self.ui.move_down.clicked.connect(lambda x: self.moveCurrentRow(self.DOWN))
 
     def retranslateUi(self):
         self.dialog.setWindowTitle(self._translate(self.template, "Preferences shortcut") + " - " + self.container.name)
         self.ui.import_shortcut.setText(self._translate(self.template, "Import"))
         self.ui.export_shortcut.setText(self._translate(self.template, "Export"))
-        self.ui.new_shortcut.setText(self._translate(self.template, "Add"))
-        self.ui.delete_shortcut.setText(self._translate(self.template, "Delete"))
+        self.ui.new_shortcut.setText(self._translate(self.template, "+"))
+        self.ui.delete_shortcut.setText(self._translate(self.template, "-"))
+        self.ui.move_up.setText(self._translate(self.template, "↑"))
+        self.ui.move_down.setText(self._translate(self.template, "↓"))
 
     def onNewShortcutClicked(self):
         shortcut = PreferencesShortcut()
         shortcut_creator = ShortcutCreator(self.container, self.dialog, shortcut)
         if shortcut_creator.show():
-            table_data = PreferencesShortcut.select().where(PreferencesShortcut.container == self.container)
-            self.table_model.updateData(list(table_data))
-            self.ui.shortcut_table.resizeRowsToContents()
+            self.reloadData()
 
     def onDeleteShortcutClicked(self):
         indicates = self.ui.shortcut_table.selectionModel().selectedRows()
@@ -76,14 +80,43 @@ class PreferencesShortcutConfig(object):
         data = self.table_model.array_data[index.row()]
         shortcut_creator = ShortcutCreator(self.container, self.dialog, data)
         if shortcut_creator.show():
-            table_data = PreferencesShortcut.select().where(PreferencesShortcut.container == self.container)
-            self.table_model.updateData(list(table_data))
-            self.ui.shortcut_table.resizeRowsToContents()
+            self.reloadData()
+
+    def moveCurrentRow(self, direction=DOWN):
+        if direction not in (self.DOWN, self.UP):
+            return
+
+        model = self.table_model
+        selModel = self.ui.shortcut_table.selectionModel()
+        selected = selModel.selectedRows()
+        if not selected:
+            return
+
+        indexes = sorted(selected, key=lambda x: x.row(), reverse=(direction==self.DOWN))
+
+        for idx in indexes:
+            rowNum = idx.row()
+            newRow = rowNum+direction
+            if not (0 <= newRow < model.rowCount()):
+                continue
+
+            row_item = model.array_data[rowNum]
+            row_item.order = model.array_data[newRow].order + direction
+            row_item.save()
+        self.reloadData()
+
+    def reloadData(self):
+        table_data = PreferencesShortcut.select()\
+            .where(PreferencesShortcut.container == self.container)\
+            .order_by(PreferencesShortcut.order.asc())
+        self.table_model.updateData(list(table_data))
+        self.ui.shortcut_table.resizeRowsToContents()
+        containers_service.fire(self.container, SHORTCUT_CONF_CHANGED_CHANNEL, True)
 
     def show(self):
         self.dialog.exec_()
 
-    def configureVolumeTable(self, tv: QTableView, table_model):
+    def configurePreferenceTable(self, tv: QTableView, table_model):
         # set the table model
 
         tv.setModel(table_model)
@@ -108,6 +141,6 @@ class PreferencesShortcutConfig(object):
         tv.resizeRowsToContents()
 
         # enable sorting
-        tv.setSortingEnabled(True)
+        tv.setSortingEnabled(False)
 
         tv.setSelectionBehavior(QAbstractItemView.SelectRows)
