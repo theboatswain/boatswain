@@ -87,21 +87,21 @@ class PreferencesShortcutConfig(object):
             return
 
         model = self.table_model
-        selModel = self.ui.shortcut_table.selectionModel()
-        selected = selModel.selectedRows()
+        sel_model = self.ui.shortcut_table.selectionModel()
+        selected = sel_model.selectedRows()
         if not selected:
             return
 
-        indexes = sorted(selected, key=lambda x: x.row(), reverse=(direction==self.DOWN))
+        indexes = sorted(selected, key=lambda x: x.row(), reverse=(direction == self.DOWN))
 
         for idx in indexes:
-            rowNum = idx.row()
-            newRow = rowNum+direction
-            if not (0 <= newRow < model.rowCount()):
+            row_num = idx.row()
+            new_row = row_num + direction
+            if not (0 <= new_row < model.rowCount()):
                 continue
 
-            row_item = model.array_data[rowNum]
-            row_item.order = model.array_data[newRow].order + direction
+            row_item = model.array_data[row_num]
+            row_item.order = model.array_data[new_row].order + direction
             row_item.save()
         self.reloadData()
 
