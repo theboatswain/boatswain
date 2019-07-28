@@ -15,7 +15,7 @@
 #
 #
 
-from PyQt5.QtCore import QCoreApplication, Qt, QRect
+from PyQt5.QtCore import QCoreApplication, Qt
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QComboBox, QSizePolicy, QLineEdit, QPushButton, \
     QMainWindow, QFrame, QScrollArea, QMenuBar, QMenu, QStatusBar, QAction, QApplication
 
@@ -78,7 +78,6 @@ class HomeUi(QMainWindow):
         self.setCentralWidget(central_widget)
 
         self.menu_bar = QMenuBar(self)
-        self.menu_bar.setGeometry(QRect(0, 0, 460, 22))
         self.menu_file = QMenu(self.menu_bar)
         self.setMenuBar(self.menu_bar)
         self.status_bar = QStatusBar(self)
@@ -86,8 +85,14 @@ class HomeUi(QMainWindow):
         self.action_add = QAction(self)
         self.menu_file.addAction(self.action_add)
         self.menu_bar.addAction(self.menu_file.menuAction())
-        self.retranslateUi(self)
 
+        self.menu_help = QMenu(self.menu_bar)
+        self.about = QAction(self)
+        self.about.setMenuRole(QAction.AboutRole)
+        self.menu_help.addAction(self.about)
+        self.menu_bar.addAction(self.menu_help.menuAction())
+
+        self.retranslateUi(self)
         self.app_list = QWidget(self)
         self.app_list.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
         layout = QVBoxLayout(self.app_list)
