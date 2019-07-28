@@ -14,8 +14,8 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
-from idlelib.idle_test.test_help_about import About
 from typing import List
+
 from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtGui import QResizeEvent
 from PyQt5.QtWidgets import QMainWindow
@@ -23,7 +23,7 @@ from PyQt5.QtWidgets import QMainWindow
 from boatswain.about.about import AboutDialog
 from boatswain.common.models.container import Container
 from boatswain.common.services import data_transporter_service, global_preference_service, containers_service
-from boatswain.common.utils.constants import CONTAINER_CHANNEL, ADD_APP_CHANNEL, APP_EXIT_CHANNEL
+from boatswain.common.utils.constants import CONTAINER_CHANNEL, ADD_APP_CHANNEL
 from boatswain.home.application.application_widget import AppWidget
 from boatswain.home.home_ui import HomeUi
 from boatswain.search.search_app import SearchAppDialog
