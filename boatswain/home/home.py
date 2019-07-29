@@ -14,12 +14,13 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
-
 from typing import List
+
 from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtGui import QResizeEvent
 from PyQt5.QtWidgets import QMainWindow
 
+from boatswain.about.about import AboutDialog
 from boatswain.common.models.container import Container
 from boatswain.common.services import data_transporter_service, global_preference_service, containers_service
 from boatswain.common.utils.constants import CONTAINER_CHANNEL, ADD_APP_CHANNEL
@@ -52,6 +53,7 @@ class Home:
         self.ui.resizeEvent = self.resizeEvent
         self.ui.app_type.currentTextChanged.connect(self.search)
         self.ui.search_app.textChanged.connect(self.search)
+        self.ui.about.triggered.connect(self.showAbout)
 
     def addAppClicked(self):
         dialog = SearchAppDialog("Add app", self.ui)
@@ -89,3 +91,7 @@ class Home:
     def resizeEvent(self, event: QResizeEvent):
         global_preference_service.setHomeWindowSize(event.size())
         QMainWindow.resizeEvent(self.ui, event)
+
+    def showAbout(self):
+        about = AboutDialog(self.ui)
+        about.show()

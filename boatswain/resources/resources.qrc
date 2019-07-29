@@ -1,5 +1,6 @@
 <RCC>
     <qresource>
         <file>icons/folder.svg</file>
+        <file>logo/boatswain.png</file>
     </qresource>
 </RCC>
