@@ -107,11 +107,26 @@ class AppWidget:
         pref_shortcut = menu.addAction(self._translate(self.template, 'Preferences shortcut'))
         pref_shortcut.triggered.connect(self.onPreferenceShortcutClicked)
         menu.addSeparator()
-        menu.addAction(self._translate(self.template, 'Restart'))
+        restart = menu.addAction(self._translate(self.template, 'Restart'))
+        restart.triggered.connect(self.restartContainer)
         menu.addAction(self._translate(self.template, 'Reset'))
         delete = menu.addAction(self._translate(self.template, 'Delete'))
         delete.triggered.connect(self.deleteContainer)
         menu.exec_(self.ui.mapToGlobal(event.pos()))
+
+    def restartContainer(self):
+        if containers_service.isContainerRunning(self.container):
+            self.ui.status.setText('Stopping')
+            worker = Worker(containers_service.stopContainer, self.container)
+            worker.signals.result.connect(self.restartContainer)
+        else:
+            self.ui.status.setText('Starting')
+            containers_service.startContainer(self.container)
+            worker = Worker(containers_service.startContainer, self.container)
+            worker.signals.result.connect(self.onAppStarted)
+
+        worker.signals.error.connect(self.onFailure)
+        threadpool.start(worker)
 
     def autoSetContainerStatus(self):
         status = "Stop" if containers_service.isContainerRunning(self.container) else "Start"
