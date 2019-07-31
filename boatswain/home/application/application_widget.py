@@ -17,7 +17,7 @@
 
 from PyQt5.QtCore import QCoreApplication, Qt
 from PyQt5.QtGui import QMouseEvent
-from PyQt5.QtWidgets import QMenu
+from PyQt5.QtWidgets import QMenu, QMessageBox
 from docker.errors import APIError
 
 from boatswain.common.exceptions.docker_exceptions import DockerNotAvailableException
@@ -118,5 +118,8 @@ class AppWidget:
         self.ui.status.setText(self._translate(self.template, status))
 
     def deleteContainer(self):
-        containers_service.deleteContainer(self.container)
-        self.ui.deleteLater()
+        button_reply = QMessageBox.question(self.ui, 'Preference shortcut', "Are you sure?",
+                                            QMessageBox.Ok | QMessageBox.Cancel, QMessageBox.Cancel)
+        if button_reply == QMessageBox.Ok:
+            containers_service.deleteContainer(self.container)
+            self.ui.deleteLater()
