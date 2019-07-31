@@ -20,9 +20,12 @@ import os
 
 from docker.errors import NotFound, DockerException
 
+from boatswain.common.models.configurations import Configuration
 from boatswain.common.models.container import Container
 from boatswain.common.models.environment import Environment
 from boatswain.common.models.port_mapping import PortMapping
+from boatswain.common.models.preferences_shortcut import PreferencesShortcut
+from boatswain.common.models.tag import Tag
 from boatswain.common.models.volume_mount import VolumeMount
 from boatswain.common.search.dockerhub_searcher import DockerHubSearcher
 from boatswain.common.search.search_images import SearchImages
@@ -143,6 +146,17 @@ def stopContainer(container: Container):
     except DockerException as e:
         logger.error("Exception occurred when trying to stop container, %s", e)
     return False
+
+
+def deleteContainer(container: Container):
+    stopContainer(container)
+    Configuration.delete().where(Configuration.container == container).execute()
+    Environment.delete().where(Environment.container == container).execute()
+    PortMapping.delete().where(PortMapping.container == container).execute()
+    PreferencesShortcut.delete().where(PreferencesShortcut.container == container).execute()
+    Tag.delete().where(Tag.container == container).execute()
+    VolumeMount.delete().where(VolumeMount.container == container).execute()
+    container.delete_instance()
 
 
 def isInstanceOf(container: Container, docker_id):

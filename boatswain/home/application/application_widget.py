@@ -109,9 +109,14 @@ class AppWidget:
         menu.addSeparator()
         menu.addAction(self._translate(self.template, 'Restart'))
         menu.addAction(self._translate(self.template, 'Reset'))
-        menu.addAction(self._translate(self.template, 'Delete'))
+        delete = menu.addAction(self._translate(self.template, 'Delete'))
+        delete.triggered.connect(self.deleteContainer)
         menu.exec_(self.ui.mapToGlobal(event.pos()))
 
     def autoSetContainerStatus(self):
         status = "Stop" if containers_service.isContainerRunning(self.container) else "Start"
         self.ui.status.setText(self._translate(self.template, status))
+
+    def deleteContainer(self):
+        containers_service.deleteContainer(self.container)
+        self.ui.deleteLater()
