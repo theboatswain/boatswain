@@ -103,7 +103,7 @@ class AppWidget:
         menu.addAction(self._translate(self.template, 'Open log'))
         menu.addSeparator()
         conf = menu.addAction(self._translate(self.template, 'Configuration'))
-        conf.triggered.connect(lambda: self.ui.advanced_app.onAdvancedConfigurationClicked())
+        conf.triggered.connect(self.ui.advanced_app.onAdvancedConfigurationClicked)
         pref_shortcut = menu.addAction(self._translate(self.template, 'Preferences shortcut'))
         pref_shortcut.triggered.connect(self.onPreferenceShortcutClicked)
         menu.addSeparator()
@@ -118,7 +118,9 @@ class AppWidget:
         self.ui.status.setText(self._translate(self.template, status))
 
     def deleteContainer(self):
-        button_reply = QMessageBox.question(self.ui, 'Preference shortcut', "Are you sure?",
+        message = self._translate(self.template, "Are you sure you want to delete this container? All configurations "
+                                                 "you made for it will be deleted also!")
+        button_reply = QMessageBox.question(self.ui, 'Preference shortcut', message,
                                             QMessageBox.Ok | QMessageBox.Cancel, QMessageBox.Cancel)
         if button_reply == QMessageBox.Ok:
             containers_service.deleteContainer(self.container)
