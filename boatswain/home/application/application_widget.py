@@ -25,7 +25,7 @@ from boatswain.common.models.container import Container
 from boatswain.common.services import containers_service, data_transporter_service, boatswain_daemon
 from boatswain.common.services.worker_service import Worker, threadpool
 from boatswain.common.utils import docker_utils
-from boatswain.common.utils.constants import ADD_APP_CHANNEL
+from boatswain.common.utils.constants import ADD_APP_CHANNEL, SHORTCUT_CONF_CHANGED_CHANNEL
 from boatswain.home.application.application_widget_ui import AppWidgetUi
 from boatswain.shortcut.preferences_shortcut_config import PreferencesShortcutConfig
 
@@ -109,7 +109,8 @@ class AppWidget:
         menu.addSeparator()
         restart = menu.addAction(self._translate(self.template, 'Restart'))
         restart.triggered.connect(self.restartContainer)
-        menu.addAction(self._translate(self.template, 'Reset'))
+        reset = menu.addAction(self._translate(self.template, 'Reset'))
+        reset.triggered.connect(self.resetContainer)
         delete = menu.addAction(self._translate(self.template, 'Delete'))
         delete.triggered.connect(self.deleteContainer)
         menu.exec_(self.ui.mapToGlobal(event.pos()))
@@ -135,8 +136,17 @@ class AppWidget:
     def deleteContainer(self):
         message = self._translate(self.template, "Are you sure you want to delete this container? All configurations "
                                                  "you made for it will be deleted also!")
-        button_reply = QMessageBox.question(self.ui, 'Preference shortcut', message,
+        button_reply = QMessageBox.question(self.ui, 'Delete container', message,
                                             QMessageBox.Ok | QMessageBox.Cancel, QMessageBox.Cancel)
         if button_reply == QMessageBox.Ok:
             containers_service.deleteContainer(self.container)
             self.ui.deleteLater()
+
+    def resetContainer(self):
+        message = self._translate(self.template, "Are you sure you want to reset this container? All configurations "
+                                                 "you made for it will be lost!")
+        button_reply = QMessageBox.question(self.ui, 'Reset container', message,
+                                            QMessageBox.Ok | QMessageBox.Cancel, QMessageBox.Cancel)
+        if button_reply == QMessageBox.Ok:
+            containers_service.deleteConfigurations(self.container)
+            containers_service.fire(self.container, SHORTCUT_CONF_CHANGED_CHANNEL, True)
