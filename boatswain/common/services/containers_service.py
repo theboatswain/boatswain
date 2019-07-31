@@ -148,14 +148,18 @@ def stopContainer(container: Container):
     return False
 
 
-def deleteContainer(container: Container):
+def deleteConfigurations(container: Container):
     stopContainer(container)
     Configuration.delete().where(Configuration.container == container).execute()
     Environment.delete().where(Environment.container == container).execute()
     PortMapping.delete().where(PortMapping.container == container).execute()
     PreferencesShortcut.delete().where(PreferencesShortcut.container == container).execute()
-    Tag.delete().where(Tag.container == container).execute()
     VolumeMount.delete().where(VolumeMount.container == container).execute()
+
+
+def deleteContainer(container: Container):
+    deleteConfigurations(container)
+    Tag.delete().where(Tag.container == container).execute()
     container.delete_instance()
 
 
