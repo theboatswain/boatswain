@@ -18,7 +18,6 @@ from peewee import IntegerField, CharField, TextField, FloatField, ForeignKeyFie
 
 from boatswain.common.models.base import BaseModel
 from boatswain.common.models.group import Group
-from boatswain.common.models.workspace import Workspace
 
 
 class Container(BaseModel):

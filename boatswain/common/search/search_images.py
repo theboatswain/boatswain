@@ -32,8 +32,6 @@ class SearchProvider:
     def searchTags(self, image_name: str, repo: str) -> List[Tag]:
         """
         Search list of tags for specified docker image
-        :param image_name: 
-        :param repo:
         :return:
         """
         raise NotImplementedError("Should have implemented this")
