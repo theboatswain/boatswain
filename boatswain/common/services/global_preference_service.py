@@ -6,19 +6,22 @@ from boatswain.common.services import system_service
 from boatswain.common.utils.constants import HOME_WIDTH, HOME_HEIGHT
 
 
+def getPreference(key):
+    return Preference.get(Preference.name == key)
+
+
+def setPreference(key, value):
+    try:
+        preference = getPreference(key)
+        preference.value = value
+    except DoesNotExist:
+        preference = Preference(name=key, value=value)
+    preference.save()
+
+
 def setHomeWindowSize(size: QSize):
-    try:
-        preference_width = Preference.get(Preference.name == HOME_WIDTH)
-        preference_width.value = size.width()
-    except DoesNotExist:
-        preference_width = Preference(name=HOME_WIDTH, value=size.width())
-    preference_width.save()
-    try:
-        preference_height = Preference.get(Preference.name == HOME_HEIGHT)
-        preference_height.value = size.height()
-    except DoesNotExist:
-        preference_height = Preference(name=HOME_HEIGHT, value=size.height())
-    preference_height.save()
+    setPreference(HOME_WIDTH, size.width())
+    setPreference(HOME_HEIGHT, size.height())
 
 
 def getMinimumHomeWindowSize():

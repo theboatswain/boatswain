@@ -30,7 +30,7 @@ from boatswain.common.models.volume_mount import VolumeMount
 from boatswain.common.search.dockerhub_searcher import DockerHubSearcher
 from boatswain.common.search.search_images import SearchImages
 from boatswain.common.services import docker_service, system_service, config_service, data_transporter_service, \
-    shortcut_service
+    shortcut_service, group_service
 from boatswain.common.utils import docker_utils
 from boatswain.common.utils.constants import INCLUDING_ENV_SYSTEM, CONTAINER_CONF_CHANGED, \
     CONTAINER_CONF_CHANGED_CHANNEL
@@ -50,7 +50,9 @@ def updateContainerTags(container: Container):
 
 
 def installContainer(image_name, repo='dockerhub', description='', tag='latest', environments=None, ports=None):
-    container = Container(image_name=image_name, description=description, tag=tag, name=image_name, repo=repo)
+    order = Container.select().count() * 10000
+    container = Container(image_name=image_name, description=description, tag=tag, name=image_name,
+                          repo=repo, group=group_service.getDefaultGroup(), order=order)
     container.save()
 
     if environments is not None:
