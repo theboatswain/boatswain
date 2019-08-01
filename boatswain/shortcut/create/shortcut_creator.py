@@ -109,7 +109,7 @@ class ShortcutCreator:
             return msg.exec_()
 
         if self.isCreateMode():
-            order = PreferencesShortcut.select().where(PreferencesShortcut.container == self.container).count() * 1000
+            order = PreferencesShortcut.select().where(PreferencesShortcut.container == self.container).count() * 10000
             self.shortcut.order = order
 
         self.shortcut.container = self.container

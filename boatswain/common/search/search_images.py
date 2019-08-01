@@ -23,9 +23,17 @@ from boatswain.common.models.tag import Tag
 class SearchProvider:
 
     def search(self, keyword, repo):
+        """
+        Search list of docker images by keyword
+        :rtype: List
+        """
         raise NotImplementedError("Should have implemented this")
 
     def searchTags(self, image_name: str, repo: str) -> List[Tag]:
+        """
+        Search list of tags for specified docker image
+        :return:
+        """
         raise NotImplementedError("Should have implemented this")
 
     def isSupported(self, repo):
