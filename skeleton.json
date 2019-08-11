@@ -45,16 +45,16 @@
 
     "pyqt5": {
         "macos#modules":            [
-                "QtCore", "QtGui","QtWidgets"
+                "QtCore", "QtGui","QtWidgets", "QtNetwork"
         ],
 
         "linux#modules":                [
-                "QtCore", "QtGui", "QtWidgets"
+                "QtCore", "QtGui", "QtWidgets", "QtNetwork"
         ],
 
         "win#disabled_features":        ["PyQt_Desktop_OpenGL"],
         "win#modules":                  [
-                "QtCore", "QtGui", "QtWidgets"
+                "QtCore", "QtGui", "QtWidgets", "QtNetwork"
         ],
 
         "source":                       "PyQt5_*-5.13.0.tar.gz"

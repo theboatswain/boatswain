@@ -15,3 +15,10 @@ def split_all(path):
             path = parts[0]
             all_parts.insert(0, parts[1])
     return all_parts
+
+
+def disconnectAllSignals(widget):
+    try:
+        widget.disconnect()
+    except TypeError:
+        return

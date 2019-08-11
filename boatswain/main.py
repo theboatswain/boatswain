@@ -19,7 +19,8 @@ import os
 import sys
 from contextlib import closing
 
-from PyQt5.QtCore import QFile, Qt
+from PyQt5.QtCore import QFile, Qt, QCoreApplication, QSize
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication
 
 from boatswain.common.models.base import db
@@ -39,6 +40,9 @@ from boatswain.common.utils.constants import APP_DATA_DIR, CONTAINER_CHANNEL, AP
 from boatswain.common.utils.logging import logger
 from boatswain.home.home import Home
 from boatswain.resources import resources
+from boatswain.update import u_type
+from boatswain.update.feed import Feed
+from boatswain.update.update import Update
 
 
 def deFrostPem():
@@ -62,6 +66,8 @@ def deFrostPem():
 
 def run():
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
+    QCoreApplication.setApplicationVersion("1.0.0")
+    QCoreApplication.setApplicationName("Boatswain")
     resources.qInitResources()
     app = QApplication(sys.argv)
 
@@ -86,7 +92,6 @@ def run():
 
     # Load home window
     window = Home()
-    window.show()
 
     # Load all installed containers
     for container in Container.select():
@@ -98,6 +103,14 @@ def run():
     # Create daemon to listen to docker events
     daemon = boatswain_daemon.BoatswainDaemon(window.ui)
     daemon.start()
+
+    feed = Feed('theboatswain/boatswain')
+    pixmap = QIcon(":/logo/boatswain.svg").pixmap(QSize(64, 64))
+    update_dialog = Update(window.ui, feed, u_type.ON_APPLICATION_START)
+    update_dialog.setIcon(pixmap)
+
+    window.show()
+    update_dialog.exec()
 
     # Stop daemon before exit
     data_transporter_service.listen(APP_EXIT_CHANNEL, lambda x: daemon.events.close())
