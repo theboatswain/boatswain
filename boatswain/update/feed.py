@@ -94,8 +94,8 @@ class Feed(QObject):
 
     def handleDownloadReadyRead(self):
         if not self.download_file:
-            file_name = self.download_reply.url().fileName()
-            self.download_file = QTemporaryFile(tempfile.gettempdir() + '/' + file_name)
+            file_name = QUrl(self.last_release.download_url).fileName()
+            self.download_file = QTemporaryFile(tempfile.gettempdir() + '/XXXXXX' + file_name, self)
             self.download_file.open()
         self.download_file.write(self.download_reply.readAll())
 

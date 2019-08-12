@@ -25,6 +25,7 @@ from PyQt5.QtWidgets import QSizePolicy, QWidget, QStyle, QToolButton, QLineEdit
 
 from boatswain.common.services import system_service
 from boatswain.common.utils import utils
+from boatswain.resources_utils import get_resource
 
 
 class BQSizePolicy(QSizePolicy):
@@ -53,7 +54,7 @@ class PathInputDelegate(QItemDelegate):
 
     def createEditor(self, parent, option, index):
 
-        editor = ButtonLineEdit(':/icons/folder.svg', parent=parent)
+        editor = ButtonLineEdit(get_resource('resources/icons/folder.svg'), parent=parent)
         editor.setText(str(index.data()))
         editor.button_clicked.connect(lambda x: self.fileLooking(editor))
         return editor
@@ -137,7 +138,7 @@ class FolderIcon(QWidget):
         self.horizontal_layout.setContentsMargins(0, 0, 0, 0)
         self.horizontal_layout.setSpacing(2)
         self.icon = QLabel(self)
-        self.icon.setPixmap(QPixmap(':/icons/folder.svg').scaled(QSize(16, 16), Qt.KeepAspectRatio))
+        self.icon.setPixmap(QIcon(get_resource('resources/icons/folder.svg')).pixmap(QSize(16, 16)))
         self.horizontal_layout.addWidget(self.icon)
         self.label = QLabel(self)
         self.label.setText(label_text)

@@ -39,7 +39,7 @@ from boatswain.common.utils import docker_utils
 from boatswain.common.utils.constants import APP_DATA_DIR, CONTAINER_CHANNEL, APP_EXIT_CHANNEL, PEM_FILE
 from boatswain.common.utils.logging import logger
 from boatswain.home.home import Home
-from boatswain.resources import resources
+from boatswain.resources_utils import get_resource
 from boatswain.update import u_type
 from boatswain.update.feed import Feed
 from boatswain.update.update import Update
@@ -64,11 +64,15 @@ def deFrostPem():
         os.environ['REQUESTS_CA_BUNDLE'] = PEM_FILE
 
 
+def onApplicationInstalling():
+    data_transporter_service.fire(APP_EXIT_CHANNEL, True)
+    sys.exit()
+
+
 def run():
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
-    QCoreApplication.setApplicationVersion("1.0.0")
+    QCoreApplication.setApplicationVersion("0.0.0")
     QCoreApplication.setApplicationName("Boatswain")
-    resources.qInitResources()
     app = QApplication(sys.argv)
 
     if not docker_service.isDockerRunning():
@@ -105,9 +109,10 @@ def run():
     daemon.start()
 
     feed = Feed('theboatswain/boatswain')
-    pixmap = QIcon(":/logo/boatswain.svg").pixmap(QSize(64, 64))
+    pixmap = QIcon(get_resource('resources/logo/boatswain.svg')).pixmap(QSize(64, 64))
     update_dialog = Update(window.ui, feed, u_type.ON_APPLICATION_START)
     update_dialog.setIcon(pixmap)
+    update_dialog.installing.connect(onApplicationInstalling)
 
     window.show()
     update_dialog.exec()

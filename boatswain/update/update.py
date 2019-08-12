@@ -13,7 +13,7 @@ from boatswain.update.update_ui import UpdateUi
 
 
 class Update(QDialog):
-    install_button_clicked = pyqtSignal(QAbstractButton, str)
+    installing = pyqtSignal()
     ready = pyqtSignal()
     latest_release: Release = Release()
     releases: List[Release] = []
@@ -199,6 +199,7 @@ class Update(QDialog):
     def installUpdate(self):
         file = self.feed.getDownloadFile()
         core.install_update(file)
+        self.installing.emit()
         self.accept()
 
     def resetUi(self):

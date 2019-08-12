@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QDialog
 from boatswain.about.about_ui import AboutUi
 from boatswain.about.license.license_ui import LicenseUi
 from boatswain.resources.acknowledge import acknowledge
+from boatswain.resources_utils import get_resource
 
 
 class AboutDialog(object):
@@ -27,7 +28,7 @@ class AboutDialog(object):
 
     def resizeEvent(self, event):
         height = event.size().height() * 0.8
-        pixmap = QIcon(":/logo/boatswain.svg").pixmap(QSize(height, height))
+        pixmap = QIcon(get_resource('resources/logo/boatswain.svg')).pixmap(QSize(height, height))
         self.ui.avatar.setPixmap(pixmap)
 
     def showLicense(self):
