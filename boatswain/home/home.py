@@ -23,7 +23,7 @@ from PyQt5.QtWidgets import QMainWindow
 from boatswain.about.about import AboutDialog
 from boatswain.common.models.container import Container
 from boatswain.common.services import data_transporter_service, global_preference_service, containers_service
-from boatswain.common.utils.constants import CONTAINER_CHANNEL, ADD_APP_CHANNEL
+from boatswain.common.utils.constants import CONTAINER_CHANNEL, ADD_APP_CHANNEL, UPDATES_CHANNEL
 from boatswain.home.application.application_widget import AppWidget
 from boatswain.home.home_ui import HomeUi
 from boatswain.search.search_app import SearchAppDialog
@@ -54,6 +54,7 @@ class Home:
         self.ui.app_type.currentTextChanged.connect(self.search)
         self.ui.search_app.textChanged.connect(self.search)
         self.ui.about.triggered.connect(self.showAbout)
+        self.ui.check_for_update.triggered.connect(lambda: data_transporter_service.fire(UPDATES_CHANNEL, False))
 
     def addAppClicked(self):
         dialog = SearchAppDialog("Add app", self.ui)
