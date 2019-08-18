@@ -9,9 +9,12 @@ setup(name='boatswain',
           'PyQt5==5.13.0',
           'peewee==3.9.6',
           'appdirs==1.4.3',
-          'PyYAML==5.1.1',
+          'semantic_version==2.6.0',
           'requests'
       ],
+      package_data={
+          '': ['*.svg']
+      },
       entry_points={
           'gui_scripts': [
               'boatswain = boatswain:main'

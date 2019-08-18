@@ -90,6 +90,9 @@ class HomeUi(QMainWindow):
         self.about = QAction(self)
         self.about.setMenuRole(QAction.AboutRole)
         self.menu_help.addAction(self.about)
+        self.check_for_update = QAction(self)
+        self.check_for_update.setMenuRole(QAction.ApplicationSpecificRole)
+        self.menu_help.addAction(self.check_for_update)
         self.menu_bar.addAction(self.menu_help.menuAction())
 
         self.retranslateUi(self)
@@ -109,6 +112,7 @@ class HomeUi(QMainWindow):
         self.add_app.setText(_translate("Boatswain", "Add"))
         self.menu_file.setTitle(_translate("Boatswain", "File"))
         self.action_add.setText(_translate("Boatswain", "Add new app"))
+        self.check_for_update.setText(_translate("Boatswain", "Check for updates"))
 
     def mousePressEvent(self, event):
         focused_widget = QApplication.focusWidget()

@@ -39,6 +39,7 @@ APP_EXIT_CHANNEL = 'app_exit'
 ADD_APP_CHANNEL = 'add_app_channel'
 CONTAINER_CONF_CHANGED_CHANNEL = 'container_conf_channel'
 SHORTCUT_CONF_CHANGED_CHANNEL = 'shortcut_conf_channel'
+UPDATES_CHANNEL = 'check_for_updates'
 
 # Docker
 WINDOWS_BASE_URL = 'tcp://127.0.0.1:2375'

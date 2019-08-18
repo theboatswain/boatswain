@@ -17,10 +17,13 @@
 
 import os
 import sys
-from contextlib import closing
 
-from PyQt5.QtCore import QFile, Qt
+from PyQt5.QtCore import Qt, QCoreApplication, QSize
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication
+from boatswain_updater.models.feed import Feed
+from boatswain_updater.updater import Updater
+from boatswain_updater.utils import pyqt_utils
 
 from boatswain.common.models.base import db
 from boatswain.common.models.configurations import Configuration
@@ -35,10 +38,11 @@ from boatswain.common.models.volume_mount import VolumeMount
 from boatswain.common.models.workspace import Workspace
 from boatswain.common.services import boatswain_daemon, data_transporter_service, docker_service, system_service
 from boatswain.common.utils import docker_utils
-from boatswain.common.utils.constants import APP_DATA_DIR, CONTAINER_CHANNEL, APP_EXIT_CHANNEL, PEM_FILE
+from boatswain.common.utils.constants import APP_DATA_DIR, CONTAINER_CHANNEL, APP_EXIT_CHANNEL, PEM_FILE, \
+    UPDATES_CHANNEL
 from boatswain.common.utils.logging import logger
 from boatswain.home.home import Home
-from boatswain.resources import resources
+from boatswain.resources_utils import get_resource
 
 
 def deFrostPem():
@@ -50,19 +54,22 @@ def deFrostPem():
     and then relink back the location of REQUESTS_CA_BUNDLE into this file
     """
     if not os.path.isfile(PEM_FILE):
-        with closing(QFile(':/certifi/cacert.pem')) as pem_file:
-            if pem_file.open(QFile.ReadOnly):
-                pem_data = bytes(pem_file.readAll()).decode('UTF-8')
-                with open(PEM_FILE, 'w') as the_file:
-                    the_file.write(pem_data)
+        pyqt_utils.defrostAndSaveInto(':/certifi/cacert.pem', PEM_FILE)
 
     if os.path.isfile(PEM_FILE):
         os.environ['REQUESTS_CA_BUNDLE'] = PEM_FILE
 
 
+def onApplicationInstalled():
+    data_transporter_service.fire(APP_EXIT_CHANNEL, True)
+    logger.info('Relaunching %s' % sys.executable)
+    os.execlp(sys.executable, *sys.argv)
+
+
 def run():
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
-    resources.qInitResources()
+    QCoreApplication.setApplicationVersion("1.0.0")
+    QCoreApplication.setApplicationName("Boatswain")
     app = QApplication(sys.argv)
 
     if not docker_service.isDockerRunning():
@@ -86,7 +93,6 @@ def run():
 
     # Load home window
     window = Home()
-    window.show()
 
     # Load all installed containers
     for container in Container.select():
@@ -98,6 +104,16 @@ def run():
     # Create daemon to listen to docker events
     daemon = boatswain_daemon.BoatswainDaemon(window.ui)
     daemon.start()
+
+    feed = Feed('theboatswain/boatswain')
+    pixmap = QIcon(get_resource('resources/logo/boatswain.svg')).pixmap(QSize(64, 64))
+    update_dialog = Updater(window.ui, feed)
+    update_dialog.setIcon(pixmap)
+    update_dialog.installed.connect(onApplicationInstalled)
+    update_dialog.checkForUpdate(silent=True)
+    data_transporter_service.listen(UPDATES_CHANNEL, lambda x: update_dialog.checkForUpdate(silent=x))
+
+    window.show()
 
     # Stop daemon before exit
     data_transporter_service.listen(APP_EXIT_CHANNEL, lambda x: daemon.events.close())
