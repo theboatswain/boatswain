@@ -17,11 +17,13 @@
 
 import os
 import sys
-from contextlib import closing
 
-from PyQt5.QtCore import QFile, Qt, QCoreApplication, QSize
+from PyQt5.QtCore import Qt, QCoreApplication, QSize
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication
+from boatswain_updater.models.feed import Feed
+from boatswain_updater.updater import Updater
+from boatswain_updater.utils import pyqt_utils
 
 from boatswain.common.models.base import db
 from boatswain.common.models.configurations import Configuration
@@ -40,9 +42,6 @@ from boatswain.common.utils.constants import APP_DATA_DIR, CONTAINER_CHANNEL, AP
 from boatswain.common.utils.logging import logger
 from boatswain.home.home import Home
 from boatswain.resources_utils import get_resource
-from boatswain.update import u_type
-from boatswain.update.feed import Feed
-from boatswain.update.update import Update
 
 
 def deFrostPem():
@@ -54,24 +53,21 @@ def deFrostPem():
     and then relink back the location of REQUESTS_CA_BUNDLE into this file
     """
     if not os.path.isfile(PEM_FILE):
-        with closing(QFile(':/certifi/cacert.pem')) as pem_file:
-            if pem_file.open(QFile.ReadOnly):
-                pem_data = bytes(pem_file.readAll()).decode('UTF-8')
-                with open(PEM_FILE, 'w') as the_file:
-                    the_file.write(pem_data)
+        pyqt_utils.defrostAndSaveInto(':/certifi/cacert.pem', PEM_FILE)
 
     if os.path.isfile(PEM_FILE):
         os.environ['REQUESTS_CA_BUNDLE'] = PEM_FILE
 
 
-def onApplicationInstalling():
+def onApplicationInstalled():
     data_transporter_service.fire(APP_EXIT_CHANNEL, True)
-    sys.exit()
+    logger.info('Relaunching %s' % sys.executable)
+    os.execlp(sys.executable, *sys.argv)
 
 
 def run():
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
-    QCoreApplication.setApplicationVersion("0.0.0")
+    QCoreApplication.setApplicationVersion("1.0.0")
     QCoreApplication.setApplicationName("Boatswain")
     app = QApplication(sys.argv)
 
@@ -110,12 +106,12 @@ def run():
 
     feed = Feed('theboatswain/boatswain')
     pixmap = QIcon(get_resource('resources/logo/boatswain.svg')).pixmap(QSize(64, 64))
-    update_dialog = Update(window.ui, feed, u_type.ON_APPLICATION_START)
+    update_dialog = Updater(window.ui, feed)
     update_dialog.setIcon(pixmap)
-    update_dialog.installing.connect(onApplicationInstalling)
+    update_dialog.installed.connect(onApplicationInstalled)
+    update_dialog.checkForUpdate(silent=True)
 
     window.show()
-    update_dialog.exec()
 
     # Stop daemon before exit
     data_transporter_service.listen(APP_EXIT_CHANNEL, lambda x: daemon.events.close())
