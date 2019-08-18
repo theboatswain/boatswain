@@ -31,6 +31,8 @@ logging.basicConfig(filename=log_file,
                     datefmt='%H:%M:%S',
                     level=logging.INFO)
 
+logging.getLogger('boatswain').addHandler(logging.StreamHandler())
+
 print('Log file: ' + log_file)
 
 logger = logging.getLogger('boatswain')

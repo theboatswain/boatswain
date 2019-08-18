@@ -1,10 +1,11 @@
-from PyQt5.QtCore import QCoreApplication, QSize, Qt
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import QCoreApplication, QSize
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDialog
 
 from boatswain.about.about_ui import AboutUi
 from boatswain.about.license.license_ui import LicenseUi
 from boatswain.resources.acknowledge import acknowledge
+from boatswain.resources_utils import get_resource
 
 
 class AboutDialog(object):
@@ -27,7 +28,8 @@ class AboutDialog(object):
 
     def resizeEvent(self, event):
         height = event.size().height() * 0.8
-        self.ui.avatar.setPixmap(QPixmap(':/logo/boatswain.png').scaled(QSize(height, height), Qt.KeepAspectRatio))
+        pixmap = QIcon(get_resource('resources/logo/boatswain.svg')).pixmap(QSize(height, height))
+        self.ui.avatar.setPixmap(pixmap)
 
     def showLicense(self):
         dialog = QDialog(self.dialog)

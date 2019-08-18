@@ -24,7 +24,7 @@
                 "qtlocation", "qtmultimedia", "qtnetworkauth",
                 "qtquickcontrols", "qtquickcontrols2", "qtremoteobjects",
                 "qtscript", "qtscxml", "qtsensors", "qtserialbus",
-                "qtserialport", "qtspeech", "qtsvg", "qttools",
+                "qtserialport", "qtspeech", "qttools",
                 "qttranslations", "qtwayland", "qtwebchannel", "qtwebengine",
                 "qtwebsockets", "qtwebview", "qtxmlpatterns"
         ],
@@ -45,16 +45,16 @@
 
     "pyqt5": {
         "macos#modules":            [
-                "QtCore", "QtGui","QtWidgets"
+                "QtCore", "QtGui", "QtWidgets", "QtNetwork", "QtSvg"
         ],
 
         "linux#modules":                [
-                "QtCore", "QtGui", "QtWidgets"
+                "QtCore", "QtGui", "QtWidgets", "QtNetwork", "QtSvg"
         ],
 
         "win#disabled_features":        ["PyQt_Desktop_OpenGL"],
         "win#modules":                  [
-                "QtCore", "QtGui", "QtWidgets"
+                "QtCore", "QtGui", "QtWidgets", "QtNetwork", "QtSvg"
         ],
 
         "source":                       "PyQt5_*-5.13.0.tar.gz"
