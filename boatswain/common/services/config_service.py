@@ -19,6 +19,7 @@ from peewee import DoesNotExist
 
 from boatswain.common.models.configurations import Configuration
 from boatswain.common.models.container import Container
+from boatswain.common.utils.constants import APP_EXPANDED
 
 
 def getAppConf(container: Container, key: str) -> Configuration:
@@ -40,3 +41,14 @@ def setAppConf(container: Container, key: str, value: str):
         conf.save()
     except DoesNotExist:
         Configuration.create(container=container, name=key, value=value)
+
+
+def isAppExpanded(container: Container):
+    return isAppConf(container, APP_EXPANDED, 'true')
+
+
+def setAppExpanded(container: Container, expand: bool):
+    if expand:
+        setAppConf(container, APP_EXPANDED, 'true')
+    else:
+        setAppConf(container, APP_EXPANDED, 'false')

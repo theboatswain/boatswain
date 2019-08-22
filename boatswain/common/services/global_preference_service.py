@@ -26,7 +26,7 @@ def setHomeWindowSize(size: QSize):
 
 def getMinimumHomeWindowSize():
     height = system_service.screen_height * 4 / 5
-    width = height / 1.6
+    width = height / 1.7
     return QSize(width, height)
 
 

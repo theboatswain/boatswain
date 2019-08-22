@@ -42,6 +42,10 @@ class AdvancedAppWidget:
         self.drawShortcuts()
         containers_service.listen(self.container, 'tag_index', self.listenTagChange)
         containers_service.listen(self.container, SHORTCUT_CONF_CHANGED_CHANNEL, self.redrawShortcuts)
+        if config_service.isAppExpanded(container):
+            self.ui.setMaximumHeight(self.app_info_max_height)
+        else:
+            self.ui.setMaximumHeight(0)
 
     def onImageTagChange(self, full_tag_name):
         if not full_tag_name:
@@ -63,12 +67,15 @@ class AdvancedAppWidget:
             self.animation.setStartValue(0)
             self.animation.setEndValue(self.app_info_max_height)
             self.animation.start()
+            expanded = True
         else:
             self.animation = QPropertyAnimation(self.ui, b"maximumHeight")
             self.animation.setDuration(300)
             self.animation.setStartValue(self.app_info_max_height)
             self.animation.setEndValue(0)
             self.animation.start()
+            expanded = False
+        config_service.setAppExpanded(self.container, expanded)
 
     def findFileOrFolder(self, shotcut: PreferencesShortcut, input_box: PathViewWidget):
         if shotcut.pref_type == 'File':

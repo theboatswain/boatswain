@@ -34,7 +34,7 @@ class HomeUi(QMainWindow):
         central_widget = QWidget(self)
         central_widget.setSizePolicy(BQSizePolicy(h_stretch=1))
         main_layout = QVBoxLayout(central_widget)
-        main_layout.setContentsMargins(0, 5, 0, 11)
+        main_layout.setContentsMargins(0, 8, 0, 11)
         main_layout.setSpacing(0)
         widget = QWidget(central_widget)
         widget.setSizePolicy(BQSizePolicy(h_stretch=1))

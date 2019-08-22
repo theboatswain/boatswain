@@ -39,13 +39,13 @@ class AppWidgetUi(QWidget):
         self.widget.setSizePolicy(BQSizePolicy(height=QSizePolicy.Fixed))
         self.vertical_layout.addWidget(self.widget)
         self.horizontal_layout = QHBoxLayout(self.widget)
-        self.horizontal_layout.setContentsMargins(20, 2, 10, 5)
+        self.horizontal_layout.setContentsMargins(20, 1, 10, 3)
 
         img_name = container.image_name
         name_part = container.image_name.split('/')
         if len(name_part) > 1:
             img_name = name_part[1]
-        self.pic = AppAvatar(text_utils.getSimpleName(img_name), parent=self.widget, radius=20)
+        self.pic = AppAvatar(text_utils.getSimpleName(img_name), parent=self.widget, radius=18)
         self.horizontal_layout.addWidget(self.pic)
         self.name = QLabel(self.widget)
         self.name.setSizePolicy(BQSizePolicy(h_stretch=2))

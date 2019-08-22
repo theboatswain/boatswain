@@ -20,6 +20,7 @@ import platform
 import tempfile
 
 from PyQt5.QtCore import QProcess
+from PyQt5.QtWidgets import QApplication
 
 screen_width: int
 screen_height: int
@@ -34,3 +35,7 @@ def startTerminalWithCommand(command):
         proc = QProcess()
         proc.start("open", {tmp.name})
         proc.waitForFinished(-1)
+
+
+def getScale(pixel_input):
+    return QApplication.desktop().devicePixelRatio() * pixel_input

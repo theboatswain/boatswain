@@ -17,7 +17,7 @@
 
 import logging
 import os
-
+import sys
 
 from boatswain.common.utils.constants import APP_LOG_DIR
 
@@ -31,8 +31,25 @@ logging.basicConfig(filename=log_file,
                     datefmt='%H:%M:%S',
                     level=logging.INFO)
 
-logging.getLogger('boatswain').addHandler(logging.StreamHandler())
-
-print('Log file: ' + log_file)
+logging.getLogger('boatswain')
 
 logger = logging.getLogger('boatswain')
+
+
+class LoggerWriter:
+    def __init__(self, _logger, level):
+        self.logger = _logger
+        self.level = level
+
+    def write(self, message):
+        if message != '\n':
+            self.logger.log(self.level, message)
+
+    def flush(self):
+        pass
+
+
+sys.stdout = LoggerWriter(logger, logging.INFO)
+sys.stderr = LoggerWriter(logger, logging.ERROR)
+
+print('Log file: ' + log_file)
