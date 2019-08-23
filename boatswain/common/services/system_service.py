@@ -20,10 +20,15 @@ import platform
 import tempfile
 
 from PyQt5.QtCore import QProcess
+from PyQt5.QtGui import QGuiApplication, QFont
 from PyQt5.QtWidgets import QApplication
 
 screen_width: int
 screen_height: int
+
+ref_dpi = 72
+ref_height = 900
+ref_width = 1440
 
 
 def startTerminalWithCommand(command):
@@ -37,5 +42,24 @@ def startTerminalWithCommand(command):
         proc.waitForFinished(-1)
 
 
-def getScale(pixel_input):
-    return QApplication.desktop().devicePixelRatio() * pixel_input
+def applyRatio(pixel):
+    rect = QGuiApplication.primaryScreen().geometry()
+    height = min(rect.width(), rect.height())
+    width = max(rect.width(), rect.height())
+    ratio = min(height / ref_height, width / ref_width)
+    return pixel * ratio
+
+
+def applyFontRatio(point):
+    dpi = QGuiApplication.primaryScreen().logicalDotsPerInch()
+    rect = QGuiApplication.primaryScreen().geometry()
+    height = min(rect.width(), rect.height())
+    width = max(rect.width(), rect.height())
+    ratio_font = min(height * ref_dpi / (dpi * ref_height), width * ref_dpi / (dpi * ref_width))
+    return point * ratio_font
+
+
+def resetStyle():
+    font = QFont()
+    font.setPointSize(applyFontRatio(13))
+    QApplication.setFont(font)

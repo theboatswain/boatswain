@@ -17,7 +17,6 @@
 
 import os
 import sys
-from boatswain.common.utils.logging import logger
 
 from PyQt5.QtCore import Qt, QCoreApplication, QSize
 from PyQt5.QtGui import QIcon
@@ -41,6 +40,7 @@ from boatswain.common.services import boatswain_daemon, data_transporter_service
 from boatswain.common.utils import docker_utils
 from boatswain.common.utils.constants import APP_DATA_DIR, CONTAINER_CHANNEL, APP_EXIT_CHANNEL, PEM_FILE, \
     UPDATES_CHANNEL
+from boatswain.common.utils.logging import logger
 from boatswain.home.home import Home
 from boatswain.resources_utils import get_resource
 
@@ -71,6 +71,7 @@ def run():
     QCoreApplication.setApplicationVersion("1.0.0")
     QCoreApplication.setApplicationName("Boatswain")
     app = QApplication(sys.argv)
+    system_service.resetStyle()
 
     if not docker_service.isDockerRunning():
         return docker_utils.notifyDockerNotAvailable()
