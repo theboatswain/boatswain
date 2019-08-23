@@ -22,6 +22,7 @@ from boatswain.common.models.container import Container
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
 from boatswain.common.models.tag import Tag
 from boatswain.common.services import config_service, containers_service
+from boatswain.common.services.system_service import rt
 from boatswain.common.utils.constants import CONTAINER_CONF_CHANGED, SHORTCUT_CONF_CHANGED_CHANNEL
 from boatswain.common.utils.custom_ui import BQSizePolicy, PathViewWidget
 from boatswain.config.app_config import AppConfig
@@ -38,7 +39,7 @@ class AdvancedAppWidget:
     def __init__(self, parent, container: Container) -> None:
         self.container = container
         self.ui = AdvancedAppWidgetUi(parent, container)
-        self.ui.advanced_configuration.clicked.connect(self.onAdvancedConfigurationClicked)
+        # self.ui.advanced_configuration.clicked.connect(self.onAdvancedConfigurationClicked)
         self.drawShortcuts()
         containers_service.listen(self.container, 'tag_index', self.listenTagChange)
         containers_service.listen(self.container, SHORTCUT_CONF_CHANGED_CHANNEL, self.redrawShortcuts)
@@ -98,10 +99,10 @@ class AdvancedAppWidget:
             input_box.setPath(shortcut.default_value)
             self.ui.grid_layout.addWidget(input_box, row, 1, 1, 2)
             finder = QPushButton(self.ui.widget)
-            finder.setText('...')
+            finder.setText(' ... ')
             finder.setFlat(True)
             finder.setStyleSheet("border: 1px solid #999999; padding: 0px 4px; border-radius: 2px")
-            finder.setMaximumWidth(25)
+            finder.setMaximumWidth(rt(25))
             finder.clicked.connect(lambda x: self.findFileOrFolder(shortcut, input_box))
             self.ui.grid_layout.addWidget(finder, row, 3, 1, 2)
         else:
@@ -141,7 +142,7 @@ class AdvancedAppWidget:
 
         is_collapsed = self.ui.maximumHeight() == 0
         self.ui.setMaximumHeight(9999999)
-        self.app_info_max_height = self.ui.sizeHint().height() + 50
+        self.app_info_max_height = self.ui.sizeHint().height() + rt(50)
         if is_collapsed:
             self.ui.setMaximumHeight(0)
         else:

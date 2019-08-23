@@ -48,12 +48,12 @@ class AdvancedAppWidgetUi(QWidget):
         self.widget_4 = QWidget(self.widget_3)
         self.widget_4.setSizePolicy(BQSizePolicy(h_stretch=1))
         self.horizontal_layout_2.addWidget(self.widget_4)
-        self.advanced_configuration = QPushButton(self.widget_3)
-        self.horizontal_layout_2.addWidget(self.advanced_configuration)
+        # self.advanced_configuration = QPushButton(self.widget_3)
+        # self.horizontal_layout_2.addWidget(self.advanced_configuration)
         self.layout.addWidget(self.widget_3)
 
         self.retranslateUi()
 
     def retranslateUi(self):
         _translate = QCoreApplication.translate
-        self.advanced_configuration.setText(_translate("AdvancedWidget", "Advanced configuration"))
+        # self.advanced_configuration.setText(_translate("AdvancedWidget", "Advanced configuration"))

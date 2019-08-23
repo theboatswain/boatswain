@@ -44,7 +44,8 @@ class HomeUi(QMainWindow):
         top_layout.setSpacing(rt(6))
 
         self.add_app = QPushButton(widget)
-        self.add_app.setFixedHeight(rt(22))
+        padding = "%dpx %dpx" % (rt(1), rt(12))
+        self.add_app.setStyleSheet("border: 1px solid #999999; padding: %s; border-radius: 3px" % padding)
         self.add_app.setSizePolicy(BQSizePolicy(width=QSizePolicy.Fixed, height=QSizePolicy.Fixed))
         self.add_app.setFocusPolicy(Qt.ClickFocus)
         top_layout.addWidget(self.add_app, 0, 0, 1, 1)
