@@ -23,6 +23,7 @@ from boatswain.common.models.container import Container
 from boatswain.common.services import system_service
 from boatswain.common.services.system_service import rt, applyFontRatio
 from boatswain.common.utils.custom_ui import BQSizePolicy, ButtonLineEdit
+from boatswain.resources_utils import get_resource
 
 
 class ShortcutCreatorUi:
@@ -150,7 +151,7 @@ class ShortcutCreatorUi:
         self.mapping_to = QtWidgets.QLineEdit(self.widget)
         self.mapping_to.setAttribute(Qt.WA_MacShowFocusRect, 0)
         self.gridLayout_2.addWidget(self.mapping_to, 2, 1, 1, 1)
-        self.default_value = ButtonLineEdit(':/icons/folder.svg', self.widget)
+        self.default_value = ButtonLineEdit(get_resource('resources/icons/folder.svg'), self.widget)
         self.default_value.setSizePolicy(BQSizePolicy(h_stretch=2,
                                                       width=QSizePolicy.Expanding, height=QSizePolicy.Fixed))
         self.gridLayout_2.addWidget(self.default_value, 0, 1, 1, 1)
