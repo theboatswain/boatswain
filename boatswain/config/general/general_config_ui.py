@@ -21,6 +21,7 @@ from PyQt5.QtWidgets import QLabel, QGridLayout, QPushButton, QComboBox, QLineEd
     QHBoxLayout, QFrame
 
 from boatswain.common.models.container import Container
+from boatswain.common.services.system_service import rt
 from boatswain.common.utils import text_utils
 from boatswain.common.utils.app_avatar import AppAvatar
 from boatswain.common.utils.custom_ui import BQSizePolicy, AutoResizeWidget
@@ -33,13 +34,13 @@ class GeneralAppConfigUi(AutoResizeWidget):
         self.container = container
         self.handler = handler
         self.vertical_layout_2 = QVBoxLayout(self)
-        self.vertical_layout_2.setContentsMargins(20, 11, 20, 11)
-        self.vertical_layout_2.setSpacing(6)
+        self.vertical_layout_2.setContentsMargins(rt(20), rt(11), rt(20), rt(11))
+        self.vertical_layout_2.setSpacing(rt(6))
         self.widget = QWidget(self)
         self.widget.setSizePolicy(BQSizePolicy(v_stretch=1))
         self.horizontal_layout_2 = QHBoxLayout(self.widget)
         self.horizontal_layout_2.setContentsMargins(0, 0, 0, 0)
-        self.horizontal_layout_2.setSpacing(6)
+        self.horizontal_layout_2.setSpacing(rt(6))
 
         self._translate = QCoreApplication.translate
 
@@ -47,7 +48,7 @@ class GeneralAppConfigUi(AutoResizeWidget):
         name_part = self.container.image_name.split('/')
         if len(name_part) > 1:
             img_name = name_part[1]
-        self.pic = AppAvatar(text_utils.getSimpleName(img_name), parent=self, radius=21)
+        self.pic = AppAvatar(text_utils.getSimpleName(img_name), parent=self, radius=rt(20))
 
         self.horizontal_layout_2.addWidget(self.pic)
         self.container_name = QLineEdit(self.widget)
@@ -70,7 +71,7 @@ class GeneralAppConfigUi(AutoResizeWidget):
         self.widget_3.setSizePolicy(BQSizePolicy(v_stretch=1))
         self.vertical_layout_4 = QVBoxLayout(self.widget_3)
         self.vertical_layout_4.setContentsMargins(0, 0, 0, 0)
-        self.vertical_layout_4.setSpacing(6)
+        self.vertical_layout_4.setSpacing(rt(6))
         self.repo_source = QLabel(self.widget_3)
         self.vertical_layout_4.addWidget(self.repo_source)
         self.container_id = QLabel(self.widget_3)
@@ -83,8 +84,8 @@ class GeneralAppConfigUi(AutoResizeWidget):
         self.widget_4 = QWidget(self)
         self.widget_4.setSizePolicy(BQSizePolicy(v_stretch=2))
         self.grid_layout = QGridLayout(self.widget_4)
-        self.grid_layout.setContentsMargins(0, 0, 0, 5)
-        self.grid_layout.setSpacing(6)
+        self.grid_layout.setContentsMargins(0, 0, 0, rt(5))
+        self.grid_layout.setSpacing(rt(6))
         self.sync = QPushButton(self.widget_4)
         self.sync.setFocusPolicy(Qt.NoFocus)
         self.grid_layout.addWidget(self.sync, 2, 4, 1, 1)
@@ -133,7 +134,7 @@ class GeneralAppConfigUi(AutoResizeWidget):
         self.widget_2.setSizePolicy(BQSizePolicy(v_stretch=1))
         self.vertical_layout_3 = QVBoxLayout(self.widget_2)
         self.vertical_layout_3.setContentsMargins(0, 0, 0, 0)
-        self.vertical_layout_3.setSpacing(6)
+        self.vertical_layout_3.setSpacing(rt(6))
         self.start_with_boatswain = QCheckBox(self.widget_2)
         self.vertical_layout_3.addWidget(self.start_with_boatswain)
         self.stop_with_boatswain = QCheckBox(self.widget_2)

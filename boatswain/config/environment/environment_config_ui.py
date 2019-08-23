@@ -19,6 +19,7 @@ from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTableView, QCheckBox
 
 from boatswain.common.models.container import Container
+from boatswain.common.services.system_service import rt
 from boatswain.common.utils.custom_ui import BQSizePolicy, AutoResizeWidget
 
 
@@ -28,13 +29,13 @@ class EnvironmentConfigUi(AutoResizeWidget):
         super().__init__(parent_widget)
         self.container = container
         self.vertical_layout = QVBoxLayout(self)
-        self.vertical_layout.setContentsMargins(11, 11, 11, 11)
-        self.vertical_layout.setSpacing(6)
+        self.vertical_layout.setContentsMargins(rt(11), rt(11), rt(11), rt(11))
+        self.vertical_layout.setSpacing(rt(6))
         self.top_widget = QWidget(self)
         self.top_widget.setSizePolicy(BQSizePolicy())
         self.horizontal_layout = QHBoxLayout(self.top_widget)
         self.horizontal_layout.setContentsMargins(0, 0, 0, 0)
-        self.horizontal_layout.setSpacing(6)
+        self.horizontal_layout.setSpacing(rt(6))
         self.user_env_label = QLabel(self.top_widget)
         self.horizontal_layout.addWidget(self.user_env_label)
         self.hidden_widget = QWidget(self.top_widget)
@@ -52,7 +53,7 @@ class EnvironmentConfigUi(AutoResizeWidget):
         self.mid_widget.setSizePolicy(BQSizePolicy())
         self.horizontal_layout_2 = QHBoxLayout(self.mid_widget)
         self.horizontal_layout_2.setContentsMargins(0, 0, 0, 0)
-        self.horizontal_layout_2.setSpacing(6)
+        self.horizontal_layout_2.setSpacing(rt(6))
         self.include_sys_env = QCheckBox(self.mid_widget)
         self.horizontal_layout_2.addWidget(self.include_sys_env)
         self.vertical_layout.addWidget(self.include_sys_env)

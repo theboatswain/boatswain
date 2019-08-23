@@ -19,6 +19,7 @@ from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import QWidget, QLabel, QHBoxLayout, QVBoxLayout, QPushButton, QTableView
 
 from boatswain.common.models.container import Container
+from boatswain.common.services.system_service import rt
 from boatswain.common.utils.custom_ui import AutoResizeWidget, BQSizePolicy
 
 
@@ -33,13 +34,13 @@ class VolumeMountConfigUi(AutoResizeWidget):
         self.handler = handler
         self.container = container
         self.verticalLayout = QVBoxLayout(self)
-        self.verticalLayout.setContentsMargins(11, 11, 11, 11)
-        self.verticalLayout.setSpacing(6)
+        self.verticalLayout.setContentsMargins(rt(11), rt(11), rt(11), rt(11))
+        self.verticalLayout.setSpacing(rt(6))
         self.top_widget = QWidget(self)
         self.top_widget.setSizePolicy(BQSizePolicy())
         self.horizontalLayout = QHBoxLayout(self.top_widget)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout.setSpacing(6)
+        self.horizontalLayout.setSpacing(rt(6))
         self.volume_label = QLabel(self.top_widget)
         self.horizontalLayout.addWidget(self.volume_label)
         self.hidden_widget = QWidget(self.top_widget)

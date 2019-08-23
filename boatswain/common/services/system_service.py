@@ -42,12 +42,12 @@ def startTerminalWithCommand(command):
         proc.waitForFinished(-1)
 
 
-def applyRatio(pixel):
+def rt(pixel):
     rect = QGuiApplication.primaryScreen().geometry()
     height = min(rect.width(), rect.height())
     width = max(rect.width(), rect.height())
     ratio = min(height / ref_height, width / ref_width)
-    return pixel * ratio
+    return round(pixel * ratio)
 
 
 def applyFontRatio(point):
@@ -56,10 +56,10 @@ def applyFontRatio(point):
     height = min(rect.width(), rect.height())
     width = max(rect.width(), rect.height())
     ratio_font = min(height * ref_dpi / (dpi * ref_height), width * ref_dpi / (dpi * ref_width))
-    return point * ratio_font
+    return round(point * ratio_font)
 
 
 def resetStyle():
-    font = QFont()
-    font.setPointSize(applyFontRatio(13))
-    QApplication.setFont(font)
+    default_font = QApplication.font("QMenu")
+    default_font.setPointSize(applyFontRatio(13))
+    QApplication.setFont(default_font)

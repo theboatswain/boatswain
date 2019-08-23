@@ -19,6 +19,8 @@ from PyQt5.QtCore import Qt, QCoreApplication
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QSizePolicy
 
+from boatswain.common.services.system_service import applyFontRatio
+
 
 class AppAvatar(QWidget):
     """ Class to customise app's avatar """
@@ -33,7 +35,7 @@ class AppAvatar(QWidget):
         self.name = QLabel(self)
         self.name.setAlignment(Qt.AlignCenter)
         font = QFont()
-        font.setPointSize(20)
+        font.setPointSize(applyFontRatio(20))
         self.name.setFont(font)
         self.avatar_layout.addWidget(self.name, Qt.AlignCenter)
         _translate = QCoreApplication.translate

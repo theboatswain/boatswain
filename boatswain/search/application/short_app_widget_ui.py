@@ -19,6 +19,7 @@ from PyQt5.QtCore import QCoreApplication, Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QPushButton, QWidget, QVBoxLayout
 
+from boatswain.common.services.system_service import rt
 from boatswain.common.utils import text_utils
 from boatswain.common.utils.app_avatar import AppAvatar
 from boatswain.common.utils.custom_ui import BQSizePolicy
@@ -37,12 +38,12 @@ class ShortAppWidgetUi(QWidget):
         name_part = name.split('/')
         if len(name_part) > 1:
             img_name = name_part[1]
-        self.pic = AppAvatar(text_utils.getSimpleName(img_name), parent=self)
+        self.pic = AppAvatar(text_utils.getSimpleName(img_name), parent=self, radius=rt(25))
         self.horizontal_layout.addWidget(self.pic)
 
         self.info_widget = QWidget(self)
         self.info_layout = QVBoxLayout(self.info_widget)
-        self.info_layout.setContentsMargins(5, 0, 0, 0)
+        self.info_layout.setContentsMargins(rt(5), 0, 0, 0)
 
         self.name = QLabel(self)
         self.info_layout.addWidget(self.name)
@@ -56,7 +57,7 @@ class ShortAppWidgetUi(QWidget):
         self.from_repo = QLabel(self)
         font = QFont()
         font.setBold(True)
-        font.setWeight(75)
+        font.setWeight(60)
         self.from_repo.setFont(font)
         self.horizontal_layout.addWidget(self.from_repo)
         self.install = QPushButton(self)

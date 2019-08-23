@@ -19,6 +19,7 @@ from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtWidgets import QWidget, QSizePolicy, QPushButton, QFrame, QVBoxLayout, QHBoxLayout, QGridLayout
 
 from boatswain.common.models.container import Container
+from boatswain.common.services.system_service import rt
 from boatswain.common.utils.custom_ui import BQSizePolicy
 
 
@@ -29,8 +30,8 @@ class AdvancedAppWidgetUi(QWidget):
         self.container = container
         self.setSizePolicy(BQSizePolicy(height=QSizePolicy.Fixed))
         self.layout = QVBoxLayout(self)
-        self.layout.setContentsMargins(20, 0, 3, 5)
-        self.layout.setSpacing(6)
+        self.layout.setContentsMargins(rt(20), 0, rt(3), rt(5))
+        self.layout.setSpacing(rt(6))
         line = QFrame(self)
         line.setFrameShape(QFrame.HLine)
         line.setFrameShadow(QFrame.Sunken)
@@ -38,12 +39,12 @@ class AdvancedAppWidgetUi(QWidget):
         self.widget = QWidget(self)
         self.grid_layout = QGridLayout(self.widget)
         self.grid_layout.setContentsMargins(0, 0, 0, 0)
-        self.grid_layout.setSpacing(6)
+        self.grid_layout.setSpacing(rt(6))
         self.layout.addWidget(self.widget)
         self.widget_3 = QWidget(self)
         self.horizontal_layout_2 = QHBoxLayout(self.widget_3)
         self.horizontal_layout_2.setContentsMargins(0, 0, 0, 0)
-        self.horizontal_layout_2.setSpacing(6)
+        self.horizontal_layout_2.setSpacing(rt(6))
         self.widget_4 = QWidget(self.widget_3)
         self.widget_4.setSizePolicy(BQSizePolicy(h_stretch=1))
         self.horizontal_layout_2.addWidget(self.widget_4)
