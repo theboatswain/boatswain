@@ -16,11 +16,10 @@
 #
 
 import os
-import platform
 import tempfile
 
 from PyQt5.QtCore import QProcess
-from PyQt5.QtGui import QGuiApplication, QFont
+from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtWidgets import QApplication
 from boatswain_updater.utils import sys_utils
 

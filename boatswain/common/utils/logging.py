@@ -51,5 +51,3 @@ class LoggerWriter:
 
 sys.stdout = LoggerWriter(logger, logging.INFO)
 sys.stderr = LoggerWriter(logger, logging.ERROR)
-
-print('Log file: ' + log_file)

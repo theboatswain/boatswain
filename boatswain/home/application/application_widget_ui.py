@@ -16,11 +16,10 @@
 #
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSizePolicy, QHBoxLayout, QLabel, QPushButton, QFrame
 
 from boatswain.common.models.container import Container
-from boatswain.common.services.system_service import rt, applyFontRatio
+from boatswain.common.services.system_service import rt
 from boatswain.common.utils import text_utils
 from boatswain.common.utils.app_avatar import AppAvatar
 from boatswain.common.utils.custom_ui import BQSizePolicy

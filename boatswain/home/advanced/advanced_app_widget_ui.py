@@ -15,8 +15,7 @@
 #
 #
 
-from PyQt5.QtCore import QCoreApplication
-from PyQt5.QtWidgets import QWidget, QSizePolicy, QPushButton, QFrame, QVBoxLayout, QHBoxLayout, QGridLayout
+from PyQt5.QtWidgets import QWidget, QSizePolicy, QFrame, QVBoxLayout, QHBoxLayout, QGridLayout
 
 from boatswain.common.models.container import Container
 from boatswain.common.services.system_service import rt
@@ -51,9 +50,3 @@ class AdvancedAppWidgetUi(QWidget):
         # self.advanced_configuration = QPushButton(self.widget_3)
         # self.horizontal_layout_2.addWidget(self.advanced_configuration)
         self.layout.addWidget(self.widget_3)
-
-        self.retranslateUi()
-
-    def retranslateUi(self):
-        _translate = QCoreApplication.translate
-        # self.advanced_configuration.setText(_translate("AdvancedWidget", "Advanced configuration"))
