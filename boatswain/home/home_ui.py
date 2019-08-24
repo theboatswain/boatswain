@@ -18,7 +18,6 @@ from PyQt5 import QtCore
 from PyQt5.QtCore import QCoreApplication, Qt
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QComboBox, QSizePolicy, QLineEdit, QPushButton, \
     QMainWindow, QFrame, QScrollArea, QMenuBar, QMenu, QStatusBar, QAction, QApplication
-from boatswain_updater.utils import sys_utils
 
 from boatswain.common.services import data_transporter_service
 from boatswain.common.services.system_service import rt
@@ -46,10 +45,7 @@ class HomeUi(QMainWindow):
 
         self.add_app = QPushButton(widget)
         padding = "%dpx %dpx" % (rt(1), rt(12))
-        border_radios = 'border-radius: 3px'
-        if sys_utils.isWin():
-            border_radios = ''
-        self.add_app.setStyleSheet("border: 1px solid #999999; padding: %s; %s" % (padding, border_radios))
+        self.add_app.setStyleSheet("border: 1px solid #999999; padding: %s; border-radius: 2px" % padding)
         self.add_app.setSizePolicy(BQSizePolicy(width=QSizePolicy.Fixed, height=QSizePolicy.Fixed))
         self.add_app.setFocusPolicy(Qt.ClickFocus)
         top_layout.addWidget(self.add_app, 0, 0, 1, 1)
