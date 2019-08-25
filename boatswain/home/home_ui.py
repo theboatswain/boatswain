@@ -14,12 +14,12 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
-
 from PyQt5.QtCore import QCoreApplication, Qt
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QComboBox, QSizePolicy, QLineEdit, QPushButton, \
     QMainWindow, QFrame, QScrollArea, QMenuBar, QMenu, QStatusBar, QAction, QApplication
 
 from boatswain.common.services import data_transporter_service
+from boatswain.common.services.system_service import rt
 from boatswain.common.utils.constants import APP_EXIT_CHANNEL
 from boatswain.common.utils.custom_ui import BQSizePolicy
 
@@ -30,18 +30,25 @@ class HomeUi(QMainWindow):
     def __init__(self):
         super(HomeUi, self).__init__()
         self.setSizePolicy(BQSizePolicy(h_stretch=1))
-
         central_widget = QWidget(self)
         central_widget.setSizePolicy(BQSizePolicy(h_stretch=1))
         main_layout = QVBoxLayout(central_widget)
-        main_layout.setContentsMargins(0, 5, 0, 11)
+        main_layout.setContentsMargins(0, rt(6), 0, rt(11))
         main_layout.setSpacing(0)
         widget = QWidget(central_widget)
         widget.setSizePolicy(BQSizePolicy(h_stretch=1))
         widget.setAutoFillBackground(False)
         top_layout = QGridLayout(widget)
-        top_layout.setContentsMargins(11, 0, 11, 11)
-        top_layout.setSpacing(6)
+        top_layout.setContentsMargins(rt(11), 0, rt(11), rt(6))
+        top_layout.setSpacing(rt(6))
+
+        self.add_app = QPushButton(widget)
+        padding = "%dpx %dpx" % (rt(1), rt(12))
+        self.add_app.setStyleSheet("border: 1px solid #999999; padding: %s; border-radius: 2px" % padding)
+        self.add_app.setSizePolicy(BQSizePolicy(width=QSizePolicy.Fixed, height=QSizePolicy.Fixed))
+        self.add_app.setFocusPolicy(Qt.ClickFocus)
+        top_layout.addWidget(self.add_app, 0, 0, 1, 1)
+
         self.app_type = QComboBox(widget)
         self.app_type.setSizePolicy(BQSizePolicy(h_stretch=1, width=QSizePolicy.Fixed, height=QSizePolicy.Fixed))
         self.app_type.setFocusPolicy(Qt.ClickFocus)
@@ -52,10 +59,6 @@ class HomeUi(QMainWindow):
         self.search_app.setFocusPolicy(Qt.ClickFocus)
         self.search_app.setStyleSheet("padding: 2 2 2 5;")
         top_layout.addWidget(self.search_app, 0, 3, 1, 1)
-        self.add_app = QPushButton(widget)
-        self.add_app.setSizePolicy(BQSizePolicy(width=QSizePolicy.Minimum, height=QSizePolicy.Fixed))
-        self.add_app.setFocusPolicy(Qt.ClickFocus)
-        top_layout.addWidget(self.add_app, 0, 0, 1, 1)
 
         hidden_widget = QWidget(widget)
         hidden_widget.setSizePolicy(BQSizePolicy())
@@ -101,7 +104,7 @@ class HomeUi(QMainWindow):
         layout = QVBoxLayout(self.app_list)
         layout.setSpacing(0)
         layout.setAlignment(Qt.AlignTop)
-        layout.setContentsMargins(0, 1, 0, 0)
+        layout.setContentsMargins(0, rt(1), 0, 0)
         self.app_list.setLayout(layout)
         self.scroll_area.setWidget(self.app_list)
 

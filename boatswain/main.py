@@ -67,10 +67,11 @@ def onApplicationInstalled():
 
 
 def run():
-    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
+    QApplication.setAttribute(Qt.AA_DisableHighDpiScaling)
     QCoreApplication.setApplicationVersion("1.0.0")
     QCoreApplication.setApplicationName("Boatswain")
     app = QApplication(sys.argv)
+    system_service.resetStyle()
 
     if not docker_service.isDockerRunning():
         return docker_utils.notifyDockerNotAvailable()

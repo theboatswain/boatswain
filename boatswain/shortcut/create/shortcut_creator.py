@@ -185,7 +185,7 @@ class ShortcutCreator:
                                "This value can be changed in the expanding window."))
             self.ui.mapping_to_des.setText(self._translate(
                 self.template, "The container folder of this preference shortcut port mapping. \n"
-                               "i.e /usr/share/nginx/html"
+                               "i.e /usr/share/nginx/html \n"
                                "This value can't be changed in the expanding window."))
 
     def retranslateUi(self):

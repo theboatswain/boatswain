@@ -17,13 +17,14 @@
 
 from typing import List
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtCore import QSize, Qt, pyqtSignal, pyqtSlot, QEvent, QPropertyAnimation
 from PyQt5.QtGui import QIcon, QIntValidator, QResizeEvent
 from PyQt5.QtWidgets import QSizePolicy, QWidget, QStyle, QToolButton, QLineEdit, QFileDialog, QItemDelegate, \
     QComboBox, QLabel, QScrollArea, QFrame
 
 from boatswain.common.services import system_service
+from boatswain.common.services.system_service import applyFontRatio, rt
 from boatswain.common.utils import utils
 from boatswain.resources_utils import get_resource
 
@@ -136,15 +137,16 @@ class FolderIcon(QWidget):
         super().__init__(parent)
         self.horizontal_layout = QtWidgets.QHBoxLayout(self)
         self.horizontal_layout.setContentsMargins(0, 0, 0, 0)
-        self.horizontal_layout.setSpacing(2)
+        self.horizontal_layout.setSpacing(rt(2))
         self.icon = QLabel(self)
-        self.icon.setPixmap(QIcon(get_resource('resources/icons/folder.svg')).pixmap(QSize(16, 16)))
+        self.icon.setPixmap(QIcon(get_resource('resources/icons/folder.svg'))
+                            .pixmap(QSize(rt(16), rt(16))))
         self.horizontal_layout.addWidget(self.icon)
         self.label = QLabel(self)
         self.label.setText(label_text)
-        # font = QtGui.QFont()
-        # font.setPointSize(11)
-        # self.label.setFont(font)
+        font = QtGui.QFont()
+        font.setPointSize(applyFontRatio(11))
+        self.label.setFont(font)
         self.current_label_visible = True
         self.horizontal_layout.addWidget(self.label)
 
@@ -177,7 +179,7 @@ class PathViewWidget(QWidget):
         super().__init__(parent)
 
         self.main_layout = QtWidgets.QHBoxLayout(self)
-        self.main_layout.setContentsMargins(3, 0, 0, 0)
+        self.main_layout.setContentsMargins(rt(3), 0, 0, 0)
         self.main_layout.setSpacing(0)
 
         self.scroll_area = QScrollArea(self)
@@ -233,12 +235,12 @@ class PathViewWidget(QWidget):
 
     def resizePaths(self):
         i = len(self.labels) - 1
-        while self.calculateCurrentWidth() < self.max_width - 50 and i >= 0:
+        while self.calculateCurrentWidth() < self.max_width - rt(50) and i >= 0:
             self.labels[i].label.setMaximumWidth(999)
             i -= 1
 
         j = 0
-        while self.calculateCurrentWidth() > self.max_width - 50 and j < len(self.labels):
+        while self.calculateCurrentWidth() > self.max_width - rt(50) and j < len(self.labels):
             self.labels[j].label.setMaximumWidth(0)
             j += 1
 

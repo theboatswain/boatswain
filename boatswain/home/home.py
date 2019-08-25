@@ -19,6 +19,7 @@ from typing import List
 from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtGui import QResizeEvent
 from PyQt5.QtWidgets import QMainWindow
+from boatswain_updater.utils import sys_utils
 
 from boatswain.about.about import AboutDialog
 from boatswain.common.models.container import Container
@@ -44,6 +45,9 @@ class Home:
         self.ui.add_app.clicked.connect(self.addAppClicked)
         self.ui.action_add.triggered.connect(self.addAppClicked)
         self.apps: List[AppWidget] = []
+
+        if sys_utils.isWin():
+            self.ui.menu_bar.hide()
 
         for item in self.filters:
             self.ui.app_type.addItem(self._translate(self.template, item))
