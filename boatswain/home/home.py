@@ -53,7 +53,7 @@ class Home:
 
         self.loadWorkspaces()
 
-        self.ui.workspaces.onOptionSelected.connect(self.onWorkspaceChanged)
+        self.ui.workspaces.on_option_selected.connect(self.onWorkspaceChanged)
         data_transporter_service.listen(CONTAINER_CHANNEL, self.addAppFromContainer)
         data_transporter_service.listen(ADD_APP_CHANNEL, self.addAppClicked)
         self.ui.resizeEvent = self.resizeEvent
