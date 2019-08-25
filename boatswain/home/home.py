@@ -18,14 +18,13 @@ from typing import List
 
 from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtGui import QResizeEvent
-from PyQt5.QtWidgets import QMainWindow, QInputDialog, QLineEdit
+from PyQt5.QtWidgets import QMainWindow, QInputDialog
 from boatswain_updater.utils import sys_utils
 
 from boatswain.about.about import AboutDialog
 from boatswain.common.exceptions.workspace import WorkspaceAlreadyExistsException
 from boatswain.common.models.container import Container
-from boatswain.common.services import data_transporter_service, global_preference_service, containers_service, \
-    workspace_service
+from boatswain.common.services import data_transporter_service, global_preference_service, workspace_service
 from boatswain.common.services.system_service import rt
 from boatswain.common.utils import message_utils
 from boatswain.common.utils.constants import CONTAINER_CHANNEL, ADD_APP_CHANNEL, UPDATES_CHANNEL

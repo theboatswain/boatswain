@@ -156,4 +156,3 @@ class ButtonLineEdit(QLineEdit):
         self.button.move(self.rect().right() - frame_width - button_size.width(),
                          (self.rect().bottom() - button_size.height() + 1) / 2)
         super(ButtonLineEdit, self).resizeEvent(event)
-

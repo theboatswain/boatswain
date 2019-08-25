@@ -7,7 +7,7 @@ from boatswain.common.services.system_service import rt
 
 class SelectUi(QPushButton):
     current_option: str
-    onOptionSelected = pyqtSignal(str)
+    on_option_selected = pyqtSignal(str)
 
     def __init__(self, parent: QWidget):
         super().__init__(parent)
@@ -51,7 +51,7 @@ class SelectUi(QPushButton):
             option['handler']()
         else:
             self.setCurrentOption(option['key'])
-            self.onOptionSelected.emit(option['key'])
+            self.on_option_selected.emit(option['key'])
 
     def getCurrentOption(self):
         return self.current_option

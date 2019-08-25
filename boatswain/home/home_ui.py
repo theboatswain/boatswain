@@ -15,14 +15,14 @@
 #
 #
 from PyQt5.QtCore import QCoreApplication, Qt
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QComboBox, QSizePolicy, QLineEdit, QPushButton, \
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QSizePolicy, QLineEdit, QPushButton, \
     QMainWindow, QFrame, QScrollArea, QMenuBar, QMenu, QStatusBar, QAction, QApplication
 
 from boatswain.common.services import data_transporter_service
 from boatswain.common.services.system_service import rt
+from boatswain.common.ui.custom_ui import BQSizePolicy
 from boatswain.common.ui.select_ui import SelectUi
 from boatswain.common.utils.constants import APP_EXIT_CHANNEL
-from boatswain.common.ui.custom_ui import BQSizePolicy
 
 
 class HomeUi(QMainWindow):
