@@ -24,7 +24,8 @@ from boatswain.common.models.tag import Tag
 from boatswain.common.services import config_service, containers_service
 from boatswain.common.services.system_service import rt
 from boatswain.common.utils.constants import CONTAINER_CONF_CHANGED, SHORTCUT_CONF_CHANGED_CHANNEL
-from boatswain.common.utils.custom_ui import BQSizePolicy, PathViewWidget
+from boatswain.common.ui.custom_ui import BQSizePolicy
+from boatswain.common.ui.path_view import PathViewWidget
 from boatswain.config.app_config import AppConfig
 from boatswain.home.advanced.advanced_app_widget_ui import AdvancedAppWidgetUi
 

@@ -18,12 +18,15 @@ from typing import List
 
 from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtGui import QResizeEvent
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow, QInputDialog
 from boatswain_updater.utils import sys_utils
 
 from boatswain.about.about import AboutDialog
+from boatswain.common.exceptions.workspace import WorkspaceAlreadyExistsException
 from boatswain.common.models.container import Container
-from boatswain.common.services import data_transporter_service, global_preference_service, containers_service
+from boatswain.common.services import data_transporter_service, global_preference_service, workspace_service
+from boatswain.common.services.system_service import rt
+from boatswain.common.utils import message_utils
 from boatswain.common.utils.constants import CONTAINER_CHANNEL, ADD_APP_CHANNEL, UPDATES_CHANNEL
 from boatswain.home.application.application_widget import AppWidget
 from boatswain.home.home_ui import HomeUi
@@ -33,9 +36,8 @@ from boatswain.search.search_app import SearchAppDialog
 class Home:
     """ Home screen """
 
-    filters = ['All apps', 'Running', 'Stopped']
     _translate = QCoreApplication.translate
-    template = 'Boatswain'
+    tpl = 'Boatswain'
 
     def __init__(self):
         super(Home, self).__init__()
@@ -49,13 +51,12 @@ class Home:
         if sys_utils.isWin():
             self.ui.menu_bar.hide()
 
-        for item in self.filters:
-            self.ui.app_type.addItem(self._translate(self.template, item))
+        self.loadWorkspaces()
 
+        self.ui.workspaces.on_option_selected.connect(self.onWorkspaceChanged)
         data_transporter_service.listen(CONTAINER_CHANNEL, self.addAppFromContainer)
         data_transporter_service.listen(ADD_APP_CHANNEL, self.addAppClicked)
         self.ui.resizeEvent = self.resizeEvent
-        self.ui.app_type.currentTextChanged.connect(self.search)
         self.ui.search_app.textChanged.connect(self.search)
         self.ui.about.triggered.connect(self.showAbout)
         self.ui.check_for_update.triggered.connect(lambda: data_transporter_service.fire(UPDATES_CHANNEL, False))
@@ -64,29 +65,64 @@ class Home:
         dialog = SearchAppDialog("Add app", self.ui)
         dialog.show()
 
+    def _tr(self, message):
+        return self._translate(self.tpl, message)
+
+    def loadWorkspaces(self):
+        self.ui.workspaces.clear()
+        self.ui.workspaces.addItem(self._tr('All'), self._tr('All workspaces'), separate_after=True)
+        for workspace in workspace_service.getWorkspaces():
+            if workspace.name != 'All':
+                self.ui.workspaces.addItem(workspace.name)
+        self.ui.workspaces.setCurrentOption(workspace_service.getCurrentActivatedWorkspace().name)
+        self.ui.workspaces.addItem(self._tr('New'), self._tr('Create a new workspace...'), separate_before=True,
+                                   handler=self.newWorkspaceClicked)
+
+    def newWorkspaceClicked(self):
+        dlg = QInputDialog(self.ui)
+        dlg.setInputMode(QInputDialog.TextInput)
+        dlg.setLabelText(self._tr("Workspace name:"))
+        dlg.resize(rt(300), rt(100))
+        ok = dlg.exec_()
+        name = dlg.textValue()
+        if ok:
+            try:
+                workspace = workspace_service.createWorkspace(name)
+                self.onWorkspaceChanged(workspace_name=workspace.name)
+                self.loadWorkspaces()
+            except WorkspaceAlreadyExistsException:
+                message_utils.error('Workspace already exists', 'Please choose a different workspace\'s name')
+
     def addAppFromContainer(self, container: Container):
         widget = AppWidget(self.ui.app_list, container)
         self.apps.append(widget)
         self.ui.app_list.layout().addWidget(widget.ui)
+        filter_by = self.ui.workspaces.getCurrentOption()
+        if filter_by != 'All':
+            if widget.container.group.workspace.name != filter_by:
+                widget.ui.hide()
 
     def show(self):
         self.ui.show()
 
-    def search(self, data=None):
-        filter_by = self.ui.app_type.currentText()
+    def onWorkspaceChanged(self, workspace_name: str):
+        workspace_service.activeWorkspace(workspace_name)
+        self.search(workspace=workspace_name)
+
+    def search(self, data=None, workspace=None):
+        filter_by = self.ui.workspaces.getCurrentOption()
+        if workspace is not None:
+            filter_by = workspace
         keyword = self.ui.search_app.text()
 
         for app in self.apps:
             app.ui.show()
 
-        if filter_by == 'Running':
+        if filter_by != 'All':
             for app in self.apps:
-                if not containers_service.isContainerRunning(app.container):
+                if app.container.group.workspace.name != filter_by:
                     app.ui.hide()
-        if filter_by == 'Stopped':
-            for app in self.apps:
-                if containers_service.isContainerRunning(app.container):
-                    app.ui.hide()
+
         if not keyword:
             return
         for app in self.apps:

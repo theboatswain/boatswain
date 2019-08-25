@@ -1,0 +1,2 @@
+class WorkspaceAlreadyExistsException(Exception):
+    pass

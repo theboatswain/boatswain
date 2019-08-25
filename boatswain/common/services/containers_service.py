@@ -52,7 +52,7 @@ def updateContainerTags(container: Container):
 def installContainer(image_name, repo='dockerhub', description='', tag='latest', environments=None, ports=None):
     order = Container.select().count() * 10000
     container = Container(image_name=image_name, description=description, tag=tag, name=image_name,
-                          repo=repo, group=group_service.getDefaultGroup(), order=order)
+                          repo=repo, group=group_service.getCurrentActivatedGroup(), order=order)
     container.save()
 
     if environments is not None:

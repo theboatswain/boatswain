@@ -24,7 +24,7 @@ from boatswain.common.models.container import Container
 from boatswain.common.services.system_service import rt
 from boatswain.common.utils import text_utils
 from boatswain.common.utils.app_avatar import AppAvatar
-from boatswain.common.utils.custom_ui import BQSizePolicy, AutoResizeWidget
+from boatswain.common.ui.custom_ui import BQSizePolicy, AutoResizeWidget
 
 
 class GeneralAppConfigUi(AutoResizeWidget):

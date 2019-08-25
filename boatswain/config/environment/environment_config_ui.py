@@ -20,7 +20,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButt
 
 from boatswain.common.models.container import Container
 from boatswain.common.services.system_service import rt
-from boatswain.common.utils.custom_ui import BQSizePolicy, AutoResizeWidget
+from boatswain.common.ui.custom_ui import BQSizePolicy, AutoResizeWidget
 
 
 class EnvironmentConfigUi(AutoResizeWidget):

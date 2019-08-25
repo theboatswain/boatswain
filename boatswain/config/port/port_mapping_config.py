@@ -21,7 +21,7 @@ from PyQt5.QtWidgets import QTableView, QAbstractItemView
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.port_mapping import PortMapping
-from boatswain.common.utils.custom_ui import ComboBoxDelegate, InputNumberDelegate
+from boatswain.common.ui.custom_ui import ComboBoxDelegate, InputNumberDelegate
 from boatswain.config.port.port_mapping_config_model import PortMappingModel
 from boatswain.config.port.port_mapping_config_ui import PortMappingConfigUi
 
