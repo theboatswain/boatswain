@@ -22,7 +22,7 @@ from PyQt5.QtWidgets import QDialog, QSizePolicy
 from boatswain.common.models.container import Container
 from boatswain.common.services import system_service
 from boatswain.common.services.system_service import rt, applyFontRatio
-from boatswain.common.utils.custom_ui import BQSizePolicy, ButtonLineEdit
+from boatswain.common.ui.custom_ui import BQSizePolicy, ButtonLineEdit
 from boatswain.resources_utils import get_resource
 
 

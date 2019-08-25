@@ -20,7 +20,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTabWidget, QDialog
 
 from boatswain.common.models.container import Container
 from boatswain.common.services import system_service
-from boatswain.common.utils.custom_ui import BQSizePolicy
+from boatswain.common.ui.custom_ui import BQSizePolicy
 from boatswain.config.environment.environment_config import EnvironmentConfig
 from boatswain.config.general.general_config import GeneralAppConfig
 from boatswain.config.port.port_mapping_config import PortMappingConfig

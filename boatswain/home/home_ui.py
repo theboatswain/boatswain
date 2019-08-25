@@ -20,8 +20,9 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QComboBox, QSizeP
 
 from boatswain.common.services import data_transporter_service
 from boatswain.common.services.system_service import rt
+from boatswain.common.ui.select_ui import SelectUi
 from boatswain.common.utils.constants import APP_EXIT_CHANNEL
-from boatswain.common.utils.custom_ui import BQSizePolicy
+from boatswain.common.ui.custom_ui import BQSizePolicy
 
 
 class HomeUi(QMainWindow):
@@ -49,10 +50,10 @@ class HomeUi(QMainWindow):
         self.add_app.setFocusPolicy(Qt.ClickFocus)
         top_layout.addWidget(self.add_app, 0, 0, 1, 1)
 
-        self.app_type = QComboBox(widget)
-        self.app_type.setSizePolicy(BQSizePolicy(h_stretch=1, width=QSizePolicy.Fixed, height=QSizePolicy.Fixed))
-        self.app_type.setFocusPolicy(Qt.ClickFocus)
-        top_layout.addWidget(self.app_type, 0, 2, 1, 1)
+        self.workspaces = SelectUi(widget)
+        self.workspaces.setSizePolicy(BQSizePolicy(h_stretch=1, width=QSizePolicy.Fixed, height=QSizePolicy.Fixed))
+        self.workspaces.setFocusPolicy(Qt.ClickFocus)
+        top_layout.addWidget(self.workspaces, 0, 2, 1, 1)
         self.search_app = QLineEdit(widget)
         self.search_app.setAttribute(Qt.WA_MacShowFocusRect, 0)
         self.search_app.setSizePolicy(BQSizePolicy(h_stretch=2, height=QSizePolicy.Fixed))

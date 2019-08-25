@@ -21,7 +21,7 @@ from PyQt5.QtWidgets import QTableView, QAbstractItemView
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.volume_mount import VolumeMount
-from boatswain.common.utils.custom_ui import PathInputDelegate, ComboBoxDelegate
+from boatswain.common.ui.custom_ui import PathInputDelegate, ComboBoxDelegate
 from boatswain.config.volume.volume_mount_config_model import VolumeMountModel
 from boatswain.config.volume.volume_mount_config_ui import VolumeMountConfigUi
 

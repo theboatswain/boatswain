@@ -25,7 +25,7 @@ from boatswain.common.models.container import Container
 from boatswain.common.models.environment import Environment
 from boatswain.common.services import config_service
 from boatswain.common.utils.constants import INCLUDING_ENV_SYSTEM
-from boatswain.common.utils.custom_ui import PathInputDelegate
+from boatswain.common.ui.custom_ui import PathInputDelegate
 from boatswain.config.environment.environment_config_model import EnvironmentConfigModel
 from boatswain.config.environment.environment_config_ui import EnvironmentConfigUi
 

@@ -22,7 +22,7 @@ from PyQt5.QtWidgets import QHBoxLayout, QLabel, QPushButton, QWidget, QVBoxLayo
 from boatswain.common.services.system_service import rt
 from boatswain.common.utils import text_utils
 from boatswain.common.utils.app_avatar import AppAvatar
-from boatswain.common.utils.custom_ui import BQSizePolicy
+from boatswain.common.ui.custom_ui import BQSizePolicy
 
 
 class ShortAppWidgetUi(QWidget):

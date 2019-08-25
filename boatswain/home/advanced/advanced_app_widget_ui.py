@@ -19,7 +19,7 @@ from PyQt5.QtWidgets import QWidget, QSizePolicy, QFrame, QVBoxLayout, QHBoxLayo
 
 from boatswain.common.models.container import Container
 from boatswain.common.services.system_service import rt
-from boatswain.common.utils.custom_ui import BQSizePolicy
+from boatswain.common.ui.custom_ui import BQSizePolicy
 
 
 class AdvancedAppWidgetUi(QWidget):
