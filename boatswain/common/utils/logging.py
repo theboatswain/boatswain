@@ -31,8 +31,6 @@ logging.basicConfig(filename=log_file,
                     datefmt='%H:%M:%S',
                     level=logging.INFO)
 
-logging.getLogger('boatswain')
-
 logger = logging.getLogger('boatswain')
 
 
@@ -49,5 +47,5 @@ class LoggerWriter:
         pass
 
 
-# sys.stdout = LoggerWriter(logger, logging.INFO)
-# sys.stderr = LoggerWriter(logger, logging.ERROR)
+sys.stdout = LoggerWriter(logger, logging.INFO)
+sys.stderr = LoggerWriter(logger, logging.ERROR)
