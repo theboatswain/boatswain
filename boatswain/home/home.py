@@ -72,8 +72,7 @@ class Home:
         self.ui.workspaces.clear()
         self.ui.workspaces.addItem(self._tr('All'), self._tr('All workspaces'), separate_after=True)
         for workspace in workspace_service.getWorkspaces():
-            if workspace.name != 'All':
-                self.ui.workspaces.addItem(workspace.name)
+            self.ui.workspaces.addItem(workspace.name)
         self.ui.workspaces.setCurrentOption(workspace_service.getCurrentActivatedWorkspace().name)
         self.ui.workspaces.addItem(self._tr('New'), self._tr('Create a new workspace...'), separate_before=True,
                                    handler=self.newWorkspaceClicked)

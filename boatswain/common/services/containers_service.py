@@ -20,17 +20,12 @@ import os
 
 from docker.errors import NotFound, DockerException
 
-from boatswain.common.models.configurations import Configuration
 from boatswain.common.models.container import Container
-from boatswain.common.models.environment import Environment
-from boatswain.common.models.port_mapping import PortMapping
-from boatswain.common.models.preferences_shortcut import PreferencesShortcut
-from boatswain.common.models.tag import Tag
-from boatswain.common.models.volume_mount import VolumeMount
+from boatswain.common.models.workspace import Workspace
 from boatswain.common.search.dockerhub_searcher import DockerHubSearcher
 from boatswain.common.search.search_images import SearchImages
 from boatswain.common.services import docker_service, system_service, config_service, data_transporter_service, \
-    shortcut_service, group_service
+    shortcut_service, group_service, environment_service, port_mapping_service, volume_mount_service, tags_service
 from boatswain.common.utils import docker_utils
 from boatswain.common.utils.constants import INCLUDING_ENV_SYSTEM, CONTAINER_CONF_CHANGED, \
     CONTAINER_CONF_CHANGED_CHANNEL
@@ -117,19 +112,19 @@ def startContainer(container: Container):
     if config_service.isAppConf(container, INCLUDING_ENV_SYSTEM, 'true'):
         container_envs = {key: os.environ[key] for key in os.environ if key != 'PATH'}
 
-    for environment in Environment.select().where(Environment.container == container):
+    for environment in environment_service.getEnvironments(container):
         container_envs[environment.name] = environment.value
 
     container_envs = {**container_envs, **shortcut_service.getShortcutContainerEnvs(container)}
 
     ports = {}
-    for port in PortMapping.select().where(PortMapping.container == container):
+    for port in port_mapping_service.getPortMappings(container):
         ports[str(port.port) + '/' + port.protocol] = port.target_port
 
     ports = {**ports, **shortcut_service.getShortcutPortMapping(container)}
 
     volumes = {}
-    for volume in VolumeMount.select().where(VolumeMount.container == container):
+    for volume in volume_mount_service.getVolumeMounts(container):
         volumes[volume.host_path] = {'bind': volume.container_path, 'mode': volume.mode}
 
     volumes = {**volumes, **shortcut_service.getShortcutVolumeMounts(container)}
@@ -150,18 +145,35 @@ def stopContainer(container: Container):
     return False
 
 
+def cloneContainer(container: Container, workspace: Workspace):
+    group_dest = group_service.getDefaultGroupFromWorkspace(workspace)
+    clone = Container.get(Container.id == container.id)
+    clone.group = group_dest
+    clone.container_id = ''
+    clone.name = container.name + ' - cloned'
+    clone.id = None
+    clone.save()
+    shortcut_service.cloneAll(container, clone)
+    environment_service.cloneAll(container, clone)
+    port_mapping_service.cloneAll(container, clone)
+    volume_mount_service.cloneAll(container, clone)
+    tags_service.cloneAll(container, clone)
+    config_service.cloneAll(container, clone)
+    return clone
+
+
 def deleteConfigurations(container: Container):
     stopContainer(container)
-    Configuration.delete().where(Configuration.container == container).execute()
-    Environment.delete().where(Environment.container == container).execute()
-    PortMapping.delete().where(PortMapping.container == container).execute()
-    PreferencesShortcut.delete().where(PreferencesShortcut.container == container).execute()
-    VolumeMount.delete().where(VolumeMount.container == container).execute()
+    config_service.deleteAll(container)
+    environment_service.deleteAll(container)
+    port_mapping_service.deleteAll(container)
+    shortcut_service.deleteAll(container)
+    volume_mount_service.deleteAll(container)
 
 
 def deleteContainer(container: Container):
     deleteConfigurations(container)
-    Tag.delete().where(Tag.container == container).execute()
+    tags_service.deleteAll(container)
     container.delete_instance()
 
 
