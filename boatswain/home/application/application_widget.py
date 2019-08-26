@@ -22,10 +22,10 @@ from docker.errors import APIError
 
 from boatswain.common.exceptions.docker_exceptions import DockerNotAvailableException
 from boatswain.common.models.container import Container
-from boatswain.common.services import containers_service, data_transporter_service, boatswain_daemon
+from boatswain.common.services import containers_service, data_transporter_service, boatswain_daemon, workspace_service
 from boatswain.common.services.worker_service import Worker, threadpool
 from boatswain.common.utils import docker_utils
-from boatswain.common.utils.constants import ADD_APP_CHANNEL, SHORTCUT_CONF_CHANGED_CHANNEL
+from boatswain.common.utils.constants import ADD_APP_CHANNEL, SHORTCUT_CONF_CHANGED_CHANNEL, CONTAINER_CHANNEL
 from boatswain.home.application.application_widget_ui import AppWidgetUi
 from boatswain.shortcut.preferences_shortcut_config import PreferencesShortcutConfig
 
@@ -107,6 +107,13 @@ class AppWidget:
         pref_shortcut = menu.addAction(self._translate(self.template, 'Preferences shortcut'))
         pref_shortcut.triggered.connect(self.onPreferenceShortcutClicked)
         menu.addSeparator()
+        clone_to = QMenu(self._translate(self.template, 'Clone to...'), self.ui)
+        clone_to.addAction(self._translate(self.template, 'Unspecified workspace'))
+        for workspace in workspace_service.getWorkspaces():
+            clone_to.addAction(workspace.name)
+        clone_to.triggered.connect(self.cloneContainer)
+        menu.addMenu(clone_to)
+        menu.addSeparator()
         restart = menu.addAction(self._translate(self.template, 'Restart'))
         restart.triggered.connect(self.restartContainer)
         reset = menu.addAction(self._translate(self.template, 'Reset'))
@@ -127,6 +134,16 @@ class AppWidget:
             worker.signals.result.connect(self.onAppStarted)
 
         worker.signals.error.connect(self.onFailure)
+        threadpool.start(worker)
+
+    def cloneContainer(self, action):
+        clone_to_workspace = action.text()
+        if clone_to_workspace == 'Unspecified workspace':
+            workspace = workspace_service.getDefaultWorkspace()
+        else:
+            workspace = workspace_service.getWorkspace(clone_to_workspace)
+        worker = Worker(containers_service.cloneContainer, self.container, workspace)
+        worker.signals.result.connect(lambda x: data_transporter_service.fire(CONTAINER_CHANNEL, x))
         threadpool.start(worker)
 
     def autoSetContainerStatus(self):

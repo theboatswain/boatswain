@@ -26,6 +26,13 @@ def getAppConf(container: Container, key: str) -> Configuration:
     return Configuration.get(Configuration.container == container, Configuration.name == key)
 
 
+def cloneAll(container_from: Container, container_to: Container):
+    for conf in Configuration.select().where(Configuration.container == container_from):
+        conf.container = container_to
+        conf.id = None
+        conf.save()
+
+
 def isAppConf(container: Container, key: str, value: str) -> bool:
     try:
         conf = getAppConf(container, key)
@@ -52,3 +59,7 @@ def setAppExpanded(container: Container, expand: bool):
         setAppConf(container, APP_EXPANDED, 'true')
     else:
         setAppConf(container, APP_EXPANDED, 'false')
+
+
+def deleteAll(container: Container):
+    Configuration.delete().where(Configuration.container == container).execute()

@@ -15,6 +15,8 @@
 #
 #
 
+from typing import List
+
 from boatswain.common.models.container import Container
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
 
@@ -62,3 +64,18 @@ def getShortcutVolumeMounts(container: Container):
     for item in shortcuts:
         result[item.default_value] = {'bind': item.mapping_to, 'mode': 'rw'}
     return result
+
+
+def getShortcuts(container: Container) -> List[PreferencesShortcut]:
+    return PreferencesShortcut.select().where(PreferencesShortcut.container == container)
+
+
+def cloneAll(from_container: Container, to_container: Container):
+    for shortcut in getShortcuts(from_container):
+        shortcut.id = None
+        shortcut.container = to_container
+        shortcut.save()
+
+
+def deleteAll(container: Container):
+    PreferencesShortcut.delete().where(PreferencesShortcut.container == container).execute()
