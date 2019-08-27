@@ -53,6 +53,6 @@ class Container(BaseModel):
     entrypoint = CharField(default='')
 
     # for reorder the position of this container
-    order = IntegerField()
+    order = FloatField(index=True)
 
     group = ForeignKeyField(Group, backref='containers')

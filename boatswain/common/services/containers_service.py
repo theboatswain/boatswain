@@ -17,6 +17,7 @@
 
 import logging
 import os
+from typing import List
 
 from docker.errors import NotFound, DockerException
 
@@ -42,6 +43,25 @@ def updateContainerTags(container: Container):
     for tag in tags:
         tag.container = container
         tag.save()
+
+
+def getContainer(container_id: int) -> Container:
+    return Container.get(Container.id == container_id)
+
+
+def getAllContainer() -> List[Container]:
+    return Container.select().order_by(Container.order.asc())
+
+
+def getNextOrder(container: Container):
+    try:
+        next_container = Container.select()\
+            .where(Container.order > container.order)\
+            .order_by(Container.order.asc())\
+            .first()
+        return round((next_container.order + container.order) / 2)
+    except AttributeError:
+        return container.order + 10000
 
 
 def installContainer(image_name, repo='dockerhub', description='', tag='latest', environments=None, ports=None):

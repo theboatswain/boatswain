@@ -40,7 +40,6 @@ class AdvancedAppWidget:
     def __init__(self, parent, container: Container) -> None:
         self.container = container
         self.ui = AdvancedAppWidgetUi(parent, container)
-        # self.ui.advanced_configuration.clicked.connect(self.onAdvancedConfigurationClicked)
         self.drawShortcuts()
         containers_service.listen(self.container, 'tag_index', self.listenTagChange)
         containers_service.listen(self.container, SHORTCUT_CONF_CHANGED_CHANNEL, self.redrawShortcuts)

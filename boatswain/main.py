@@ -36,7 +36,8 @@ from boatswain.common.models.preferences_shortcut import PreferencesShortcut
 from boatswain.common.models.tag import Tag
 from boatswain.common.models.volume_mount import VolumeMount
 from boatswain.common.models.workspace import Workspace
-from boatswain.common.services import boatswain_daemon, data_transporter_service, docker_service, system_service
+from boatswain.common.services import boatswain_daemon, data_transporter_service, docker_service, system_service, \
+    containers_service
 from boatswain.common.utils import docker_utils
 from boatswain.common.utils.constants import APP_DATA_DIR, CONTAINER_CHANNEL, APP_EXIT_CHANNEL, PEM_FILE, \
     UPDATES_CHANNEL
@@ -61,7 +62,7 @@ def deFrostPem():
 
 
 def onApplicationInstalled():
-    data_transporter_service.fire(APP_EXIT_CHANNEL, True)
+    data_transporter_service.fire(APP_EXIT_CHANNEL)
     logger.info('Relaunching %s' % sys.executable)
     os.execlp(sys.executable, *sys.argv)
 
@@ -96,11 +97,11 @@ def run():
     window = Home()
 
     # Load all installed containers
-    for container in Container.select():
+    for container in containers_service.getAllContainer():
         data_transporter_service.fire(CONTAINER_CHANNEL, container)
 
     # Close db before exit
-    data_transporter_service.listen(APP_EXIT_CHANNEL, lambda x: db.close())
+    data_transporter_service.listen(APP_EXIT_CHANNEL, lambda: db.close())
 
     # Create daemon to listen to docker events
     daemon = boatswain_daemon.BoatswainDaemon(window.ui)
@@ -117,7 +118,7 @@ def run():
     window.show()
 
     # Stop daemon before exit
-    data_transporter_service.listen(APP_EXIT_CHANNEL, lambda x: daemon.events.close())
+    data_transporter_service.listen(APP_EXIT_CHANNEL, lambda: daemon.events.close())
     sys.exit(app.exec_())
 
 

@@ -27,7 +27,10 @@ def listen(channel: str, func):
         channels[channel] = [func]
 
 
-def fire(channel: str, data):
+def fire(channel: str, data=None):
     if channel in channels:
         for func in channels[channel]:
-            func(data)
+            if data is None:
+                func()
+            else:
+                func(data)

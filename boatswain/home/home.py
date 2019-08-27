@@ -14,12 +14,13 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
-from typing import List
+from typing import Dict
 
 from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtGui import QResizeEvent
-from PyQt5.QtWidgets import QMainWindow, QInputDialog
+from PyQt5.QtWidgets import QMainWindow, QInputDialog, QWidget
 from boatswain_updater.utils import sys_utils
+from playhouse.shortcuts import update_model_from_dict, model_to_dict
 
 from boatswain.about.about import AboutDialog
 from boatswain.common.exceptions.workspace import WorkspaceAlreadyExistsException
@@ -29,6 +30,7 @@ from boatswain.common.services.system_service import rt
 from boatswain.common.utils import message_utils
 from boatswain.common.utils.constants import CONTAINER_CHANNEL, ADD_APP_CHANNEL, UPDATES_CHANNEL
 from boatswain.home.application.application_widget import AppWidget
+from boatswain.home.application.application_widget_ui import AppWidgetUi
 from boatswain.home.home_ui import HomeUi
 from boatswain.search.search_app import SearchAppDialog
 
@@ -46,7 +48,7 @@ class Home:
         self.ui.setMinimumSize(global_preference_service.getMinimumHomeWindowSize())
         self.ui.add_app.clicked.connect(self.addAppClicked)
         self.ui.action_add.triggered.connect(self.addAppClicked)
-        self.apps: List[AppWidget] = []
+        self.apps: Dict[int, AppWidgetUi] = {}
 
         if sys_utils.isWin():
             self.ui.menu_bar.hide()
@@ -93,16 +95,34 @@ class Home:
                 message_utils.error('Workspace already exists', 'Please choose a different workspace\'s name')
 
     def addAppFromContainer(self, container: Container):
+        current_workspace = self.ui.workspaces.getCurrentOption()
         widget = AppWidget(self.ui.app_list, container)
-        self.apps.append(widget)
-        self.ui.app_list.layout().addWidget(widget.ui)
-        filter_by = self.ui.workspaces.getCurrentOption()
-        if filter_by != 'All':
-            if widget.container.group.workspace.name != filter_by:
+        if current_workspace != 'All':
+            if widget.container.group.workspace.name != current_workspace:
                 widget.ui.hide()
+        widget.move.connect(self.moveWidget)
+        self.apps[container.id] = widget.ui
+        self.ui.app_list.layout().addWidget(widget.ui)
 
     def show(self):
         self.ui.show()
+
+    # def updateApps(self):
+    #     self.apps.clear()
+    #     for i in reversed(range(self.ui.app_list_layout.count())):
+    #         self.ui.app_list_layout.itemAt(i).widget().setParent(None)
+    #     for container in containers_service.getAllContainer():
+    #         self.addAppFromContainer(container)
+
+    def moveWidget(self, container, widget: QWidget):
+        widget_to_be_move = self.apps[container.id]
+        widget_to_be_move.container.update()
+
+        # Update the in-memory object of container
+        update_model_from_dict(widget_to_be_move.container, model_to_dict(container))
+        widget_to_be_move.parentWidget().layout().removeWidget(widget_to_be_move)
+        index = widget.parentWidget().layout().indexOf(widget)
+        widget.parentWidget().layout().insertWidget(index + 1, widget_to_be_move)
 
     def onWorkspaceChanged(self, workspace_name: str):
         workspace_service.activeWorkspace(workspace_name)
@@ -115,18 +135,18 @@ class Home:
         keyword = self.ui.search_app.text()
 
         for app in self.apps:
-            app.ui.show()
+            self.apps[app].show()
 
         if filter_by != 'All':
             for app in self.apps:
-                if app.container.group.workspace.name != filter_by:
-                    app.ui.hide()
+                if self.apps[app].container.group.workspace.name != filter_by:
+                    self.apps[app].hide()
 
         if not keyword:
             return
         for app in self.apps:
-            if keyword not in app.container.name and keyword not in app.container.image_name:
-                app.ui.hide()
+            if keyword not in self.apps[app].container.name and keyword not in self.apps[app].container.image_name:
+                self.apps[app].hide()
 
     def resizeEvent(self, event: QResizeEvent):
         global_preference_service.setHomeWindowSize(event.size())

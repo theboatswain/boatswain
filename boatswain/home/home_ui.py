@@ -102,11 +102,11 @@ class HomeUi(QMainWindow):
         self.retranslateUi(self)
         self.app_list = QWidget(self)
         self.app_list.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
-        layout = QVBoxLayout(self.app_list)
-        layout.setSpacing(0)
-        layout.setAlignment(Qt.AlignTop)
-        layout.setContentsMargins(0, rt(1), 0, 0)
-        self.app_list.setLayout(layout)
+        self.app_list_layout = QVBoxLayout(self.app_list)
+        self.app_list_layout.setSpacing(0)
+        self.app_list_layout.setAlignment(Qt.AlignTop)
+        self.app_list_layout.setContentsMargins(0, rt(1), 0, 0)
+        self.app_list.setLayout(self.app_list_layout)
         self.scroll_area.setWidget(self.app_list)
 
     def retranslateUi(self, boatswain):
@@ -125,5 +125,5 @@ class HomeUi(QMainWindow):
         QMainWindow.mousePressEvent(self, event)
 
     def closeEvent(self, event):
-        data_transporter_service.fire(APP_EXIT_CHANNEL, True)
+        data_transporter_service.fire(APP_EXIT_CHANNEL)
         QMainWindow.closeEvent(self, event)

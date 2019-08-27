@@ -16,14 +16,14 @@
 #
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QDragEnterEvent, QPalette, QColor
+from PyQt5.QtGui import QPalette, QColor
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSizePolicy, QHBoxLayout, QLabel, QPushButton, QFrame
 
 from boatswain.common.models.container import Container
 from boatswain.common.services.system_service import rt
+from boatswain.common.ui.custom_ui import BQSizePolicy
 from boatswain.common.utils import text_utils
 from boatswain.common.utils.app_avatar import AppAvatar
-from boatswain.common.ui.custom_ui import BQSizePolicy
 from boatswain.home.advanced.advanced_app_widget import AdvancedAppWidget
 
 
@@ -42,7 +42,7 @@ class AppWidgetUi(QWidget):
         self.vertical_layout.addWidget(self.widget)
         self.horizontal_layout = QHBoxLayout(self.widget)
         self.horizontal_layout.setContentsMargins(rt(20), rt(1), rt(10), rt(3))
-
+        self.setObjectName("ApplicationWidget")
         img_name = container.image_name
         name_part = container.image_name.split('/')
         if len(name_part) > 1:
@@ -62,7 +62,7 @@ class AppWidgetUi(QWidget):
         self.advanced_app = AdvancedAppWidget(self.widget, container)
 
         self.vertical_layout.addWidget(self.advanced_app.ui)
-        self.container_info = container
+        self.container = container
 
         self.line = QFrame(self)
         self.line.setFrameShape(QFrame.HLine)
@@ -77,4 +77,3 @@ class AppWidgetUi(QWidget):
         self.color_line.setPalette(palette)
         self.vertical_layout.addWidget(self.color_line)
         self.color_line.hide()
-
