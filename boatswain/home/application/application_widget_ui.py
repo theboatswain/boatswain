@@ -16,6 +16,7 @@
 #
 
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QDragEnterEvent, QPalette, QColor
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSizePolicy, QHBoxLayout, QLabel, QPushButton, QFrame
 
 from boatswain.common.models.container import Container
@@ -63,7 +64,17 @@ class AppWidgetUi(QWidget):
         self.vertical_layout.addWidget(self.advanced_app.ui)
         self.container_info = container
 
-        line = QFrame(self)
-        line.setFrameShape(QFrame.HLine)
-        line.setFrameShadow(QFrame.Sunken)
-        self.vertical_layout.addWidget(line)
+        self.line = QFrame(self)
+        self.line.setFrameShape(QFrame.HLine)
+        self.line.setFrameShadow(QFrame.Sunken)
+        self.vertical_layout.addWidget(self.line)
+
+        self.color_line = QFrame(self)
+        self.color_line.setFrameShape(QFrame.HLine)
+        self.color_line.setFrameShadow(QFrame.Plain)
+        palette = self.color_line.palette()
+        palette.setColor(QPalette.WindowText, QColor(89, 173, 223))
+        self.color_line.setPalette(palette)
+        self.vertical_layout.addWidget(self.color_line)
+        self.color_line.hide()
+

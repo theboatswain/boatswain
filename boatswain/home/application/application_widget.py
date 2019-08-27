@@ -15,9 +15,9 @@
 #
 #
 
-from PyQt5.QtCore import QCoreApplication, Qt
-from PyQt5.QtGui import QMouseEvent
-from PyQt5.QtWidgets import QMenu, QMessageBox
+from PyQt5.QtCore import QCoreApplication, Qt, QMimeData, QTimer, QPoint
+from PyQt5.QtGui import QMouseEvent, QDrag, QPixmap, QDragEnterEvent, QDragLeaveEvent, QDragMoveEvent, QRegion
+from PyQt5.QtWidgets import QMenu, QMessageBox, QWidget
 from docker.errors import APIError
 
 from boatswain.common.exceptions.docker_exceptions import DockerNotAvailableException
@@ -44,12 +44,18 @@ class AppWidget:
         self.ui.status.clicked.connect(self.controlApp)
         self.ui.name.setText(self._translate(self.template, self.container.name))
 
-        self.ui.widget.mouseReleaseEvent = self.onAppClicked
+        self.ui.widget.mouseReleaseEvent = self.onMouseReleased
+        self.ui.widget.mousePressEvent = self.mousePressEvent
+        self.ui.dragEnterEvent = self.dragEnterEvent
+        self.ui.dragLeaveEvent = self.dragLeaveEvent
+        self.ui.dragMoveEvent = self.dragMoveEvent
         self.ui.contextMenuEvent = self.contextMenuEvent
         boatswain_daemon.listen('container', 'start', self.onContainerStart)
         boatswain_daemon.listen('container', 'stop', self.onContainerStop)
         boatswain_daemon.listen('container', 'die', self.onContainerStop)
         containers_service.listen(self.container, 'name', lambda x: self.ui.name.setText(x))
+        self.is_mouse_released = True
+        self.ui.setAcceptDrops(True)
 
     def controlApp(self):
         if not containers_service.isContainerRunning(self.container):
@@ -76,8 +82,9 @@ class AppWidget:
         self.autoSetContainerStatus()
         # Todo: Handle more exceptions
 
-    def onAppClicked(self, event: QMouseEvent):
+    def onMouseReleased(self, event: QMouseEvent):
         if event.button() == Qt.LeftButton:
+            self.is_mouse_released = True
             self.ui.advanced_app.toggleWindow()
 
     def onPreferenceShortcutClicked(self):
@@ -167,3 +174,52 @@ class AppWidget:
         if button_reply == QMessageBox.Ok:
             containers_service.deleteConfigurations(self.container)
             containers_service.fire(self.container, SHORTCUT_CONF_CHANGED_CHANNEL, True)
+
+    def mousePressEvent(self, event: QMouseEvent):
+        if event.button() == Qt.LeftButton:
+            self.is_mouse_released = False
+            timer = QTimer(self.ui)
+            timer.setSingleShot(True)
+            pos = event.pos()
+            timer.timeout.connect(lambda: self.startDragging(pos))
+            timer.start(200)
+
+    def startDragging(self, pos):
+        if not self.is_mouse_released:
+            drag = QDrag(self.ui.widget)
+            mime_data = QMimeData()
+            mime_data.setText(str(self.container.id))
+            widget_pixmap = QPixmap(self.ui.widget.size())
+            widget_pixmap.fill(Qt.transparent)
+            self.ui.widget.render(widget_pixmap, QPoint(), QRegion(), QWidget.DrawChildren)
+            drag.setMimeData(mime_data)
+            drag.setPixmap(widget_pixmap)
+            drag.setHotSpot(pos)
+            drag.exec_()
+
+    def getDragLocation(self, pos: QPoint):
+        pos_y = pos.y()
+        height = self.ui.geometry().height()
+        if pos_y > height * 1 / 2:
+            return -1
+        return 0
+
+    def cleanDragEffects(self):
+        self.ui.color_line.hide()
+        self.ui.line.show()
+
+    def dragEnterEvent(self, event: QDragEnterEvent):
+        if event.mimeData().hasText():
+            data: str = event.mimeData().text()
+            if data.isdigit() and int(data) != self.container.id:
+                event.acceptProposedAction()
+
+    def dragMoveEvent(self, event: QDragMoveEvent):
+        self.cleanDragEffects()
+        loc = self.getDragLocation(event.pos())
+        if loc == -1:
+            self.ui.color_line.show()
+            self.ui.line.hide()
+
+    def dragLeaveEvent(self, event: QDragLeaveEvent):
+        self.cleanDragEffects()
