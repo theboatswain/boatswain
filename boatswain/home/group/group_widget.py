@@ -22,21 +22,22 @@ class GroupWidget(QObject):
             self.is_mouse_released = True
             self.toggleWindow()
 
+    def resetLayout(self):
+        self.ui.app_list_layout.setSizeConstraint(QLayout.SetMinimumSize)
+        self.ui.app_list.setMaximumHeight(99999)
+
     def toggleWindow(self):
         if self.ui.app_list.maximumHeight() == 0:
             self.animation = QPropertyAnimation(self.ui.app_list, b"maximumHeight")
-            self.animation.setDuration(300)
+            self.animation.setDuration(150)
             self.animation.setStartValue(0)
-            self.animation.setEndValue(self.max_height)
+            self.animation.setEndValue(self.ui.app_list_layout.sizeHint().height())
             self.animation.start()
-            self.animation.finished.connect(lambda: self.ui.app_list_layout.setSizeConstraint(QLayout.SetMinimumSize))
+            self.animation.finished.connect(self.resetLayout)
         else:
-            self.max_height = 0
             self.ui.app_list_layout.setSizeConstraint(QLayout.SetDefaultConstraint)
-            for i in range(self.ui.app_list_layout.count()):
-                self.max_height += self.ui.app_list_layout.itemAt(i).widget().max_height
             self.animation = QPropertyAnimation(self.ui.app_list, b"maximumHeight")
-            self.animation.setDuration(300)
-            self.animation.setStartValue(self.max_height)
+            self.animation.setDuration(150)
+            self.animation.setStartValue(self.ui.app_list_layout.sizeHint().height())
             self.animation.setEndValue(0)
             self.animation.start()
