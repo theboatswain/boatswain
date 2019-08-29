@@ -54,6 +54,7 @@ class GroupWidgetUi(QWidget):
         self.app_list.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
         self.app_list_layout = QVBoxLayout(self.app_list)
         self.app_list_layout.setSpacing(0)
+        self.app_list_layout.setSizeConstraint(QLayout.SetMinimumSize)
         self.app_list_layout.setAlignment(Qt.AlignTop)
         self.app_list_layout.setContentsMargins(0, rt(1), 0, 0)
         self.app_list.setLayout(self.app_list_layout)

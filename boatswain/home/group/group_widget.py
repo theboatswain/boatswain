@@ -1,5 +1,6 @@
 from PyQt5.QtCore import QObject, QPropertyAnimation, Qt
 from PyQt5.QtGui import QMouseEvent
+from PyQt5.QtWidgets import QLayout
 
 from boatswain.common.models.group import Group
 from boatswain.home.group.group_widget_ui import GroupWidgetUi
@@ -28,8 +29,10 @@ class GroupWidget(QObject):
             self.animation.setStartValue(0)
             self.animation.setEndValue(self.max_height)
             self.animation.start()
+            self.animation.finished.connect(lambda: self.ui.app_list_layout.setSizeConstraint(QLayout.SetMinimumSize))
         else:
             self.max_height = 0
+            self.ui.app_list_layout.setSizeConstraint(QLayout.SetDefaultConstraint)
             for i in range(self.ui.app_list_layout.count()):
                 self.max_height += self.ui.app_list_layout.itemAt(i).widget().max_height
             self.animation = QPropertyAnimation(self.ui.app_list, b"maximumHeight")

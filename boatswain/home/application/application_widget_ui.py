@@ -17,7 +17,7 @@
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPalette, QColor
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSizePolicy, QHBoxLayout, QLabel, QPushButton, QFrame
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSizePolicy, QHBoxLayout, QLabel, QPushButton, QFrame, QLayout
 
 from boatswain.common.models.container import Container
 from boatswain.common.services.system_service import rt
@@ -38,6 +38,7 @@ class AppWidgetUi(QWidget):
         self.vertical_layout.setContentsMargins(0, 0, rt(2), 0)
         self.vertical_layout.setSpacing(0)
         self.vertical_layout.setAlignment(Qt.AlignTop)
+        self.vertical_layout.setSizeConstraint(QLayout.SetMinimumSize)
         self.widget = QWidget(self)
         self.widget.setSizePolicy(BQSizePolicy(height=QSizePolicy.Fixed))
         self.vertical_layout.addWidget(self.widget)
