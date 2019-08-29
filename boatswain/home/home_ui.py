@@ -118,12 +118,6 @@ class HomeUi(QMainWindow):
         self.action_add.setText(_translate("Boatswain", "Add new app"))
         self.check_for_update.setText(_translate("Boatswain", "Check for updates"))
 
-    def mousePressEvent(self, event):
-        focused_widget = QApplication.focusWidget()
-        if isinstance(focused_widget, QLineEdit):
-            focused_widget.clearFocus()
-        QMainWindow.mousePressEvent(self, event)
-
     def closeEvent(self, event):
         data_transporter_service.fire(APP_EXIT_CHANNEL)
         QMainWindow.closeEvent(self, event)

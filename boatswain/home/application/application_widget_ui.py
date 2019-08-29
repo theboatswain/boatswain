@@ -33,6 +33,7 @@ class AppWidgetUi(QWidget):
     def __init__(self, parent, container: Container, handler) -> None:
         super().__init__(parent)
         self.handler = handler
+        self.setSizePolicy(BQSizePolicy(height=QSizePolicy.Fixed))
         self.vertical_layout = QVBoxLayout(self)
         self.vertical_layout.setContentsMargins(0, 0, rt(2), 0)
         self.vertical_layout.setSpacing(0)
@@ -42,7 +43,7 @@ class AppWidgetUi(QWidget):
         self.vertical_layout.addWidget(self.widget)
         self.horizontal_layout = QHBoxLayout(self.widget)
         self.horizontal_layout.setContentsMargins(rt(20), rt(1), rt(10), rt(3))
-        self.setObjectName("ApplicationWidget")
+
         img_name = container.image_name
         name_part = container.image_name.split('/')
         if len(name_part) > 1:
@@ -60,6 +61,7 @@ class AppWidgetUi(QWidget):
         self.horizontal_layout.addWidget(self.status)
 
         self.advanced_app = AdvancedAppWidget(self.widget, container)
+        self.max_height = self.sizeHint().height() + self.advanced_app.app_info_max_height
 
         self.vertical_layout.addWidget(self.advanced_app.ui)
         self.container = container

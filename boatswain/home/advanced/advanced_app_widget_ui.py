@@ -14,8 +14,8 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
-
-from PyQt5.QtWidgets import QWidget, QSizePolicy, QFrame, QVBoxLayout, QHBoxLayout, QGridLayout
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QWidget, QSizePolicy, QFrame, QVBoxLayout, QHBoxLayout, QGridLayout, QLayout
 
 from boatswain.common.models.container import Container
 from boatswain.common.services.system_service import rt
@@ -31,12 +31,14 @@ class AdvancedAppWidgetUi(QWidget):
         self.layout = QVBoxLayout(self)
         self.layout.setContentsMargins(rt(20), 0, rt(3), rt(5))
         self.layout.setSpacing(rt(6))
+        self.layout.setAlignment(Qt.AlignTop)
         line = QFrame(self)
         line.setFrameShape(QFrame.HLine)
         line.setFrameShadow(QFrame.Sunken)
         self.layout.addWidget(line)
         self.widget = QWidget(self)
         self.grid_layout = QGridLayout(self.widget)
+        self.grid_layout.setAlignment(Qt.AlignTop)
         self.grid_layout.setContentsMargins(0, 0, 0, 0)
         self.grid_layout.setSpacing(rt(6))
         self.layout.addWidget(self.widget)

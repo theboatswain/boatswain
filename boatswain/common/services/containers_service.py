@@ -19,7 +19,7 @@ import logging
 import os
 from typing import List
 
-from docker.errors import NotFound, DockerException
+from docker.errors import NotFound
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.workspace import Workspace
@@ -84,8 +84,6 @@ def installContainer(image_name, repo='dockerhub', description='', tag='latest',
 
 
 def isAppInstalled(image_name):
-    # Todo: Should we do this? [Performance]
-    # Yes, we should, let's do it by checking image name and registry url
     for container in Container.select():
         if container.image_name == image_name:
             return True
@@ -109,6 +107,11 @@ def isContainerExists(container: Container):
 
 
 def isContainerRunning(container: Container):
+    """
+    Check whether or not the given container is running or not
+    :param container:
+    :return:
+    """
     if isContainerExists(container):
         container_info = docker_service.getContainerInfo(container.container_id)
         return container_info.status == "running"
@@ -116,6 +119,14 @@ def isContainerRunning(container: Container):
 
 
 def startContainer(container: Container):
+    """
+    Start the given container
+    Collecting all configurations of the given container including environments, port mapping, volume mounts and
+    shortcuts. The preferences of Shortcut take highest priority and will override if it existing in
+    any other configurations
+    :param container: container to be start
+    :return: assign the container id and return container object
+    """
     if config_service.isAppConf(container, CONTAINER_CONF_CHANGED, 'true'):
         container.container_id = ""
         container.save()
@@ -155,17 +166,19 @@ def startContainer(container: Container):
 
 
 def stopContainer(container: Container):
-    try:
-        if isContainerRunning(container):
-            docker_container = docker_service.stop(container)
-            docker_container.stop(timeout=20)
-        return True
-    except DockerException as e:
-        logger.error("Exception occurred when trying to stop container, %s", e)
-    return False
+    if isContainerRunning(container):
+        docker_container = docker_service.stop(container)
+        docker_container.stop(timeout=20)
+    return True
 
 
 def cloneContainer(container: Container, workspace: Workspace):
+    """
+    Duplicate Container from one workspace to the other. Destination can be the same workspace
+    :param container: container to be duplicate
+    :param workspace: workspace destination
+    :return: the cloned version of container
+    """
     group_dest = group_service.getDefaultGroupFromWorkspace(workspace)
     clone = Container.get(Container.id == container.id)
     clone.group = group_dest
@@ -192,6 +205,10 @@ def deleteConfigurations(container: Container):
 
 
 def deleteContainer(container: Container):
+    """
+    Delete the instance of the given container as well as all of it's configurations
+    :param container: Container
+    """
     deleteConfigurations(container)
     tags_service.deleteAll(container)
     container.delete_instance()

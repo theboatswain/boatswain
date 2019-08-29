@@ -53,3 +53,9 @@ def activeGroup(name):
 
 def getGroups():
     return Group.select()
+
+
+def createGroup(name):
+    group = Group(name=name, workspace=workspace_service.getCurrentActivatedWorkspace())
+    group.save()
+    return group

@@ -47,5 +47,5 @@ class LoggerWriter:
         pass
 
 
-sys.stdout = LoggerWriter(logger, logging.INFO)
-sys.stderr = LoggerWriter(logger, logging.ERROR)
+# sys.stdout = LoggerWriter(logger, logging.INFO)
+# sys.stderr = LoggerWriter(logger, logging.ERROR)

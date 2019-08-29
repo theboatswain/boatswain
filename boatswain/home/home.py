@@ -25,12 +25,15 @@ from playhouse.shortcuts import update_model_from_dict, model_to_dict
 from boatswain.about.about import AboutDialog
 from boatswain.common.exceptions.workspace import WorkspaceAlreadyExistsException
 from boatswain.common.models.container import Container
-from boatswain.common.services import data_transporter_service, global_preference_service, workspace_service
+from boatswain.common.services import data_transporter_service, global_preference_service, workspace_service, \
+    group_service
 from boatswain.common.services.system_service import rt
 from boatswain.common.utils import message_utils
 from boatswain.common.utils.constants import CONTAINER_CHANNEL, ADD_APP_CHANNEL, UPDATES_CHANNEL
 from boatswain.home.application.application_widget import AppWidget
 from boatswain.home.application.application_widget_ui import AppWidgetUi
+from boatswain.home.group.group_widget import GroupWidget
+from boatswain.home.group.group_widget_ui import GroupWidgetUi
 from boatswain.home.home_ui import HomeUi
 from boatswain.search.search_app import SearchAppDialog
 
@@ -49,6 +52,7 @@ class Home:
         self.ui.add_app.clicked.connect(self.addAppClicked)
         self.ui.action_add.triggered.connect(self.addAppClicked)
         self.apps: Dict[int, AppWidgetUi] = {}
+        self.groups: Dict[int, GroupWidgetUi] = {}
 
         if sys_utils.isWin():
             self.ui.menu_bar.hide()
@@ -100,9 +104,14 @@ class Home:
         if current_workspace != 'All':
             if widget.container.group.workspace.name != current_workspace:
                 widget.ui.hide()
-        widget.move.connect(self.moveWidget)
+        widget.move_app.connect(self.moveWidget)
+        widget.new_group.connect(self.createGroup)
         self.apps[container.id] = widget.ui
-        self.ui.app_list.layout().addWidget(widget.ui)
+        if container.group.id not in self.groups:
+            group = GroupWidget(container.group, self.ui.app_list)
+            self.groups[container.group.id] = group.ui
+            self.ui.app_list.layout().addWidget(group.ui)
+        self.groups[container.group.id].app_list_layout.addWidget(widget.ui)
 
     def show(self):
         self.ui.show()
@@ -114,15 +123,31 @@ class Home:
     #     for container in containers_service.getAllContainer():
     #         self.addAppFromContainer(container)
 
-    def moveWidget(self, container, widget: QWidget):
+    def moveWidget(self, container, widget: AppWidgetUi):
         widget_to_be_move = self.apps[container.id]
-        widget_to_be_move.container.update()
 
         # Update the in-memory object of container
         update_model_from_dict(widget_to_be_move.container, model_to_dict(container))
         widget_to_be_move.parentWidget().layout().removeWidget(widget_to_be_move)
         index = widget.parentWidget().layout().indexOf(widget)
         widget.parentWidget().layout().insertWidget(index + 1, widget_to_be_move)
+
+    def createGroup(self, container, widget: AppWidgetUi):
+        widget_to_be_move = self.apps[container.id]
+        # Update the in-memory object of container
+        update_model_from_dict(widget_to_be_move.container, model_to_dict(container))
+        group = group_service.createGroup('New Folder')
+        widget_to_be_move.container.group = group
+        widget_to_be_move.container.save()
+        widget.container.group = group
+        widget.container.save()
+        group_widget = GroupWidget(group, self.ui.app_list)
+        self.groups[group.id] = group_widget.ui
+        self.ui.app_list.layout().addWidget(group_widget.ui)
+        widget_to_be_move.parentWidget().layout().removeWidget(widget_to_be_move)
+        group_widget.ui.app_list_layout.addWidget(widget_to_be_move)
+        widget.parentWidget().layout().removeWidget(widget)
+        group_widget.ui.app_list_layout.addWidget(widget)
 
     def onWorkspaceChanged(self, workspace_name: str):
         workspace_service.activeWorkspace(workspace_name)
@@ -134,13 +159,16 @@ class Home:
             filter_by = workspace
         keyword = self.ui.search_app.text()
 
+        for group in self.groups:
+            self.groups[group].show()
+
         for app in self.apps:
             self.apps[app].show()
 
         if filter_by != 'All':
-            for app in self.apps:
-                if self.apps[app].container.group.workspace.name != filter_by:
-                    self.apps[app].hide()
+            for group in self.groups:
+                if self.groups[group].group.workspace.name != filter_by:
+                    self.groups[group].hide()
 
         if not keyword:
             return

@@ -36,7 +36,8 @@ class AppWidget(QObject):
 
     _translate = QCoreApplication.translate
     template = 'AppWidget'
-    move = pyqtSignal(Container, AppWidgetUi)
+    move_app = pyqtSignal(Container, AppWidgetUi)
+    new_group = pyqtSignal(Container, AppWidgetUi)
 
     def __init__(self, parent, container: Container) -> None:
         super().__init__(parent)
@@ -250,11 +251,12 @@ class AppWidget(QObject):
         container_id = int(event.mimeData().text())
         drop_container = containers_service.getContainer(container_id)
         loc = self.getDraggedLocation(event.pos())
+        drop_container.order = containers_service.getNextOrder(self.container)
+        drop_container.group = self.container.group
+        drop_container.save()
         if loc == -1:
-            drop_container.order = containers_service.getNextOrder(self.container)
-            drop_container.group = self.container.group
-            drop_container.save()
-
+            self.move_app.emit(drop_container, self.ui)
+        else:
+            self.new_group.emit(drop_container, self.ui)
         event.acceptProposedAction()
         self.cleanDraggingEffects()
-        self.move.emit(drop_container, self.ui)
