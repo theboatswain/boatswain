@@ -70,12 +70,3 @@ class AppWidgetUi(QWidget):
         self.line.setFrameShape(QFrame.HLine)
         self.line.setFrameShadow(QFrame.Sunken)
         self.vertical_layout.addWidget(self.line)
-
-        self.color_line = QFrame(self)
-        self.color_line.setFrameShape(QFrame.HLine)
-        self.color_line.setFrameShadow(QFrame.Plain)
-        palette = self.color_line.palette()
-        palette.setColor(QPalette.WindowText, QColor(89, 173, 223))
-        self.color_line.setPalette(palette)
-        self.vertical_layout.addWidget(self.color_line)
-        self.color_line.hide()

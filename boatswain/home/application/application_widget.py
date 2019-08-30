@@ -17,8 +17,8 @@
 
 from PyQt5.QtCore import QCoreApplication, Qt, QMimeData, QTimer, QPoint, pyqtSignal, QObject
 from PyQt5.QtGui import QMouseEvent, QDrag, QPixmap, QDragEnterEvent, QDragLeaveEvent, QDragMoveEvent, QRegion, \
-    QDropEvent
-from PyQt5.QtWidgets import QMenu, QMessageBox, QWidget
+    QDropEvent, QPalette, QColor
+from PyQt5.QtWidgets import QMenu, QMessageBox, QWidget, QApplication
 from docker.errors import APIError
 
 from boatswain.common.exceptions.docker_exceptions import DockerNotAvailableException
@@ -61,6 +61,7 @@ class AppWidget(QObject):
         containers_service.listen(self.container, 'name', lambda x: self.ui.name.setText(x))
         self.is_mouse_released = True
         self.ui.setAcceptDrops(True)
+        self.cleanDraggingEffects()
 
     def controlApp(self):
         if not containers_service.isContainerRunning(self.container):
@@ -210,11 +211,10 @@ class AppWidget(QObject):
         return 0
 
     def cleanDraggingEffects(self):
-        self.ui.color_line.hide()
-        self.ui.line.show()
+        self.ui.line.setPalette(QApplication.palette(self.ui.line))
         self.ui.setStyleSheet("""
                             .QWidget {
-                                border: none;
+                                border: 1px solid transparent;
                             }
                             """)
 
@@ -228,8 +228,9 @@ class AppWidget(QObject):
         self.cleanDraggingEffects()
         loc = self.getDraggedLocation(event.pos())
         if loc == -1:
-            self.ui.color_line.show()
-            self.ui.line.hide()
+            palette = self.ui.line.palette()
+            palette.setColor(QPalette.Dark, QColor(89, 173, 223))
+            self.ui.line.setPalette(palette)
         else:
             self.ui.setStyleSheet("""
                     .QWidget {
