@@ -35,7 +35,6 @@ class AdvancedAppWidget:
     template = 'AdvancedAppWidget'
     animation: QPropertyAnimation
     tags: QComboBox
-    app_info_max_height: int
 
     def __init__(self, parent, container: Container) -> None:
         self.container = container
@@ -43,9 +42,7 @@ class AdvancedAppWidget:
         self.drawShortcuts()
         containers_service.listen(self.container, 'tag_index', self.listenTagChange)
         containers_service.listen(self.container, SHORTCUT_CONF_CHANGED_CHANNEL, self.redrawShortcuts)
-        if config_service.isAppExpanded(container):
-            self.ui.setMaximumHeight(self.app_info_max_height)
-        else:
+        if not config_service.isAppExpanded(container):
             self.ui.setMaximumHeight(0)
 
     def onImageTagChange(self, full_tag_name):
@@ -61,22 +58,29 @@ class AdvancedAppWidget:
         app_config = AppConfig(self.ui, self.container)
         app_config.show()
 
+    def onCollapsed(self):
+        config_service.setAppExpanded(self.container, False)
+
+    def onExpanded(self):
+        config_service.setAppExpanded(self.container, True)
+        self.ui.setMaximumHeight(99999)
+
     def toggleWindow(self):
+        self.animation = QPropertyAnimation(self.ui, b"maximumHeight")
+        self.animation.setDuration(200)
+        try:
+            self.animation.finished.disconnect()
+        except TypeError:
+            pass
         if self.ui.maximumHeight() == 0:
-            self.animation = QPropertyAnimation(self.ui, b"maximumHeight")
-            self.animation.setDuration(300)
             self.animation.setStartValue(0)
-            self.animation.setEndValue(self.app_info_max_height)
-            self.animation.start()
-            expanded = True
+            self.animation.setEndValue(self.ui.layout.sizeHint().height())
+            self.animation.finished.connect(self.onExpanded)
         else:
-            self.animation = QPropertyAnimation(self.ui, b"maximumHeight")
-            self.animation.setDuration(300)
-            self.animation.setStartValue(self.app_info_max_height)
+            self.animation.setStartValue(self.ui.layout.sizeHint().height())
             self.animation.setEndValue(0)
-            self.animation.start()
-            expanded = False
-        config_service.setAppExpanded(self.container, expanded)
+            self.animation.finished.connect(self.onCollapsed)
+        self.animation.start()
 
     def findFileOrFolder(self, shotcut: PreferencesShortcut, input_box: PathViewWidget):
         if shotcut.pref_type == 'File':
@@ -139,14 +143,6 @@ class AdvancedAppWidget:
         for index, shortcut in enumerate(shortcuts):
             self.drawShortcut(shortcut, index)
         self.drawTagShortcut(len(shortcuts))
-
-        is_collapsed = self.ui.maximumHeight() == 0
-        self.ui.setMaximumHeight(9999999)
-        self.app_info_max_height = self.ui.sizeHint().height() + rt(50)
-        if is_collapsed:
-            self.ui.setMaximumHeight(0)
-        else:
-            self.ui.setMaximumHeight(self.app_info_max_height)
 
     def cleanShortcuts(self):
         while self.ui.grid_layout.count():

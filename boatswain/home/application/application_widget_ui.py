@@ -62,7 +62,6 @@ class AppWidgetUi(QWidget):
         self.horizontal_layout.addWidget(self.status)
 
         self.advanced_app = AdvancedAppWidget(self.widget, container)
-        self.max_height = self.sizeHint().height() + self.advanced_app.app_info_max_height
 
         self.vertical_layout.addWidget(self.advanced_app.ui)
         self.container = container
