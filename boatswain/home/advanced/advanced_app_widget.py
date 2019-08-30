@@ -42,7 +42,7 @@ class AdvancedAppWidget:
         self.drawShortcuts()
         containers_service.listen(self.container, 'tag_index', self.listenTagChange)
         containers_service.listen(self.container, SHORTCUT_CONF_CHANGED_CHANNEL, self.redrawShortcuts)
-        if not config_service.isAppExpanded(container):
+        if not container.expanded:
             self.ui.setMaximumHeight(0)
 
     def onImageTagChange(self, full_tag_name):
@@ -59,10 +59,12 @@ class AdvancedAppWidget:
         app_config.show()
 
     def onCollapsed(self):
-        config_service.setAppExpanded(self.container, False)
+        self.container.expanded = False
+        self.container.save()
 
     def onExpanded(self):
-        config_service.setAppExpanded(self.container, True)
+        self.container.expanded = True
+        self.container.save()
         self.ui.setMaximumHeight(99999)
 
     def toggleWindow(self):

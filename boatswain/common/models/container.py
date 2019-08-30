@@ -14,7 +14,7 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
-from peewee import IntegerField, CharField, TextField, FloatField, ForeignKeyField
+from peewee import IntegerField, CharField, TextField, FloatField, ForeignKeyField, BooleanField
 
 from boatswain.common.models.base import BaseModel
 from boatswain.common.models.group import Group
@@ -56,3 +56,5 @@ class Container(BaseModel):
     order = FloatField(index=True)
 
     group = ForeignKeyField(Group, backref='containers')
+
+    expanded = BooleanField(default=True)
