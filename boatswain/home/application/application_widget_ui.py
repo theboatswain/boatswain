@@ -16,13 +16,13 @@
 #
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSizePolicy, QHBoxLayout, QLabel, QPushButton, QFrame
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSizePolicy, QHBoxLayout, QLabel, QPushButton, QFrame, QLayout
 
 from boatswain.common.models.container import Container
 from boatswain.common.services.system_service import rt
+from boatswain.common.ui.custom_ui import BQSizePolicy
 from boatswain.common.utils import text_utils
 from boatswain.common.utils.app_avatar import AppAvatar
-from boatswain.common.ui.custom_ui import BQSizePolicy
 from boatswain.home.advanced.advanced_app_widget import AdvancedAppWidget
 
 
@@ -32,10 +32,12 @@ class AppWidgetUi(QWidget):
     def __init__(self, parent, container: Container, handler) -> None:
         super().__init__(parent)
         self.handler = handler
+        self.setSizePolicy(BQSizePolicy(height=QSizePolicy.Fixed))
         self.vertical_layout = QVBoxLayout(self)
         self.vertical_layout.setContentsMargins(0, 0, rt(2), 0)
         self.vertical_layout.setSpacing(0)
         self.vertical_layout.setAlignment(Qt.AlignTop)
+        self.vertical_layout.setSizeConstraint(QLayout.SetMinimumSize)
         self.widget = QWidget(self)
         self.widget.setSizePolicy(BQSizePolicy(height=QSizePolicy.Fixed))
         self.vertical_layout.addWidget(self.widget)
@@ -61,9 +63,9 @@ class AppWidgetUi(QWidget):
         self.advanced_app = AdvancedAppWidget(self.widget, container)
 
         self.vertical_layout.addWidget(self.advanced_app.ui)
-        self.container_info = container
+        self.container = container
 
-        line = QFrame(self)
-        line.setFrameShape(QFrame.HLine)
-        line.setFrameShadow(QFrame.Sunken)
-        self.vertical_layout.addWidget(line)
+        self.line = QFrame(self)
+        self.line.setFrameShape(QFrame.HLine)
+        self.line.setFrameShadow(QFrame.Sunken)
+        self.vertical_layout.addWidget(self.line)

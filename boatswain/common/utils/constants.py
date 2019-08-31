@@ -32,8 +32,6 @@ APP_DB = 'boatswain.db'
 INCLUDING_ENV_SYSTEM = 'including_env_system'
 CONTAINER_CONF_CHANGED = 'container_conf_changed'
 CURRENT_ACTIVATED_WORKSPACE = 'current_activated_workspace'
-CURRENT_ACTIVATED_GROUP = 'current_activated_group'
-APP_EXPANDED = 'app_expanded'
 
 # Channels
 CONTAINER_CHANNEL = 'container_channel'

@@ -51,6 +51,7 @@ class FolderIcon(QWidget):
 
 
 class PathViewWidget(QWidget):
+    max_width: int
 
     def __init__(self, parent: QWidget):
         super().__init__(parent)
@@ -112,12 +113,12 @@ class PathViewWidget(QWidget):
 
     def resizePaths(self):
         i = len(self.labels) - 1
-        while self.calculateCurrentWidth() < self.max_width - rt(50) and i >= 0:
+        while self.calculateCurrentWidth() < self.max_width - rt(80) and i >= 0:
             self.labels[i].label.setMaximumWidth(999)
             i -= 1
 
         j = 0
-        while self.calculateCurrentWidth() > self.max_width - rt(50) and j < len(self.labels):
+        while self.calculateCurrentWidth() > self.max_width - rt(80) and j < len(self.labels):
             self.labels[j].label.setMaximumWidth(0)
             j += 1
 
