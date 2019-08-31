@@ -18,18 +18,17 @@ from typing import Dict
 
 from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtGui import QResizeEvent
-from PyQt5.QtWidgets import QMainWindow, QInputDialog, QWidget
-from boatswain.common.models.group import Group
+from PyQt5.QtWidgets import QMainWindow, QInputDialog
 from boatswain_updater.utils import sys_utils
 from playhouse.shortcuts import update_model_from_dict, model_to_dict
 
 from boatswain.about.about import AboutDialog
 from boatswain.common.exceptions.workspace import WorkspaceAlreadyExistsException
 from boatswain.common.models.container import Container
+from boatswain.common.models.group import Group
 from boatswain.common.services import data_transporter_service, global_preference_service, workspace_service, \
     group_service, containers_service
 from boatswain.common.services.system_service import rt
-from boatswain.common.services.worker_service import Worker, threadpool
 from boatswain.common.utils import message_utils
 from boatswain.common.utils.constants import CONTAINER_CHANNEL, ADD_APP_CHANNEL, UPDATES_CHANNEL
 from boatswain.home.application.application_widget import AppWidget
