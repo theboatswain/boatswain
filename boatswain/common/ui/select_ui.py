@@ -1,21 +1,25 @@
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, Qt, QSize
 from PyQt5.QtGui import QMouseEvent
-from PyQt5.QtWidgets import QWidget, QPushButton, QMenu
+from PyQt5.QtWidgets import QWidget, QPushButton, QMenu, QToolButton
 
 from boatswain.common.services.system_service import rt
 
 
-class SelectUi(QPushButton):
+class SelectUi(QToolButton):
     current_option: str
     on_option_selected = pyqtSignal(str)
 
     def __init__(self, parent: QWidget):
         super().__init__(parent)
         self.options = {}
-        self.setFlat(True)
-        padding = "%dpx %dpx %dpx %dpx" % (rt(1), rt(7), rt(1), rt(10))
+        # self.setFlat(True)
+        padding = "%dpx %dpx %dpx %dpx" % (rt(-1), 0, 0, rt(5))
         self.setStyleSheet("border: 1px solid #999999; padding: %s; border-radius: 2px" % padding)
+        # self.setLayoutDirection(Qt.RightToLeft)
         self.mouseReleaseEvent = self.onSelectClicked
+        self.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+        self.setArrowType(Qt.DownArrow)
+        self.setIconSize(QSize(rt(5), rt(5)))
 
     def addItem(self, option: str, label: str = None, separate_before: bool = False, separate_after: bool = False,
                 handler=None):
@@ -28,7 +32,7 @@ class SelectUi(QPushButton):
 
     def setCurrentOption(self, option):
         self.current_option = option
-        self.setText(option + ' ▿')
+        self.setText(' ' + option)
 
     def onSelectClicked(self, event: QMouseEvent):
         menu = QMenu(self.parentWidget())
