@@ -15,7 +15,7 @@
 #
 #
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QSizePolicy, QFrame, QVBoxLayout, QHBoxLayout, QGridLayout, QLayout
+from PyQt5.QtWidgets import QWidget, QSizePolicy, QFrame, QVBoxLayout, QHBoxLayout, QGridLayout
 
 from boatswain.common.models.container import Container
 from boatswain.common.services.system_service import rt

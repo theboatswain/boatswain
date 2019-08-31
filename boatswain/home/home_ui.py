@@ -14,9 +14,10 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
+
 from PyQt5.QtCore import QCoreApplication, Qt
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QSizePolicy, QLineEdit, QPushButton, \
-    QMainWindow, QFrame, QScrollArea, QMenuBar, QMenu, QStatusBar, QAction, QApplication
+    QMainWindow, QFrame, QScrollArea, QMenuBar, QMenu, QStatusBar, QAction
 
 from boatswain.common.services import data_transporter_service
 from boatswain.common.services.system_service import rt

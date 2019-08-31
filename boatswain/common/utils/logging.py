@@ -19,6 +19,8 @@ import logging
 import os
 import sys
 
+from boatswain_updater.utils import sys_utils
+
 from boatswain.common.utils.constants import APP_LOG_DIR
 
 log_file = os.path.join(APP_LOG_DIR, 'boatswain.log')
@@ -47,5 +49,7 @@ class LoggerWriter:
         pass
 
 
-# sys.stdout = LoggerWriter(logger, logging.INFO)
-# sys.stderr = LoggerWriter(logger, logging.ERROR)
+if sys_utils.isWin() and 'BOATSWAIN_DEBUG' not in os.environ:
+    # For windows, all logs must not be printed into stdout/stderr when building .exe release
+    sys.stdout = LoggerWriter(logger, logging.INFO)
+    sys.stderr = LoggerWriter(logger, logging.ERROR)
