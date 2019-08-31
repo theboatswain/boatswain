@@ -57,4 +57,4 @@ class Container(BaseModel):
 
     group = ForeignKeyField(Group, backref='containers')
 
-    expanded = BooleanField(default=True)
+    expanded = BooleanField(default=False)

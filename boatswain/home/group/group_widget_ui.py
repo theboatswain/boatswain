@@ -45,10 +45,10 @@ class GroupWidgetUi(QWidget):
         top_layout.addWidget(self.container_name)
 
         self.main_layout.addWidget(self.top_widget)
-        line = QFrame(self)
-        line.setFrameShape(QFrame.HLine)
-        line.setFrameShadow(QFrame.Sunken)
-        self.main_layout.addWidget(line)
+        self.line = QFrame(self)
+        self.line.setFrameShape(QFrame.HLine)
+        self.line.setFrameShadow(QFrame.Sunken)
+        self.main_layout.addWidget(self.line)
 
         self.app_list = QWidget(self)
         self.app_list.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)

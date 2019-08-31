@@ -16,7 +16,6 @@
 #
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPalette, QColor
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSizePolicy, QHBoxLayout, QLabel, QPushButton, QFrame, QLayout
 
 from boatswain.common.models.container import Container

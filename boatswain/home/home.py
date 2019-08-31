@@ -18,7 +18,8 @@ from typing import Dict
 
 from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtGui import QResizeEvent
-from PyQt5.QtWidgets import QMainWindow, QInputDialog
+from PyQt5.QtWidgets import QMainWindow, QInputDialog, QWidget
+from boatswain.common.models.group import Group
 from boatswain_updater.utils import sys_utils
 from playhouse.shortcuts import update_model_from_dict, model_to_dict
 
@@ -26,8 +27,9 @@ from boatswain.about.about import AboutDialog
 from boatswain.common.exceptions.workspace import WorkspaceAlreadyExistsException
 from boatswain.common.models.container import Container
 from boatswain.common.services import data_transporter_service, global_preference_service, workspace_service, \
-    group_service
+    group_service, containers_service
 from boatswain.common.services.system_service import rt
+from boatswain.common.services.worker_service import Worker, threadpool
 from boatswain.common.utils import message_utils
 from boatswain.common.utils.constants import CONTAINER_CHANNEL, ADD_APP_CHANNEL, UPDATES_CHANNEL
 from boatswain.home.application.application_widget import AppWidget
@@ -67,8 +69,17 @@ class Home:
         self.ui.about.triggered.connect(self.showAbout)
         self.ui.check_for_update.triggered.connect(lambda: data_transporter_service.fire(UPDATES_CHANNEL, False))
 
-    def addAppClicked(self):
-        dialog = SearchAppDialog(self._tr("Add app"), self.ui)
+        self.loadApps()
+
+    def loadApps(self):
+        groups = group_service.getGroups()
+        for group in groups:
+            self.addGroupWidget(group)
+        for container in containers_service.getAllContainer():
+            self.addAppFromContainer(container)
+
+    def addAppClicked(self, group=None):
+        dialog = SearchAppDialog(self._tr("Add app"), self.ui, group)
         dialog.show()
 
     def _tr(self, message):
@@ -99,6 +110,13 @@ class Home:
                 message_utils.error(self._tr('Workspace already exists'),
                                     self._tr('Please choose a different workspace\'s name'))
 
+    def addGroupWidget(self, group: Group):
+        group_widget = GroupWidget(group, self.ui.app_list)
+        group_widget.move_app.connect(self.moveAppToGroup)
+        group_widget.move_group.connect(self.moveGroup)
+        self.groups[group.id] = group_widget.ui
+        self.ui.app_list.layout().addWidget(group_widget.ui)
+
     def addAppFromContainer(self, container: Container):
         current_workspace = self.ui.workspaces.getCurrentOption()
         widget = AppWidget(self.ui.app_list, container)
@@ -106,9 +124,7 @@ class Home:
         widget.new_group.connect(self.createGroup)
         self.apps[container.id] = widget.ui
         if container.group.id not in self.groups:
-            group = GroupWidget(container.group, self.ui.app_list)
-            self.groups[container.group.id] = group.ui
-            self.ui.app_list.layout().addWidget(group.ui)
+            self.addGroupWidget(container.group)
         if current_workspace != 'All':
             if container.group.workspace.name != current_workspace:
                 self.groups[container.group.id].hide()
@@ -132,6 +148,21 @@ class Home:
         widget_to_be_moved.parentWidget().layout().removeWidget(widget_to_be_moved)
         index = widget.parentWidget().layout().indexOf(widget)
         widget.parentWidget().layout().insertWidget(index + 1, widget_to_be_moved)
+
+    def moveAppToGroup(self, container, widget: GroupWidgetUi):
+        widget_to_be_moved = self.apps[container.id]
+
+        # Update the in-memory object of container
+        update_model_from_dict(widget_to_be_moved.container, model_to_dict(container))
+        widget_to_be_moved.parentWidget().layout().removeWidget(widget_to_be_moved)
+        widget.app_list_layout.addWidget(widget_to_be_moved)
+
+    def moveGroup(self, group: Group, widget: GroupWidgetUi):
+        group_to_be_moved: GroupWidgetUi = self.groups[group.id]
+        update_model_from_dict(group_to_be_moved.group, model_to_dict(group))
+        group_to_be_moved.parentWidget().layout().removeWidget(group_to_be_moved)
+        index = widget.parentWidget().layout().indexOf(widget)
+        widget.parentWidget().layout().insertWidget(index + 1, group_to_be_moved)
 
     def createGroup(self, container, widget: AppWidgetUi):
         widget_to_be_moved = self.apps[container.id]

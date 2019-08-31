@@ -28,11 +28,11 @@ class ShortAppWidget:
     _translate = QCoreApplication.translate
     template = 'ShortAppWidget'
 
-    def __init__(self, parent_widget, name, description, repo) -> None:
+    def __init__(self, parent_widget, name, description, repo, group) -> None:
         self.repo = repo
         self.ui = ShortAppWidgetUi(parent_widget, name, description, self)
         self.disable_button = False
-
+        self.group = group
         if len(description) > 0:
             self.ui.description.setText(self._translate("widget", description))
 
@@ -52,7 +52,7 @@ class ShortAppWidget:
         self.disable_button = True
         self.ui.install.setText(self._translate(self.template, "Installing"))
         worker = Worker(containers_service.installContainer, self.ui.name.text(), self.repo,
-                        self.ui.description.text(), "latest")
+                        self.ui.description.text(), "latest", None, None, self.group)
         worker.signals.result.connect(self.onAppInstalled)
         threadpool.start(worker)
 

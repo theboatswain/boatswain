@@ -64,10 +64,13 @@ def getNextOrder(container: Container):
         return container.order + 10000
 
 
-def installContainer(image_name, repo='dockerhub', description='', tag='latest', environments=None, ports=None):
+def installContainer(image_name, repo='dockerhub', description='', tag='latest', environments=None, ports=None,
+                     group=None):
     order = Container.select().count() * 10000
+    if not group:
+        group = group_service.getDefaultGroup()
     container = Container(image_name=image_name, description=description, tag=tag, name=image_name,
-                          repo=repo, group=group_service.getCurrentActivatedGroup(), order=order)
+                          repo=repo, group=group, order=order)
     container.save()
 
     if environments is not None:

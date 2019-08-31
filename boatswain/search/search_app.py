@@ -17,6 +17,7 @@
 
 from PyQt5.QtCore import Qt, QCoreApplication
 from PyQt5.QtWidgets import QDialog
+from boatswain.common.models.group import Group
 
 from boatswain.common.services import containers_service
 from boatswain.search.application.short_app_widget import ShortAppWidget
@@ -31,7 +32,7 @@ class SearchAppDialog(object):
 
     repositories = ['All repos']
 
-    def __init__(self, title, parent) -> None:
+    def __init__(self, title, parent, group: Group) -> None:
         super().__init__()
         self.title = title
         self.dialog = QDialog(parent)
@@ -39,6 +40,7 @@ class SearchAppDialog(object):
         self.dialog.ui = self.ui
         self.dialog.setWindowTitle(self.title)
         self.dialog.setAttribute(Qt.WA_DeleteOnClose)
+        self.group = group
 
         for repo in self.repositories:
             self.ui.repo_select.addItem(self._translate(self.template, repo))
@@ -59,7 +61,8 @@ class SearchAppDialog(object):
     def loadResult(self, docker_images):
         self.cleanSearchResults()
         for item in docker_images:
-            widget = ShortAppWidget(self.ui.search_result_area, item['name'], item['description'], item['from'])
+            widget = ShortAppWidget(self.ui.search_result_area, item['name'], item['description'], item['from'],
+                                    self.group)
             self.ui.search_result_area.layout().addWidget(widget.ui)
 
     def cleanSearchResults(self):
