@@ -4,8 +4,8 @@ from PyQt5.QtGui import QIcon, QResizeEvent
 from PyQt5.QtWidgets import QWidget, QLabel, QScrollArea, QFrame, QSizePolicy
 
 from boatswain.common.services.system_service import rt, applyFontRatio
-from boatswain.common.utils import utils
 from boatswain.common.ui.custom_ui import BQSizePolicy
+from boatswain.common.utils import utils
 from boatswain.resources_utils import get_resource
 
 
@@ -61,22 +61,25 @@ class PathViewWidget(QWidget):
         self.main_layout.setSpacing(0)
 
         self.scroll_area = QScrollArea(self)
-        self.scroll_area.setStyleSheet('QScrollBar {width:0px;}')
+        self.scroll_area.verticalScrollBar().resize(0, 0)
+        self.scroll_area.horizontalScrollBar().resize(0, 0)
+        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.scroll_area.setSizePolicy(BQSizePolicy(h_stretch=1))
+        self.scroll_area.setFixedHeight(rt(20))
         self.scroll_area.setFrameShape(QFrame.NoFrame)
         self.scroll_area.setFrameShadow(QFrame.Plain)
         self.scroll_area.setWidgetResizable(True)
         self.scroll_area.setContentsMargins(0, 0, 0, 0)
 
-        self.app_list = QWidget(self)
-        self.app_list.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
-        self.horizontal_layout = QtWidgets.QHBoxLayout(self.app_list)
+        self.folder_list = QWidget(self)
+        self.folder_list.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
+        self.horizontal_layout = QtWidgets.QHBoxLayout(self.folder_list)
         self.horizontal_layout.setContentsMargins(0, 0, 0, 0)
         self.horizontal_layout.setSpacing(0)
         self.horizontal_layout.setAlignment(Qt.AlignLeft)
-        self.app_list.setLayout(self.horizontal_layout)
-        self.scroll_area.setWidget(self.app_list)
-
+        self.folder_list.setLayout(self.horizontal_layout)
+        self.scroll_area.setWidget(self.folder_list)
         self.main_layout.addWidget(self.scroll_area)
 
         self.labels = []

@@ -55,7 +55,7 @@ class Home:
         self.apps: Dict[int, AppWidgetUi] = {}
         self.groups: Dict[int, GroupWidgetUi] = {}
 
-        if sys_utils.isWin():
+        if not sys_utils.isMac():
             self.ui.menu_bar.hide()
 
         self.loadWorkspaces()
@@ -118,15 +118,15 @@ class Home:
 
     def addAppFromContainer(self, container: Container):
         current_workspace = self.ui.workspaces.getCurrentOption()
-        widget = AppWidget(self.ui.app_list, container)
-        widget.move_app.connect(self.moveWidget)
-        widget.new_group.connect(self.createGroup)
-        self.apps[container.id] = widget.ui
         if container.group.id not in self.groups:
             self.addGroupWidget(container.group)
         if current_workspace != 'All':
             if container.group.workspace.name != current_workspace:
                 self.groups[container.group.id].hide()
+        widget = AppWidget(self.groups[container.group.id].app_list, container)
+        widget.move_app.connect(self.moveWidget)
+        widget.new_group.connect(self.createGroup)
+        self.apps[container.id] = widget.ui
         self.groups[container.group.id].app_list_layout.addWidget(widget.ui)
 
     def show(self):
