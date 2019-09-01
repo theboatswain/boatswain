@@ -163,14 +163,14 @@ def startContainer(container: Container):
 
     volumes = {**volumes, **shortcut_service.getShortcutVolumeMounts(container)}
 
-    docker_container = docker_service.run(container, ports, container_envs, volumes)
+    docker_container = docker_service.run(container.image_name, container.tag, ports, container_envs, volumes)
     container.container_id = docker_container.short_id
     return container
 
 
 def stopContainer(container: Container):
     if isContainerRunning(container):
-        docker_container = docker_service.stop(container)
+        docker_container = docker_service.stop(container.container_id)
         docker_container.stop(timeout=20)
     return True
 
@@ -236,6 +236,12 @@ def connectToContainer(container):
     else:
         message = 'Container have to be running before connecting to it\'s shell'
         docker_utils.notifyContainerNotRunning(container, message)
+
+
+def streamLogs(container: Container):
+    if container.container_id:
+        return docker_service.streamLogs(container.container_id)
+    docker_utils.notifyDockerException("No log to be display, container haven't run yet!")
 
 
 def listen(container: Container, name, func):

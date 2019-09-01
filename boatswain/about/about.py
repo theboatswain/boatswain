@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QCoreApplication, QSize
+from PyQt5.QtCore import QCoreApplication, QSize, Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDialog
 
@@ -16,6 +16,7 @@ class AboutDialog(object):
     def __init__(self, parent) -> None:
         super().__init__()
         self.dialog = QDialog(parent)
+        self.dialog.setAttribute(Qt.WA_DeleteOnClose)
         self.ui = AboutUi(self.dialog)
         self.dialog.ui = self.ui
         self.ui.app_image_widget.resizeEvent = self.resizeEvent
@@ -33,5 +34,6 @@ class AboutDialog(object):
 
     def showLicense(self):
         dialog = QDialog(self.dialog)
+        dialog.setAttribute(Qt.WA_DeleteOnClose)
         dialog.ui = LicenseUi(dialog)
         dialog.exec_()

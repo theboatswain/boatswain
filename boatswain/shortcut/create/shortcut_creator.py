@@ -16,7 +16,7 @@
 #
 
 from PyQt5 import QtCore
-from PyQt5.QtCore import QPoint
+from PyQt5.QtCore import QPoint, Qt
 from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import QDialog, QWidget, QToolTip, QMessageBox, QFileDialog
 
@@ -35,6 +35,7 @@ class ShortcutCreator:
 
     def __init__(self, container: Container, widget: QWidget, shortcut: PreferencesShortcut) -> None:
         self.dialog = QDialog(widget)
+        self.dialog.setAttribute(Qt.WA_DeleteOnClose)
         self.container = container
         self.ui = ShortcutCreatorUi(self.dialog, container)
         self.dialog.ui = self.ui

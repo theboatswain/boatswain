@@ -37,6 +37,7 @@ class PreferencesShortcutConfig(object):
     def __init__(self, parent, container: Container) -> None:
         self.container = container
         self.dialog = QDialog(parent)
+        self.dialog.setAttribute(Qt.WA_DeleteOnClose)
         self.ui = PreferencesShortcutConfigUi(self.dialog, container, self)
         self.dialog.ui = self.ui
         self.ui.new_shortcut.clicked.connect(self.onNewShortcutClicked)

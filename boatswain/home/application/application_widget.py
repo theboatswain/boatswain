@@ -28,6 +28,7 @@ from boatswain.common.services.worker_service import Worker, threadpool
 from boatswain.common.utils import docker_utils
 from boatswain.common.utils.constants import ADD_APP_CHANNEL, SHORTCUT_CONF_CHANGED_CHANNEL, CONTAINER_CHANNEL
 from boatswain.home.application.application_widget_ui import AppWidgetUi
+from boatswain.monitor.logging_monitor import LoggingMonitor
 from boatswain.shortcut.preferences_shortcut_config import PreferencesShortcutConfig
 
 
@@ -113,7 +114,8 @@ class AppWidget(QObject):
         menu.addSeparator()
         terminal = menu.addAction(self._translate(self.template, 'Connect to terminal'))
         terminal.triggered.connect(lambda: containers_service.connectToContainer(self.container))
-        menu.addAction(self._translate(self.template, 'Open log'))
+        monitor = menu.addAction(self._translate(self.template, 'Monitor log'))
+        monitor.triggered.connect(self.monitorLog)
         menu.addSeparator()
         conf = menu.addAction(self._translate(self.template, 'Configuration'))
         conf.triggered.connect(self.ui.advanced_app.onAdvancedConfigurationClicked)
@@ -134,6 +136,10 @@ class AppWidget(QObject):
         delete = menu.addAction(self._translate(self.template, 'Delete'))
         delete.triggered.connect(self.deleteContainer)
         menu.exec_(self.ui.mapToGlobal(event.pos()))
+
+    def monitorLog(self):
+        logging = LoggingMonitor(self.ui, self.container)
+        logging.show()
 
     def restartContainer(self):
         if containers_service.isContainerRunning(self.container):
