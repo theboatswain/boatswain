@@ -58,5 +58,9 @@ class LoggingMonitorModel(QAbstractTableModel):
         self.endInsertRows()
         return True
 
+    def cleanRows(self):
+        self.array_data = []
+        self.layoutChanged.emit()
+
     def flags(self, index):
         return Qt.ItemIsEditable | Qt.ItemIsEnabled | Qt.ItemIsSelectable

@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QSize, QObject
+from PyQt5.QtCore import QSize, QObject, Qt
 from PyQt5.QtWidgets import QDialog, QStyle, QTableView
 
 from boatswain.common.models.container import Container
@@ -30,18 +30,24 @@ class LoggingMonitorUi(QObject):
         self.horizontalLayout.setContentsMargins(rt(12), rt(6), rt(12), rt(6))
         self.horizontalLayout.setSpacing(rt(6))
         self.now = QtWidgets.QPushButton(self.tool_widget)
+        self.now.setCheckable(True)
+        self.now.setChecked(True)
+        self.now.setFocusPolicy(Qt.NoFocus)
         self.horizontalLayout.addWidget(self.now)
         self.hidden_1 = QtWidgets.QWidget(self.tool_widget)
         self.hidden_1.setSizePolicy(BQSizePolicy(h_stretch=1))
         self.horizontalLayout.addWidget(self.hidden_1)
         self.clear = QtWidgets.QPushButton(self.tool_widget)
+        self.clear.setFocusPolicy(Qt.NoFocus)
         self.horizontalLayout.addWidget(self.clear)
         self.reload = QtWidgets.QPushButton(self.tool_widget)
+        self.reload.setFocusPolicy(Qt.NoFocus)
         self.horizontalLayout.addWidget(self.reload)
         self.hidden_2 = QtWidgets.QWidget(self.tool_widget)
         self.hidden_2.setSizePolicy(BQSizePolicy(h_stretch=1))
         self.horizontalLayout.addWidget(self.hidden_2)
         self.info = QtWidgets.QPushButton(self.tool_widget)
+        self.info.setFocusPolicy(Qt.NoFocus)
         self.horizontalLayout.addWidget(self.info)
         self.hidden = QtWidgets.QWidget(self.tool_widget)
         self.horizontalLayout.addWidget(self.hidden)
@@ -75,10 +81,6 @@ class LoggingMonitorUi(QObject):
         self.horizontalLayout_2.addWidget(self.new_tag)
         self.verticalLayout_2.addWidget(self.tags, 0, QtCore.Qt.AlignLeft)
         self.verticalLayout.addWidget(self.top_widget)
-        self.line_2 = QtWidgets.QFrame(dialog)
-        self.line_2.setFrameShape(QtWidgets.QFrame.HLine)
-        self.line_2.setFrameShadow(QtWidgets.QFrame.Sunken)
-        self.verticalLayout.addWidget(self.line_2)
         self.log_widget = QtWidgets.QWidget(dialog)
         self.log_widget.setSizePolicy(BQSizePolicy(v_stretch=3))
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.log_widget)

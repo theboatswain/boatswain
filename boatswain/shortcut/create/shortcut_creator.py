@@ -181,7 +181,7 @@ class ShortcutCreator:
         elif self.ui.shortcut_type.currentText() == 'Volume Mount':
             self.ui.default_value_des.setText(self._translate(
                 self.template, "The default path to the shared folder of host machine, "
-                               "which will be mount to the container folder described in the 'Mapping to' section. \n"
+                               "which will be mounted to the container folder described in the 'Mapping to' section. \n"
                                "The mount type will be read-write by default. \n"
                                "This value can be changed in the expanding window."))
             self.ui.mapping_to_des.setText(self._translate(

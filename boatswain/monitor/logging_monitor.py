@@ -17,12 +17,13 @@ class LoggingMonitor(QObject):
     def __init__(self, parent, container: Container) -> None:
         super().__init__()
         self.dialog = QDialog(parent)
-        self.dialog.setWindowTitle(self.tr('Logs of ' + container.name))
+        self.dialog.setWindowTitle(container.name + self.tr("'s logs"))
         self.dialog.setAttribute(Qt.WA_DeleteOnClose)
         self.dialog.closeEvent = self.onCloseDialog
         self.ui = LoggingMonitorUi(self.dialog, container)
         self.dialog.ui = self.ui
         self.container = container
+        self.ui.now.clicked.connect(self.onNowActivate)
 
         headers = ['Date', 'Time', 'Message']
         self.table_model = LoggingMonitorModel([], headers, headers, self.dialog)
@@ -30,6 +31,9 @@ class LoggingMonitor(QObject):
         self.table_model.rowsInserted.connect(self.rowsInserted)
         worker = Worker(self.streamLogs)
         threadpool.start(worker)
+
+        self.ui.clear.clicked.connect(self.onCleanLogs)
+        self.ui.reload.clicked.connect(self.onReload)
 
     def show(self):
         self.dialog.show()
@@ -57,6 +61,21 @@ class LoggingMonitor(QObject):
     def onCloseDialog(self, event):
         self.logs.close()
         QDialog.closeEvent(self.dialog, event)
+
+    def onCleanLogs(self):
+        self.table_model.cleanRows()
+
+    def onReload(self):
+        self.onCleanLogs()
+        self.logs.close()
+        worker = Worker(self.streamLogs)
+        threadpool.start(worker)
+
+    def onNowActivate(self, checked: bool):
+        if checked:
+            self.onReload()
+        else:
+            self.logs.close()
 
     def configurePreferenceTable(self, tv: QTableView, table_model):
         # set the table model
