@@ -1,5 +1,24 @@
 import os
 
+from docker.types import CancellableStream
+
+
+class EmptyStream(CancellableStream):
+
+    def __init__(self):
+        super().__init__(None, None)
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        raise StopIteration
+
+    next = __next__
+
+    def close(self):
+        pass
+
 
 def split_all(path):
     all_parts = []

@@ -30,6 +30,7 @@ from boatswain.common.services import docker_service, system_service, config_ser
 from boatswain.common.utils import docker_utils
 from boatswain.common.utils.constants import INCLUDING_ENV_SYSTEM, CONTAINER_CONF_CHANGED, \
     CONTAINER_CONF_CHANGED_CHANNEL
+from boatswain.common.utils.utils import EmptyStream
 
 logger = logging.getLogger(__name__)
 
@@ -241,7 +242,7 @@ def connectToContainer(container):
 def streamLogs(container: Container):
     if container.container_id:
         return docker_service.streamLogs(container.container_id)
-    docker_utils.notifyDockerException("No log to be display, container haven't run yet!")
+    return EmptyStream()
 
 
 def listen(container: Container, name, func):

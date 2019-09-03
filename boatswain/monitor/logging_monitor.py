@@ -20,7 +20,7 @@ class LoggingMonitor(QObject):
         self.dialog.setWindowTitle(container.name + self.tr("'s logs"))
         self.dialog.setAttribute(Qt.WA_DeleteOnClose)
         self.dialog.closeEvent = self.onCloseDialog
-        self.ui = LoggingMonitorUi(self.dialog, container)
+        self.ui = LoggingMonitorUi(self.dialog)
         self.dialog.ui = self.ui
         self.container = container
         self.ui.now.clicked.connect(self.onNowActivate)
