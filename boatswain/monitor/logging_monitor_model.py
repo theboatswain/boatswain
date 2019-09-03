@@ -20,8 +20,6 @@ from PyQt5.QtCore import QModelIndex
 from PyQt5.QtCore import QVariant
 from PyQt5.QtCore import Qt
 
-from boatswain.common.models.container import Container
-
 
 class LoggingMonitorModel(QAbstractTableModel):
     def __init__(self, data_in, header_data, display_header, parent=None):

@@ -14,6 +14,7 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QSizePolicy, QFrame, QVBoxLayout, QHBoxLayout, QGridLayout
 
