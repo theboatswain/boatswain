@@ -29,6 +29,8 @@ class LoggingMonitorModel(QAbstractTableModel):
         self.array_data = data_in
         self.header_data = header_data
         self.display_header = display_header
+        self.stop_showing = False
+        self.non_showing_data = []
 
     def rowCount(self, parent=None, *args, **kwargs):
         return len(self.array_data)
@@ -53,10 +55,25 @@ class LoggingMonitorModel(QAbstractTableModel):
     def insertRows(self, position: int, count: int, rows=None, parent=None, *args, **kwargs):
         if rows is None:
             return False
-        self.beginInsertRows(parent, position, position + count - 1)
-        self.array_data += rows
-        self.endInsertRows()
+        if not self.stop_showing:
+            self.beginInsertRows(parent, position, position + count - 1)
+            self.array_data += rows
+            self.endInsertRows()
+        else:
+            self.non_showing_data += rows
         return True
+
+    def stopShowing(self):
+        self.stop_showing = True
+
+    def reShowing(self):
+        if len(self.non_showing_data) > 0:
+            parent = self.index(self.rowCount(), 0)
+            self.beginInsertRows(parent, self.rowCount(), len(self.non_showing_data) + self.rowCount() - 1)
+            self.array_data += self.non_showing_data
+            self.endInsertRows()
+            self.stop_showing = False
+            self.non_showing_data.clear()
 
     def cleanRows(self):
         self.array_data = []

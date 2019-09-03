@@ -66,16 +66,16 @@ class LoggingMonitor(QObject):
         self.table_model.cleanRows()
 
     def onReload(self):
-        self.onCleanLogs()
         self.logs.close()
+        self.onCleanLogs()
         worker = Worker(self.streamLogs)
         threadpool.start(worker)
 
     def onNowActivate(self, checked: bool):
         if checked:
-            self.onReload()
+            self.table_model.reShowing()
         else:
-            self.logs.close()
+            self.table_model.stopShowing()
 
     def configurePreferenceTable(self, tv: QTableView, table_model):
         # set the table model
@@ -97,7 +97,7 @@ class LoggingMonitor(QObject):
         # set horizontal header properties
         hh: QHeaderView = tv.horizontalHeader()
         hh.setStretchLastSection(True)
-        hh.setMinimumSectionSize(110)
+        hh.setMinimumSectionSize(rt(110))
         font = QtGui.QFont()
         font.setPointSize(applyFontRatio(10))
         hh.setFont(font)
