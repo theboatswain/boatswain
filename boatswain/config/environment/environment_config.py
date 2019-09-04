@@ -66,7 +66,6 @@ class EnvironmentConfig:
     def onNewEnvClicked(self):
         self.ui.user_table.model().addRecord(
             Environment(name='NEW_ENV', value='env value', description='description', container=self.container))
-        self.ui.user_table.resizeRowToContents(self.ui.user_table.model().rowCount() - 1)
         flags = QItemSelectionModel.ClearAndSelect | QItemSelectionModel.Rows
         index = self.ui.user_table.model().index(self.ui.user_table.model().rowCount() - 1, 0)
         self.ui.user_table.selectionModel().select(index, flags)

@@ -22,6 +22,7 @@ from PyQt5.QtWidgets import QDialog, QTableView
 from boatswain.common.services import system_service
 from boatswain.common.services.system_service import rt
 from boatswain.common.ui.custom_ui import BQSizePolicy
+from boatswain.monitor.logging_table_ui import UniformRowHeights
 
 
 class LoggingMonitorUi(QObject):
@@ -77,7 +78,7 @@ class LoggingMonitorUi(QObject):
         self.vertical_layout_3 = QtWidgets.QVBoxLayout(self.log_widget)
         self.vertical_layout_3.setContentsMargins(0, 0, 0, 0)
         self.vertical_layout_3.setSpacing(rt(6))
-        self.log_list_table = QTableView(dialog)
+        self.log_list_table = UniformRowHeights(dialog)
         self.vertical_layout_3.addWidget(self.log_list_table)
         self.vertical_layout.addWidget(self.log_widget)
 

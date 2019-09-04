@@ -74,6 +74,7 @@ class LoggingMonitor(QObject):
                 parent = self.table_model.index(position, 0)
                 self.table_model.insertRows(position, 1, rows=[{'Date': date, 'Time': time, 'Message': message}],
                                             parent=parent)
+                self.ui.log_list_table.resizeRowToContents(position)
 
     def onCloseDialog(self, event):
         self.logs.close()

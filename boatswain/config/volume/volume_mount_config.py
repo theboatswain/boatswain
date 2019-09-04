@@ -55,7 +55,6 @@ class VolumeMountConfig:
     def onNewMountClicked(self):
         self.ui.mount_table.model().addRecord(
             VolumeMount(host_path='/tmp', container_path='/tmp', description='description', container=self.container))
-        self.ui.mount_table.resizeRowToContents(self.ui.mount_table.model().rowCount() - 1)
         flags = QItemSelectionModel.ClearAndSelect | QItemSelectionModel.Rows
         index = self.ui.mount_table.model().index(self.ui.mount_table.model().rowCount() - 1, 0)
         self.ui.mount_table.selectionModel().select(index, flags)

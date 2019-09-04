@@ -62,7 +62,6 @@ class PortMappingConfig:
     def onNewPortClicked(self):
         self.ui.mapping_table.model().addRecord(
             PortMapping(port=1000, target_port=1000, description='description', container=self.container))
-        self.ui.mapping_table.resizeRowToContents(self.ui.mapping_table.model().rowCount() - 1)
         flags = QItemSelectionModel.ClearAndSelect | QItemSelectionModel.Rows
         index = self.ui.mapping_table.model().index(self.ui.mapping_table.model().rowCount() - 1, 0)
         self.ui.mapping_table.selectionModel().select(index, flags)

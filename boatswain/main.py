@@ -47,7 +47,7 @@ from boatswain.resources_utils import get_resource
 
 def deFrostPem():
     """
-    When the application is being frozen, all resource files will be encoded into an executable file
+    When the application is being frozen, all resource files will be encoded into the executable file
     And with the requests library, it required to have the cacert.pem file available and accessible as a normal file
     thus caused the problem of invalid path: :/certifi/cacert.pem
     This function will workaround the problem by reading the content of the pem file and write it into app data folder
