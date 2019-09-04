@@ -16,8 +16,9 @@
 #
 
 from PyQt5 import QtGui
-from PyQt5.QtCore import Qt, QObject, QItemSelection, QItemSelectionRange, QModelIndex
-from PyQt5.QtWidgets import QDialog, QAbstractItemView, QTableView, QHeaderView
+from PyQt5.QtCore import Qt, QObject, QItemSelection
+from PyQt5.QtWidgets import QDialog, QAbstractItemView, QTableView, QHeaderView, QWidget
+from boatswain.common.utils.constants import APP_EXIT_CHANNEL
 from docker.types import CancellableStream
 
 from boatswain.common.models.container import Container
@@ -26,14 +27,28 @@ from boatswain.common.services.system_service import applyFontRatio, rt
 from boatswain.common.services.worker_service import Worker, threadpool
 from boatswain.monitor.logging_monitor_model import LoggingMonitorModel
 from boatswain.monitor.logging_monitor_ui import LoggingMonitorUi
+from boatswain.common.services import data_transporter_service
+
+to_be_delete = {}
+
+
+def cleanUp():
+    widgets = []
+    for item in to_be_delete:
+        widgets.append(to_be_delete[item])
+    for widget in widgets:
+        widget.close()
+
+
+data_transporter_service.listen(APP_EXIT_CHANNEL, cleanUp)
 
 
 class LoggingMonitor(QObject):
     logs: CancellableStream
 
-    def __init__(self, parent, container: Container) -> None:
+    def __init__(self, container: Container) -> None:
         super().__init__()
-        self.dialog = QDialog(parent)
+        self.dialog = QDialog()
         self.dialog.setWindowTitle(container.name + self.tr("'s logs"))
         self.dialog.setAttribute(Qt.WA_DeleteOnClose)
         self.dialog.closeEvent = self.onCloseDialog
@@ -55,6 +70,8 @@ class LoggingMonitor(QObject):
 
         selection_model = self.ui.log_list_table.selectionModel()
         selection_model.selectionChanged.connect(self.updateLogDetails)
+        self.dialog.closeEvent = self.closeEvent
+        to_be_delete[self.container.id] = self.dialog
 
     def show(self):
         self.dialog.show()
@@ -111,6 +128,10 @@ class LoggingMonitor(QObject):
             self.ui.log_details.show()
         else:
             self.ui.log_details.hide()
+
+    def closeEvent(self, event):
+        to_be_delete.pop(self.container.id)
+        QDialog.closeEvent(self.dialog, event)
 
     def configurePreferenceTable(self, tv: QTableView, table_model):
         # set the table model

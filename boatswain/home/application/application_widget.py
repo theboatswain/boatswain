@@ -138,7 +138,7 @@ class AppWidget(QObject):
         menu.exec_(self.ui.mapToGlobal(event.pos()))
 
     def monitorLog(self):
-        logging = LoggingMonitor(self.ui, self.container)
+        logging = LoggingMonitor(self.container)
         logging.show()
 
     def restartContainer(self):
