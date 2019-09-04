@@ -16,7 +16,7 @@
 #
 
 from PyQt5 import QtGui
-from PyQt5.QtCore import Qt, QObject
+from PyQt5.QtCore import Qt, QObject, QItemSelection, QItemSelectionRange, QModelIndex
 from PyQt5.QtWidgets import QDialog, QAbstractItemView, QTableView, QHeaderView
 from docker.types import CancellableStream
 
@@ -51,6 +51,10 @@ class LoggingMonitor(QObject):
 
         self.ui.clear.clicked.connect(self.onCleanLogs)
         self.ui.reload.clicked.connect(self.onReload)
+        self.ui.info.clicked.connect(self.infoClicked)
+
+        selection_model = self.ui.log_list_table.selectionModel()
+        selection_model.selectionChanged.connect(self.updateLogDetails)
 
     def show(self):
         self.dialog.show()
@@ -94,6 +98,19 @@ class LoggingMonitor(QObject):
             self.table_model.reShowing()
         else:
             self.table_model.stopShowing()
+
+    def updateLogDetails(self, selected: QItemSelection, deselected: QItemSelection):
+        for index in selected.indexes():
+            if index.column() == 0:
+                data = self.table_model.array_data[index.row()]
+                self.ui.log_details_label.setHtml(data['Message'])
+                break
+
+    def infoClicked(self, checked):
+        if checked:
+            self.ui.log_details.show()
+        else:
+            self.ui.log_details.hide()
 
     def configurePreferenceTable(self, tv: QTableView, table_model):
         # set the table model

@@ -78,4 +78,4 @@ class LoggingMonitorModel(QAbstractTableModel):
         self.layoutChanged.emit()
 
     def flags(self, index):
-        return Qt.ItemIsEditable | Qt.ItemIsEnabled | Qt.ItemIsSelectable
+        return Qt.ItemIsEnabled | Qt.ItemIsSelectable

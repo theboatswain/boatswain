@@ -15,7 +15,7 @@
 #
 #
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import QSize, QObject, Qt
 from PyQt5.QtWidgets import QDialog, QTableView
 
@@ -65,6 +65,8 @@ class LoggingMonitorUi(QObject):
         self.horizontal_layout.addWidget(self.hidden_2)
         self.info = QtWidgets.QPushButton(self.tool_widget)
         self.info.setFocusPolicy(Qt.NoFocus)
+        self.info.setCheckable(True)
+        self.info.setChecked(True)
         self.horizontal_layout.addWidget(self.info)
         self.hidden = QtWidgets.QWidget(self.tool_widget)
         self.horizontal_layout.addWidget(self.hidden)
@@ -78,9 +80,24 @@ class LoggingMonitorUi(QObject):
         self.vertical_layout_3 = QtWidgets.QVBoxLayout(self.log_widget)
         self.vertical_layout_3.setContentsMargins(0, 0, 0, 0)
         self.vertical_layout_3.setSpacing(rt(6))
-        self.log_list_table = UniformRowHeights(dialog)
-        self.vertical_layout_3.addWidget(self.log_list_table)
+
+        self.splitter = QtWidgets.QSplitter(self.log_widget)
+        self.splitter.setOrientation(QtCore.Qt.Vertical)
+        self.log_list_table = UniformRowHeights(self.splitter)
+        self.log_details = QtWidgets.QWidget(self.splitter)
+
+        self.log_details_layout = QtWidgets.QVBoxLayout(self.log_details)
+        self.log_details_layout.setContentsMargins(rt(8), 0, rt(8), rt(15))
+
+        self.log_details_label = QtWidgets.QTextBrowser(self.log_details)
+        self.log_details_label.setSizePolicy(BQSizePolicy(height=QtWidgets.QSizePolicy.Expanding))
+        self.log_details_layout.addWidget(self.log_details_label)
+
+        self.splitter.setSizes([rt(300), rt(20)])
+        self.vertical_layout_3.addWidget(self.splitter)
         self.vertical_layout.addWidget(self.log_widget)
+
+
 
         self.retranslateUi()
 
