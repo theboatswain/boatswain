@@ -67,7 +67,14 @@ def getShortcutVolumeMounts(container: Container):
 
 
 def getShortcuts(container: Container) -> List[PreferencesShortcut]:
-    return PreferencesShortcut.select().where(PreferencesShortcut.container == container)
+    return PreferencesShortcut.select().where(PreferencesShortcut.container == container)\
+        .order_by(PreferencesShortcut.order.asc())
+
+
+def getEnabledShortcuts(container: Container) -> List[PreferencesShortcut]:
+    return PreferencesShortcut.select().where(
+        (PreferencesShortcut.container == container) & PreferencesShortcut.enabled) \
+        .order_by(PreferencesShortcut.order.asc())
 
 
 def cloneAll(from_container: Container, to_container: Container):
