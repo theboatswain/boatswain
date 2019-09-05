@@ -30,6 +30,7 @@ from boatswain.common.services import docker_service, system_service, config_ser
 from boatswain.common.utils import docker_utils
 from boatswain.common.utils.constants import INCLUDING_ENV_SYSTEM, CONTAINER_CONF_CHANGED, \
     CONTAINER_CONF_CHANGED_CHANNEL
+from boatswain.common.utils.utils import EmptyStream
 
 logger = logging.getLogger(__name__)
 
@@ -163,14 +164,14 @@ def startContainer(container: Container):
 
     volumes = {**volumes, **shortcut_service.getShortcutVolumeMounts(container)}
 
-    docker_container = docker_service.run(container, ports, container_envs, volumes)
+    docker_container = docker_service.run(container.image_name, container.tag, ports, container_envs, volumes)
     container.container_id = docker_container.short_id
     return container
 
 
 def stopContainer(container: Container):
     if isContainerRunning(container):
-        docker_container = docker_service.stop(container)
+        docker_container = docker_service.stop(container.container_id)
         docker_container.stop(timeout=20)
     return True
 
@@ -236,6 +237,12 @@ def connectToContainer(container):
     else:
         message = 'Container have to be running before connecting to it\'s shell'
         docker_utils.notifyContainerNotRunning(container, message)
+
+
+def streamLogs(container: Container):
+    if container.container_id:
+        return docker_service.streamLogs(container.container_id)
+    return EmptyStream()
 
 
 def listen(container: Container, name, func):

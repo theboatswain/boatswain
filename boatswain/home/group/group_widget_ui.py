@@ -1,3 +1,20 @@
+#  This file is part of Boatswain.
+#
+#      Boatswain is free software: you can redistribute it and/or modify
+#      it under the terms of the GNU General Public License as published by
+#      the Free Software Foundation, either version 3 of the License, or
+#      (at your option) any later version.
+#
+#      Boatswain is distributed in the hope that it will be useful,
+#      but WITHOUT ANY WARRANTY; without even the implied warranty of
+#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#      GNU General Public License for more details.
+#
+#      You should have received a copy of the GNU General Public License
+#      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
+#
+#
+
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QFrame, QSizePolicy, QLineEdit, QLabel, QLayout
@@ -26,10 +43,6 @@ class GroupWidgetUi(QWidget):
         top_layout = QHBoxLayout(self.top_widget)
         top_layout.setContentsMargins(rt(11), rt(5), 0, rt(5))
         top_layout.setSpacing(rt(6))
-
-        # self.direction = QLabel(self)
-        # self.direction.setText("⌄")
-        # top_layout.addWidget(self.direction)
 
         self.icon = QLabel(self)
         self.icon.setPixmap(QIcon(get_resource('resources/icons/folder.svg'))

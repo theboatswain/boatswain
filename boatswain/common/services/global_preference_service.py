@@ -1,3 +1,20 @@
+#  This file is part of Boatswain.
+#
+#      Boatswain is free software: you can redistribute it and/or modify
+#      it under the terms of the GNU General Public License as published by
+#      the Free Software Foundation, either version 3 of the License, or
+#      (at your option) any later version.
+#
+#      Boatswain is distributed in the hope that it will be useful,
+#      but WITHOUT ANY WARRANTY; without even the implied warranty of
+#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#      GNU General Public License for more details.
+#
+#      You should have received a copy of the GNU General Public License
+#      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
+#
+#
+
 from PyQt5.QtCore import QSize
 from peewee import DoesNotExist
 
@@ -25,8 +42,8 @@ def setHomeWindowSize(size: QSize):
 
 
 def getMinimumHomeWindowSize():
-    height = system_service.screen_height * 4 / 5
-    width = height / 1.7
+    height = system_service.screen_height * 4.2 / 5
+    width = height / 1.8
     return QSize(width, height)
 
 

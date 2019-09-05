@@ -18,10 +18,10 @@
 import platform
 
 import docker
+from docker.models.containers import Container
 from requests.exceptions import ConnectionError
 
 from boatswain.common.exceptions.docker_exceptions import DockerNotAvailableException
-from boatswain.common.models.container import Container
 from boatswain.common.utils.constants import WINDOWS_BASE_URL, UNIX_BASE_URL
 from boatswain.common.utils.logging import logger
 
@@ -35,20 +35,25 @@ def searchDockerhubContainers(keyword):
     return client.images.search(keyword)
 
 
-def getContainerInfo(container_id):
+def getContainerInfo(container_id) -> Container:
     ping()
     return client.containers.get(container_id)
 
 
-def run(container: Container, ports, envs, volumes):
+def run(image_name, tag, ports, envs, volumes):
     ping()
-    return client.containers.run(container.image_name + ":" + container.tag, detach=True, ports=ports,
+    return client.containers.run(image_name + ":" + tag, detach=True, ports=ports,
                                  environment=envs, volumes=volumes)
 
 
-def stop(container: Container):
+def streamLogs(container_id: str):
+    container = getContainerInfo(container_id)
+    return container.logs(stream=True, timestamps=True)
+
+
+def stop(container_id: str):
     ping()
-    return client.containers.get(container.container_id)
+    return client.containers.get(container_id)
 
 
 def streamEvents():

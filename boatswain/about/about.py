@@ -1,4 +1,21 @@
-from PyQt5.QtCore import QCoreApplication, QSize
+#  This file is part of Boatswain.
+#
+#      Boatswain is free software: you can redistribute it and/or modify
+#      it under the terms of the GNU General Public License as published by
+#      the Free Software Foundation, either version 3 of the License, or
+#      (at your option) any later version.
+#
+#      Boatswain is distributed in the hope that it will be useful,
+#      but WITHOUT ANY WARRANTY; without even the implied warranty of
+#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#      GNU General Public License for more details.
+#
+#      You should have received a copy of the GNU General Public License
+#      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
+#
+#
+
+from PyQt5.QtCore import QCoreApplication, QSize, Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDialog
 
@@ -16,6 +33,7 @@ class AboutDialog(object):
     def __init__(self, parent) -> None:
         super().__init__()
         self.dialog = QDialog(parent)
+        self.dialog.setAttribute(Qt.WA_DeleteOnClose)
         self.ui = AboutUi(self.dialog)
         self.dialog.ui = self.ui
         self.ui.app_image_widget.resizeEvent = self.resizeEvent
@@ -33,5 +51,6 @@ class AboutDialog(object):
 
     def showLicense(self):
         dialog = QDialog(self.dialog)
+        dialog.setAttribute(Qt.WA_DeleteOnClose)
         dialog.ui = LicenseUi(dialog)
         dialog.exec_()

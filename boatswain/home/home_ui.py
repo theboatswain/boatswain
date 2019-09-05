@@ -59,7 +59,7 @@ class HomeUi(QMainWindow):
         self.search_app.setAttribute(Qt.WA_MacShowFocusRect, 0)
         self.search_app.setSizePolicy(BQSizePolicy(h_stretch=2, height=QSizePolicy.Fixed))
         self.search_app.setFocusPolicy(Qt.ClickFocus)
-        self.search_app.setStyleSheet("padding: 2 2 2 5;")
+        self.search_app.setStyleSheet("padding: 1 1 1 5;")
         top_layout.addWidget(self.search_app, 0, 3, 1, 1)
 
         hidden_widget = QWidget(widget)

@@ -31,8 +31,8 @@ class AppConfig:
         self.container = container
 
         self.dialog = QDialog(parent)
+        self.dialog.setAttribute(Qt.WA_DeleteOnClose)
 
-        self.dialog = self.dialog
         self.ui = AppConfigUi(self.dialog, container)
         self.dialog.ui = self.ui
 

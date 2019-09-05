@@ -37,7 +37,7 @@ class ShortcutCreatorUi:
         dialog.setSizePolicy(BQSizePolicy(h_stretch=1))
         dialog.setMinimumSize(QSize(width, height))
         dialog.setSizeGripEnabled(False)
-        dialog.setModal(False)
+        dialog.setWindowModality(Qt.WindowModal)
         self.verticalLayout = QtWidgets.QVBoxLayout(dialog)
         self.verticalLayout.setContentsMargins(rt(11), rt(11), rt(11), rt(11))
         self.verticalLayout.setSpacing(rt(6))

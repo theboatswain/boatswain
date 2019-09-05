@@ -16,7 +16,7 @@
 #
 
 from PyQt5 import QtCore
-from PyQt5.QtCore import QPoint
+from PyQt5.QtCore import QPoint, Qt
 from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import QDialog, QWidget, QToolTip, QMessageBox, QFileDialog
 
@@ -35,6 +35,7 @@ class ShortcutCreator:
 
     def __init__(self, container: Container, widget: QWidget, shortcut: PreferencesShortcut) -> None:
         self.dialog = QDialog(widget)
+        self.dialog.setAttribute(Qt.WA_DeleteOnClose)
         self.container = container
         self.ui = ShortcutCreatorUi(self.dialog, container)
         self.dialog.ui = self.ui
@@ -180,7 +181,7 @@ class ShortcutCreator:
         elif self.ui.shortcut_type.currentText() == 'Volume Mount':
             self.ui.default_value_des.setText(self._translate(
                 self.template, "The default path to the shared folder of host machine, "
-                               "which will be mount to the container folder described in the 'Mapping to' section. \n"
+                               "which will be mounted to the container folder described in the 'Mapping to' section. \n"
                                "The mount type will be read-write by default. \n"
                                "This value can be changed in the expanding window."))
             self.ui.mapping_to_des.setText(self._translate(
