@@ -23,7 +23,7 @@ from boatswain.common.models.container import Container
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
 from boatswain.common.services import containers_service, config_service, shortcut_service
 from boatswain.common.services.system_service import rt
-from boatswain.common.ui.custom_ui import SwitchBox
+from boatswain.common.ui.switch import SwitchBox
 from boatswain.common.utils.constants import SHORTCUT_CONF_CHANGED_CHANNEL, CONTAINER_CONF_CHANGED
 from boatswain.shortcut.create.shortcut_creator import ShortcutCreator
 from boatswain.shortcut.preferences_shortcut_config_model import ShortcutCreatorModel

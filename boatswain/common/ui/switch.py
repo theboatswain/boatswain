@@ -1,6 +1,35 @@
 from PyQt5.QtCore import QPropertyAnimation, QRectF, QSize, Qt, pyqtProperty
 from PyQt5.QtGui import QPainter
-from PyQt5.QtWidgets import QAbstractButton, QSizePolicy
+from PyQt5.QtWidgets import QAbstractButton, QSizePolicy, QWidget, QHBoxLayout
+from boatswain.common.ui.custom_ui import BQSizePolicy
+
+from boatswain.common.services import containers_service
+from boatswain.common.services.system_service import rt
+
+from boatswain.common.models.preferences_shortcut import PreferencesShortcut
+from boatswain.common.utils.constants import SHORTCUT_CONF_CHANGED_CHANNEL
+
+
+class SwitchBox(QWidget):
+    """ Combobox for QTableView
+        Still have problem of overlapping with MacOS dark mode
+    """
+
+    def __init__(self, parent, checked, shortcut: PreferencesShortcut):
+        super().__init__(parent)
+        self.setSizePolicy(BQSizePolicy())
+        layout = QHBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+        switch = Switch(self, thumb_radius=rt(5), track_radius=rt(7))
+        switch.setChecked(checked)
+        switch.clicked.connect(self.onSwitched)
+        layout.addWidget(switch)
+        self.shortcut = shortcut
+
+    def onSwitched(self, check):
+        self.shortcut.enabled = check
+        self.shortcut.save()
+        containers_service.fire(self.shortcut.container, SHORTCUT_CONF_CHANGED_CHANNEL, True)
 
 
 class Switch(QAbstractButton):
