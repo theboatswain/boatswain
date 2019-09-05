@@ -17,7 +17,7 @@
 
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import QSize, QObject, Qt
-from PyQt5.QtWidgets import QDialog, QTableView
+from PyQt5.QtWidgets import QDialog
 
 from boatswain.common.services import system_service
 from boatswain.common.services.system_service import rt
@@ -72,6 +72,7 @@ class LoggingMonitorUi(QObject):
         self.horizontal_layout.addWidget(self.hidden)
         self.search = QtWidgets.QLineEdit(self.tool_widget)
         self.search.setSizePolicy(BQSizePolicy(h_stretch=3))
+        self.search.setStyleSheet("padding: 0 0 0 5;")
         self.horizontal_layout.addWidget(self.search)
         self.vertical_layout_2.addWidget(self.tool_widget)
         self.vertical_layout.addWidget(self.top_widget)
@@ -87,7 +88,7 @@ class LoggingMonitorUi(QObject):
         self.log_details = QtWidgets.QWidget(self.splitter)
 
         self.log_details_layout = QtWidgets.QVBoxLayout(self.log_details)
-        self.log_details_layout.setContentsMargins(rt(8), 0, rt(8), rt(15))
+        self.log_details_layout.setContentsMargins(rt(8), 0, rt(8), rt(2))
 
         self.log_details_label = QtWidgets.QTextBrowser(self.log_details)
         self.log_details_label.setSizePolicy(BQSizePolicy(height=QtWidgets.QSizePolicy.Expanding))
@@ -96,8 +97,6 @@ class LoggingMonitorUi(QObject):
         self.splitter.setSizes([rt(300), rt(20)])
         self.vertical_layout_3.addWidget(self.splitter)
         self.vertical_layout.addWidget(self.log_widget)
-
-
 
         self.retranslateUi()
 

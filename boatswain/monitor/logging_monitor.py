@@ -16,18 +16,18 @@
 #
 
 from PyQt5 import QtGui
-from PyQt5.QtCore import Qt, QObject, QItemSelection
-from PyQt5.QtWidgets import QDialog, QAbstractItemView, QTableView, QHeaderView, QWidget
-from boatswain.common.utils.constants import APP_EXIT_CHANNEL
+from PyQt5.QtCore import Qt, QObject, QItemSelection, QSortFilterProxyModel, QRegExp
+from PyQt5.QtWidgets import QDialog, QAbstractItemView, QTableView, QHeaderView
 from docker.types import CancellableStream
 
 from boatswain.common.models.container import Container
 from boatswain.common.services import containers_service
+from boatswain.common.services import data_transporter_service
 from boatswain.common.services.system_service import applyFontRatio, rt
 from boatswain.common.services.worker_service import Worker, threadpool
+from boatswain.common.utils.constants import APP_EXIT_CHANNEL
 from boatswain.monitor.logging_monitor_model import LoggingMonitorModel
 from boatswain.monitor.logging_monitor_ui import LoggingMonitorUi
-from boatswain.common.services import data_transporter_service
 
 to_be_delete = {}
 
@@ -59,8 +59,10 @@ class LoggingMonitor(QObject):
 
         headers = ['Date', 'Time', 'Message']
         self.table_model = LoggingMonitorModel([], headers, headers, self.dialog)
-        self.configurePreferenceTable(self.ui.log_list_table, self.table_model)
-        self.table_model.rowsInserted.connect(self.rowsInserted)
+        self.proxy_model = QSortFilterProxyModel(self.dialog)
+        self.proxy_model.setSourceModel(self.table_model)
+        self.configurePreferenceTable(self.ui.log_list_table, self.proxy_model)
+        self.proxy_model.rowsInserted.connect(self.rowsInserted)
         worker = Worker(self.streamLogs)
         threadpool.start(worker)
 
@@ -70,6 +72,7 @@ class LoggingMonitor(QObject):
 
         selection_model = self.ui.log_list_table.selectionModel()
         selection_model.selectionChanged.connect(self.updateLogDetails)
+        self.ui.search.returnPressed.connect(self.find)
         self.dialog.closeEvent = self.closeEvent
         to_be_delete[self.container.id] = self.dialog
 
@@ -119,9 +122,15 @@ class LoggingMonitor(QObject):
     def updateLogDetails(self, selected: QItemSelection, deselected: QItemSelection):
         for index in selected.indexes():
             if index.column() == 0:
-                data = self.table_model.array_data[index.row()]
+                actual_index = self.proxy_model.mapToSource(index)
+                data = self.table_model.array_data[actual_index.row()]
                 self.ui.log_details_label.setHtml(data['Message'])
                 break
+
+    def find(self, column=2):
+        text = self.ui.search.text()
+        self.proxy_model.setFilterRegExp(QRegExp(text, Qt.CaseSensitive, QRegExp.FixedString))
+        self.proxy_model.setFilterKeyColumn(column)
 
     def infoClicked(self, checked):
         if checked:
@@ -131,6 +140,7 @@ class LoggingMonitor(QObject):
 
     def closeEvent(self, event):
         to_be_delete.pop(self.container.id)
+        self.logs.close()
         QDialog.closeEvent(self.dialog, event)
 
     def configurePreferenceTable(self, tv: QTableView, table_model):
