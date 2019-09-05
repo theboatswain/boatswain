@@ -20,9 +20,14 @@ from typing import List
 from PyQt5.QtCore import QSize, Qt, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QIcon, QIntValidator
 from PyQt5.QtWidgets import QSizePolicy, QWidget, QStyle, QToolButton, QLineEdit, QFileDialog, QItemDelegate, \
-    QComboBox
+    QComboBox, QHBoxLayout
 
-from boatswain.common.services import system_service
+from boatswain.common.models.container import Container
+from boatswain.common.models.preferences_shortcut import PreferencesShortcut
+from boatswain.common.services import system_service, containers_service
+from boatswain.common.services.system_service import rt
+from boatswain.common.ui.switch import Switch
+from boatswain.common.utils.constants import SHORTCUT_CONF_CHANGED_CHANNEL
 from boatswain.resources_utils import get_resource
 
 
@@ -127,6 +132,28 @@ class ComboBoxDelegate(QItemDelegate):
     @pyqtSlot()
     def currentIndexChanged(self):
         self.commitData.emit(self.sender())
+
+
+class SwitchBox(QWidget):
+    """ Combobox for QTableView
+        Still have problem of overlapping with MacOS dark mode
+    """
+
+    def __init__(self, parent, checked, shortcut: PreferencesShortcut):
+        super().__init__(parent)
+        self.setSizePolicy(BQSizePolicy())
+        layout = QHBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+        switch = Switch(self, thumb_radius=rt(5), track_radius=rt(7))
+        switch.setChecked(checked)
+        switch.clicked.connect(self.onSwitched)
+        layout.addWidget(switch)
+        self.shortcut = shortcut
+
+    def onSwitched(self, check):
+        self.shortcut.enabled = check
+        self.shortcut.save()
+        containers_service.fire(self.shortcut.container, SHORTCUT_CONF_CHANGED_CHANNEL, True)
 
 
 class ButtonLineEdit(QLineEdit):

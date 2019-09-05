@@ -17,11 +17,13 @@
 
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt, QModelIndex
-from PyQt5.QtWidgets import QDialog, QAbstractItemView, QTableView
+from PyQt5.QtWidgets import QDialog, QAbstractItemView, QTableView, QHeaderView
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
-from boatswain.common.services import containers_service, config_service
+from boatswain.common.services import containers_service, config_service, shortcut_service
+from boatswain.common.services.system_service import rt
+from boatswain.common.ui.custom_ui import SwitchBox
 from boatswain.common.utils.constants import SHORTCUT_CONF_CHANGED_CHANNEL, CONTAINER_CONF_CHANGED
 from boatswain.shortcut.create.shortcut_creator import ShortcutCreator
 from boatswain.shortcut.preferences_shortcut_config_model import ShortcutCreatorModel
@@ -44,15 +46,16 @@ class PreferencesShortcutConfig(object):
         self.ui.delete_shortcut.clicked.connect(self.onDeleteShortcutClicked)
 
         self.retranslateUi()
-        headers = ['label', 'default_value', 'pref_type', 'shortcut', 'mapping_to']
-        display_headers = ['Label', 'Default value', 'Type', 'Shortcut', 'Mapping to']
-        table_data = PreferencesShortcut.select().where(PreferencesShortcut.container == self.container)
-        self.table_model = ShortcutCreatorModel(list(table_data), headers, display_headers, container, self.dialog)
+        headers = ['label', 'default_value', 'pref_type', 'shortcut', 'mapping_to', 'enabled']
+        display_headers = ['Label', 'Default value', 'Type', 'Shortcut', 'Mapping to', 'Enabled']
+        table_data = list(shortcut_service.getShortcuts(self.container))
+        self.table_model = ShortcutCreatorModel(table_data, headers, display_headers, container, self.dialog)
         self.configurePreferenceTable(self.ui.shortcut_table, self.table_model)
         self.dialog.setAttribute(Qt.WA_DeleteOnClose)
         self.ui.shortcut_table.doubleClicked.connect(self.onDoubleClickItem)
         self.ui.move_up.clicked.connect(lambda x: self.moveCurrentRow(self.UP))
         self.ui.move_down.clicked.connect(lambda x: self.moveCurrentRow(self.DOWN))
+        self.drawSwitches(table_data)
 
     def retranslateUi(self):
         self.dialog.setWindowTitle(self._translate(self.template, "Preferences shortcut") + " - " + self.container.name)
@@ -62,6 +65,12 @@ class PreferencesShortcutConfig(object):
         self.ui.delete_shortcut.setText(self._translate(self.template, "-"))
         self.ui.move_up.setText(self._translate(self.template, "↑"))
         self.ui.move_down.setText(self._translate(self.template, "↓"))
+
+    def drawSwitches(self, table_data):
+        for i, record in enumerate(table_data):
+            index = self.table_model.index(i, 5)
+            switch = SwitchBox(self.ui.shortcut_table, record.enabled, record)
+            self.ui.shortcut_table.setIndexWidget(index, switch)
 
     def onNewShortcutClicked(self):
         shortcut = PreferencesShortcut()
@@ -107,11 +116,10 @@ class PreferencesShortcutConfig(object):
         self.reloadData()
 
     def reloadData(self):
-        table_data = PreferencesShortcut.select()\
-            .where(PreferencesShortcut.container == self.container)\
-            .order_by(PreferencesShortcut.order.asc())
+        table_data = list(shortcut_service.getShortcuts(self.container))
         self.table_model.updateData(list(table_data))
         self.ui.shortcut_table.resizeRowsToContents()
+        self.drawSwitches(table_data)
         containers_service.fire(self.container, SHORTCUT_CONF_CHANGED_CHANNEL, True)
 
     def show(self):
@@ -133,9 +141,9 @@ class PreferencesShortcutConfig(object):
         vh.setVisible(False)
 
         # set horizontal header properties
-        hh = tv.horizontalHeader()
-        hh.setStretchLastSection(True)
-        hh.setMinimumSectionSize(100)
+        hh: QHeaderView = tv.horizontalHeader()
+        hh.setSectionResizeMode(1, QHeaderView.Stretch)
+        hh.setMinimumSectionSize(rt(60))
         tv.resizeColumnsToContents()
 
         # set row height

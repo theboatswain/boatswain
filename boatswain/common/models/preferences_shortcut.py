@@ -15,7 +15,7 @@
 #
 #
 
-from peewee import ForeignKeyField, CharField, IntegerField
+from peewee import ForeignKeyField, CharField, IntegerField, BooleanField, TextField
 
 from boatswain.common.models.base import BaseModel
 from boatswain.common.models.container import Container
@@ -36,3 +36,7 @@ class PreferencesShortcut(BaseModel):
     mapping_to = CharField()
     # order
     order = IntegerField()
+    # enable/disable this shortcut
+    enabled = BooleanField(default=True)
+    # description about this preference shortcut
+    description = TextField(default='')

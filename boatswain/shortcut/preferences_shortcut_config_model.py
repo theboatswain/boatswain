@@ -44,6 +44,8 @@ class ShortcutCreatorModel(QAbstractTableModel):
             return QVariant()
         elif role != Qt.DisplayRole and role != Qt.EditRole:
             return QVariant()
+        if self.header_data[index.column()] == 'enabled':
+            return QVariant()
         return QVariant(getattr(self.array_data[index.row()], self.header_data[index.column()]))
 
     def headerData(self, col, orientation, role=None):

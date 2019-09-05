@@ -20,12 +20,11 @@ from PyQt5.QtWidgets import QLabel, QComboBox, QSizePolicy, QWidget, QLineEdit, 
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
-from boatswain.common.models.tag import Tag
-from boatswain.common.services import config_service, containers_service
+from boatswain.common.services import config_service, containers_service, shortcut_service, tags_service
 from boatswain.common.services.system_service import rt
-from boatswain.common.utils.constants import CONTAINER_CONF_CHANGED, SHORTCUT_CONF_CHANGED_CHANNEL
 from boatswain.common.ui.custom_ui import BQSizePolicy
 from boatswain.common.ui.path_view import PathViewWidget
+from boatswain.common.utils.constants import CONTAINER_CONF_CHANGED, SHORTCUT_CONF_CHANGED_CHANNEL
 from boatswain.config.app_config import AppConfig
 from boatswain.home.advanced.advanced_app_widget_ui import AdvancedAppWidgetUi
 
@@ -131,7 +130,7 @@ class AdvancedAppWidget:
         hidden_widget.setSizePolicy(BQSizePolicy(h_stretch=1))
         self.ui.grid_layout.addWidget(hidden_widget, row, 3, 1, 2)
 
-        for index, tag in enumerate(Tag.select().where(Tag.container == self.container)):
+        for index, tag in enumerate(tags_service.getTags(self.container)):
             self.tags.addItem(self.container.image_name + ":" + tag.name)
             if tag.name == self.container.tag:
                 self.tags.setCurrentIndex(index)
@@ -139,9 +138,7 @@ class AdvancedAppWidget:
         label.setText(self._translate(self.template, "Image tag:"))
 
     def drawShortcuts(self):
-        shortcuts = PreferencesShortcut.select()\
-            .where(PreferencesShortcut.container == self.container)\
-            .order_by(PreferencesShortcut.order.asc())
+        shortcuts = shortcut_service.getEnabledShortcuts(self.container)
         for index, shortcut in enumerate(shortcuts):
             self.drawShortcut(shortcut, index)
         self.drawTagShortcut(len(shortcuts))
