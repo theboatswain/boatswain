@@ -63,6 +63,7 @@ class ShortcutCreator:
         self.ui.cancel_button.clicked.connect(self.cancel)
         self.ui.cancel_button_2.clicked.connect(self.cancel)
         self.ui.default_value.button_clicked.connect(self.onFindDirClicked)
+        self.ui.description.setText(self.shortcut.description)
         if shortcut.pref_type in ['File', 'Folder']:
             self.ui.default_value.button.setVisible(True)
 
@@ -119,10 +120,11 @@ class ShortcutCreator:
         self.shortcut.pref_type = self.ui.data_type.currentText()
         self.shortcut.shortcut = self.ui.shortcut_type.currentText()
         self.shortcut.mapping_to = self.ui.mapping_to.text()
+        self.shortcut.description = self.ui.description.toPlainText()
 
         self.shortcut.save()
         config_service.setAppConf(self.shortcut.container, CONTAINER_CONF_CHANGED, 'true')
-        containers_service.fire(self.container, SHORTCUT_CONF_CHANGED_CHANNEL, True)
+        containers_service.fire(self.container, SHORTCUT_CONF_CHANGED_CHANNEL)
         self.dialog.accept()
 
     def onShortcutTypeChange(self, shortcut_type):
@@ -209,6 +211,7 @@ class ShortcutCreator:
         self.ui.tab_widget.setTabText(self.ui.tab_widget.indexOf(self.ui.tab),
                                       self._translate(self.template, "Create new preference shortcut"))
         self.ui.mapping_to_label.setText(self._translate(self.template, "Mapping to:"))
+        self.ui.description_label.setText(self._translate(self.template, "Description:"))
         self.ui.default_value_label.setText(self._translate(self.template, "Default value:"))
         self.ui.back_button.setText(self._translate(self.template, "Back"))
         self.ui.cancel_button_2.setText(self._translate(self.template, "Cancel"))

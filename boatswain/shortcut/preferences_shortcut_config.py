@@ -83,7 +83,7 @@ class PreferencesShortcutConfig(object):
         for item in sorted(indicates, reverse=True):
             self.ui.shortcut_table.model().removeRow(item.row())
         self.ui.shortcut_table.resizeRowsToContents()
-        containers_service.fire(self.container, SHORTCUT_CONF_CHANGED_CHANNEL, True)
+        containers_service.fire(self.container, SHORTCUT_CONF_CHANGED_CHANNEL)
         config_service.setAppConf(self.container, CONTAINER_CONF_CHANGED, 'true')
 
     def onDoubleClickItem(self, index: QModelIndex):
@@ -120,7 +120,7 @@ class PreferencesShortcutConfig(object):
         self.table_model.updateData(list(table_data))
         self.ui.shortcut_table.resizeRowsToContents()
         self.drawSwitches(table_data)
-        containers_service.fire(self.container, SHORTCUT_CONF_CHANGED_CHANNEL, True)
+        containers_service.fire(self.container, SHORTCUT_CONF_CHANGED_CHANNEL)
 
     def show(self):
         self.dialog.exec_()
