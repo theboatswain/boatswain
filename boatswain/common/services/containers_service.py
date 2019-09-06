@@ -250,6 +250,6 @@ def listen(container: Container, name, func):
     data_transporter_service.listen(key, func)
 
 
-def fire(container: Container, name, value):
+def fire(container: Container, name, value=None):
     key = CONTAINER_CONF_CHANGED_CHANNEL + '_' + str(container.id) + '_' + name
     data_transporter_service.fire(key, value)

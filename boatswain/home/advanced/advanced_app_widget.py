@@ -98,6 +98,7 @@ class AdvancedAppWidget:
     def drawShortcut(self, shortcut: PreferencesShortcut, row):
         label = QLabel(self.ui.widget)
         label.setText(self._translate(self.template, shortcut.label) + ':')
+        label.setToolTip(shortcut.description)
         self.ui.grid_layout.addWidget(label, row, 0, 1, 1)
         if shortcut.pref_type in ['File', 'Folder']:
             input_box = PathViewWidget(self.ui.widget)
@@ -148,7 +149,7 @@ class AdvancedAppWidget:
             item = self.ui.grid_layout.takeAt(0)
             item.widget().deleteLater()
 
-    def redrawShortcuts(self, args=None):
+    def redrawShortcuts(self):
         self.cleanShortcuts()
         self.drawShortcuts()
 

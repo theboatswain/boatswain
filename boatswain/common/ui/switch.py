@@ -3,11 +3,11 @@ from PyQt5.QtGui import QPainter
 from PyQt5.QtWidgets import QAbstractButton, QSizePolicy, QWidget, QHBoxLayout
 from boatswain.common.ui.custom_ui import BQSizePolicy
 
-from boatswain.common.services import containers_service
+from boatswain.common.services import containers_service, config_service
 from boatswain.common.services.system_service import rt
 
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
-from boatswain.common.utils.constants import SHORTCUT_CONF_CHANGED_CHANNEL
+from boatswain.common.utils.constants import SHORTCUT_CONF_CHANGED_CHANNEL, CONTAINER_CONF_CHANGED
 
 
 class SwitchBox(QWidget):
@@ -29,7 +29,8 @@ class SwitchBox(QWidget):
     def onSwitched(self, check):
         self.shortcut.enabled = check
         self.shortcut.save()
-        containers_service.fire(self.shortcut.container, SHORTCUT_CONF_CHANGED_CHANNEL, True)
+        config_service.setAppConf(self.shortcut.container, CONTAINER_CONF_CHANGED, 'true')
+        containers_service.fire(self.shortcut.container, SHORTCUT_CONF_CHANGED_CHANNEL)
 
 
 class Switch(QAbstractButton):

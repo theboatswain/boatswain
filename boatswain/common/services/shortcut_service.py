@@ -27,8 +27,9 @@ def getShortcutContainerEnvs(container: Container):
     :return: Dict: {'<key>': '<value>'}
     """
     result = {}
-    shortcuts = PreferencesShortcut.select().where(
-        (PreferencesShortcut.container == container) & (PreferencesShortcut.shortcut == 'Environment'))
+    shortcuts = PreferencesShortcut.select().where((PreferencesShortcut.container == container)
+                                                   & (PreferencesShortcut.shortcut == 'Environment')
+                                                   & PreferencesShortcut.enabled)
     for item in shortcuts:
         result[item.mapping_to] = item.default_value
     return result
@@ -42,8 +43,9 @@ def getShortcutPortMapping(container: Container):
     :rtype:
     """
     result = {}
-    shortcuts = PreferencesShortcut.select().where(
-        (PreferencesShortcut.container == container) & (PreferencesShortcut.shortcut == 'Port Mapping'))
+    shortcuts = PreferencesShortcut.select().where((PreferencesShortcut.container == container)
+                                                   & (PreferencesShortcut.shortcut == 'Port Mapping')
+                                                   & PreferencesShortcut.enabled)
     for item in shortcuts:
         result[item.mapping_to + '/tcp'] = item.default_value
     return result
@@ -59,8 +61,9 @@ def getShortcutVolumeMounts(container: Container):
                     }
     """
     result = {}
-    shortcuts = PreferencesShortcut.select().where(
-        (PreferencesShortcut.container == container) & (PreferencesShortcut.shortcut == 'Volume Mount'))
+    shortcuts = PreferencesShortcut.select().where((PreferencesShortcut.container == container)
+                                                   & (PreferencesShortcut.shortcut == 'Volume Mount')
+                                                   & PreferencesShortcut.enabled)
     for item in shortcuts:
         result[item.default_value] = {'bind': item.mapping_to, 'mode': 'rw'}
     return result

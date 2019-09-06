@@ -185,7 +185,7 @@ class AppWidget(QObject):
                                             QMessageBox.Ok | QMessageBox.Cancel, QMessageBox.Cancel)
         if button_reply == QMessageBox.Ok:
             containers_service.deleteConfigurations(self.container)
-            containers_service.fire(self.container, SHORTCUT_CONF_CHANGED_CHANNEL, True)
+            containers_service.fire(self.container, SHORTCUT_CONF_CHANGED_CHANNEL)
 
     def mousePressEvent(self, event: QMouseEvent):
         if event.button() == Qt.LeftButton:
