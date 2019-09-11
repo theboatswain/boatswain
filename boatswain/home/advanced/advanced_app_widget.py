@@ -116,6 +116,7 @@ class AdvancedAppWidget:
             input_box.setText(shortcut.default_value)
             input_box.textChanged.connect(lambda x: self.setShortcutValue(shortcut, x))
             input_box.setStyleSheet('border: none; background-color: transparent')
+            input_box.setReadOnly(shortcut.shortcut == 'Constant')
             self.ui.grid_layout.addWidget(input_box, row, 1, 1, 2)
             hidden_widget = QWidget(self.ui.widget)
             hidden_widget.setSizePolicy(BQSizePolicy(h_stretch=1))

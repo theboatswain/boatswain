@@ -153,7 +153,6 @@ class ShortcutCreatorUi:
         self.grid_layout_2.addWidget(self.mapping_to, 2, 1, 1, 1)
         self.description = QtWidgets.QTextEdit(self.widget)
         self.description.setAttribute(Qt.WA_MacShowFocusRect, 0)
-        self.description.setMaximumHeight(rt(60))
         self.grid_layout_2.addWidget(self.description, 4, 1, 1, 2)
         self.default_value = ButtonLineEdit(get_resource('resources/icons/folder.svg'), self.widget)
         self.default_value.setSizePolicy(BQSizePolicy(h_stretch=2,

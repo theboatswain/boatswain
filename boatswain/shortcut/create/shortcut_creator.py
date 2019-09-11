@@ -23,6 +23,7 @@ from PyQt5.QtWidgets import QDialog, QWidget, QToolTip, QMessageBox, QFileDialog
 from boatswain.common.models.container import Container
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
 from boatswain.common.services import containers_service, config_service
+from boatswain.common.services.system_service import rt
 from boatswain.common.utils.constants import SHORTCUT_CONF_CHANGED_CHANNEL, CONTAINER_CONF_CHANGED
 from boatswain.shortcut.create.shortcut_creator_ui import ShortcutCreatorUi
 
@@ -30,7 +31,7 @@ from boatswain.shortcut.create.shortcut_creator_ui import ShortcutCreatorUi
 class ShortcutCreator:
     _translate = QtCore.QCoreApplication.translate
     template = 'PreferenceShortcut'
-    shortcut_types = ['Volume Mount', 'Port Mapping', 'Environment']
+    shortcut_types = ['Volume Mount', 'Port Mapping', 'Environment', 'Constant']
     data_types = ['String', 'Folder', 'File', 'Number']
 
     def __init__(self, container: Container, widget: QWidget, shortcut: PreferencesShortcut) -> None:
@@ -87,12 +88,22 @@ class ShortcutCreator:
             self.ui.mapping_to.setValidator(None)
         self.describeValues()
         self.ui.stacked_widget.setCurrentIndex(1)
+        if self.ui.shortcut_type.currentText() == 'Constant':
+            self.ui.mapping_to.hide()
+            self.ui.mapping_to_label.hide()
+            self.ui.mapping_to_des.hide()
+            self.ui.description.setMaximumHeight(rt(120))
+        else:
+            self.ui.mapping_to.show()
+            self.ui.mapping_to_label.show()
+            self.ui.mapping_to_des.show()
+            self.ui.description.setMaximumHeight(rt(60))
 
     def isCreateMode(self):
         return self.shortcut.label is None
 
     def finish(self):
-        if not self.ui.mapping_to.text():
+        if not self.ui.mapping_to.text() and self.ui.shortcut_type.currentText() != 'Constant':
             message = self._translate(self.template, 'The value of \'Mapping to\' can not be empty')
             QToolTip.showText(self.ui.mapping_to.mapToGlobal(QPoint()), message)
             return
@@ -190,6 +201,12 @@ class ShortcutCreator:
                 self.template, "The container folder of this preference shortcut port mapping. \n"
                                "i.e /usr/share/nginx/html \n"
                                "This value can't be changed in the expanding window."))
+        elif self.ui.shortcut_type.currentText() == 'Constant':
+            self.ui.default_value_des.setText(self._translate(
+                self.template, "The default value that will be display in the expanding window \n"
+                               "This value will not make any effective into the current container, the only purpose of "
+                               "This is for showing some default configuration values.\n\n"                               
+                               "This value can not be changed in the expanding window."))
 
     def retranslateUi(self):
         self.dialog.setWindowTitle(self._translate(self.template, "Preference Shortcut"))
