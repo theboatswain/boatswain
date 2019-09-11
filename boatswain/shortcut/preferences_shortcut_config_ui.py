@@ -17,6 +17,7 @@
 
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QSize
+from PyQt5.QtWidgets import QDialog
 
 from boatswain.common.models.container import Container
 from boatswain.common.services import system_service
@@ -26,7 +27,7 @@ from boatswain.common.ui.custom_ui import BQSizePolicy
 
 class PreferencesShortcutConfigUi(object):
 
-    def __init__(self, dialog, container: Container, handler) -> None:
+    def __init__(self, dialog: QDialog, container: Container, handler) -> None:
         self.container = container
         self.handler = handler
         self.dialog = dialog
@@ -46,6 +47,8 @@ class PreferencesShortcutConfigUi(object):
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setSpacing(1)
         self.import_shortcut = QtWidgets.QPushButton(self.top_widget)
+        self.import_shortcut.setAutoDefault(False)
+        self.import_shortcut.setDefault(False)
         self.horizontalLayout.addWidget(self.import_shortcut)
         self.export_shortcut = QtWidgets.QPushButton(self.top_widget)
         self.horizontalLayout.addWidget(self.export_shortcut)
