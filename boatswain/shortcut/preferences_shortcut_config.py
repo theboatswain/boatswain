@@ -17,17 +17,20 @@
 
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt, QModelIndex
-from PyQt5.QtWidgets import QDialog, QAbstractItemView, QTableView, QHeaderView
+from PyQt5.QtWidgets import QDialog, QAbstractItemView, QTableView, QHeaderView, QFileDialog
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
 from boatswain.common.services import containers_service, config_service, shortcut_service
 from boatswain.common.services.system_service import rt
+from boatswain.common.shortcut.shortcut_yaml import ShortcutYaml
 from boatswain.common.ui.switch import SwitchBox
+from boatswain.common.utils import message_utils
 from boatswain.common.utils.constants import SHORTCUT_CONF_CHANGED_CHANNEL, CONTAINER_CONF_CHANGED
 from boatswain.shortcut.create.shortcut_creator import ShortcutCreator
 from boatswain.shortcut.preferences_shortcut_config_model import ShortcutCreatorModel
 from boatswain.shortcut.preferences_shortcut_config_ui import PreferencesShortcutConfigUi
+import yaml
 
 
 class PreferencesShortcutConfig(object):
@@ -56,6 +59,8 @@ class PreferencesShortcutConfig(object):
         self.ui.move_up.clicked.connect(lambda x: self.moveCurrentRow(self.UP))
         self.ui.move_down.clicked.connect(lambda x: self.moveCurrentRow(self.DOWN))
         self.drawSwitches(table_data)
+        self.ui.export_shortcut.clicked.connect(self.export)
+        self.ui.import_shortcut.clicked.connect(self.importFromYaml)
 
     def retranslateUi(self):
         self.dialog.setWindowTitle(self._translate(self.template, "Preferences shortcut") + " - " + self.container.name)
@@ -124,6 +129,29 @@ class PreferencesShortcutConfig(object):
 
     def show(self):
         self.dialog.exec_()
+
+    def export(self):
+        if self.table_model.rowCount() < 1:
+            message_utils.error("Unable to export", "Nothing to export")
+            return
+        shortcut_yaml = ShortcutYaml.build(self.container)
+        name = QFileDialog.getSaveFileName(self.dialog, 'Export Preference shortcuts',
+                                           directory="%s.yaml" % shortcut_yaml.image_name, filter="YAML (*.yaml)")
+        if name[0]:
+            with open(name[0], 'w') as file:
+                file.write(shortcut_yaml.toYAML())
+
+    def importFromYaml(self):
+        fname = QFileDialog.getOpenFileName(self.dialog, 'Open YAML file', filter="YAML (*.yaml)")
+        if fname[0]:
+            with open(fname[0], 'r') as content_file:
+                content = content_file.read()
+            shortcut_yaml = ShortcutYaml.fromYaml(content)
+            if shortcut_yaml.image_name == self.container.image_name:
+                shortcut_service.importShortcuts(self.container, shortcut_yaml.shortcuts)
+                self.reloadData()
+            else:
+                message_utils.error("Unable to import", "The import file is not designed for this app")
 
     def configurePreferenceTable(self, tv: QTableView, table_model):
         # set the table model

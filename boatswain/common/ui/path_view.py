@@ -69,6 +69,7 @@ class FolderIcon(QWidget):
 
 class PathViewWidget(QWidget):
     max_width: int
+    path: str
 
     def __init__(self, parent: QWidget):
         super().__init__(parent)
@@ -102,8 +103,14 @@ class PathViewWidget(QWidget):
         self.labels = []
         self.current_width = 0
 
-    def setPath(self, path):
+    def setPath(self, path, path_type):
         self.clearPath()
+        if path == '':
+            label = FolderIcon(self, 'Please pick ' + path_type)
+            label.label.setMaximumWidth(0)
+            self.horizontal_layout.addWidget(label)
+            self.labels.append(label)
+            return
         self.path = path
         self.labels.clear()
         parts = utils.split_all(path)

@@ -168,6 +168,10 @@ class AppWidget(QObject):
     def autoSetContainerStatus(self):
         status = "Stop" if containers_service.isContainerRunning(self.container) else "Start"
         self.ui.status.setText(self._translate(self.template, status))
+        if status == "Stop":
+            self.ui.pic.updateStatus(True)
+        else:
+            self.ui.pic.updateStatus(False)
 
     def deleteContainer(self):
         message = self._translate(self.template, "Are you sure you want to delete this container? All configurations "

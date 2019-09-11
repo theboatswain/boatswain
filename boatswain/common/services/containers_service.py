@@ -19,6 +19,7 @@ import logging
 import os
 from typing import List
 
+import requests
 from docker.errors import NotFound
 
 from boatswain.common.models.container import Container
@@ -27,12 +28,15 @@ from boatswain.common.search.dockerhub_searcher import DockerHubSearcher
 from boatswain.common.search.search_images import SearchImages
 from boatswain.common.services import docker_service, system_service, config_service, data_transporter_service, \
     shortcut_service, group_service, environment_service, port_mapping_service, volume_mount_service, tags_service
+from boatswain.common.shortcut.shortcut_yaml import ShortcutYaml
 from boatswain.common.utils import docker_utils
 from boatswain.common.utils.constants import INCLUDING_ENV_SYSTEM, CONTAINER_CONF_CHANGED, \
     CONTAINER_CONF_CHANGED_CHANNEL
 from boatswain.common.utils.utils import EmptyStream
 
 logger = logging.getLogger(__name__)
+
+PREFERENCES_SHORTCUT_API = "https://raw.githubusercontent.com/theboatswain/preferences-shortcut/master"
 
 # Initialising search engines
 search_engine = SearchImages()
@@ -82,6 +86,11 @@ def installContainer(image_name, repo='dockerhub', description='', tag='latest',
         for port in ports:
             port.container = container
             port.save()
+
+    preferences_shortcuts = requests.get("%s/%s/%s.yaml" % (PREFERENCES_SHORTCUT_API, repo, image_name))
+    if preferences_shortcuts.ok:
+        shortcut_yaml = ShortcutYaml.fromYaml(preferences_shortcuts.content)
+        shortcut_service.importShortcuts(container, shortcut_yaml.shortcuts)
 
     updateContainerTags(container)
     return container

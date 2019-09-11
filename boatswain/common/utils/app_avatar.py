@@ -19,7 +19,7 @@ from PyQt5.QtCore import Qt, QCoreApplication
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QSizePolicy
 
-from boatswain.common.services.system_service import applyFontRatio
+from boatswain.common.services.system_service import applyFontRatio, rt
 
 
 class AppAvatar(QWidget):
@@ -42,3 +42,14 @@ class AppAvatar(QWidget):
         self.name.setText(_translate("widget", name))
         self.setLayout(self.avatar_layout)
         self.setStyleSheet("border-radius: " + str(radius) + "px; background: rgb(89, 173, 223); color: white")
+        self.status = QWidget(self)
+        # self.status.setFixedSize(rt(12), rt(12))
+        self.status.setStyleSheet('background: rgb(101, 180, 67); border-radius: ' + str(rt(6)))
+        self.status.setGeometry(radius * 1.38, radius * 1.38, rt(12), rt(12))
+        self.status.hide()
+
+    def updateStatus(self, is_running):
+        if is_running:
+            self.status.show()
+        else:
+            self.status.hide()
