@@ -30,7 +30,6 @@ from boatswain.common.utils.constants import SHORTCUT_CONF_CHANGED_CHANNEL, CONT
 from boatswain.shortcut.create.shortcut_creator import ShortcutCreator
 from boatswain.shortcut.preferences_shortcut_config_model import ShortcutCreatorModel
 from boatswain.shortcut.preferences_shortcut_config_ui import PreferencesShortcutConfigUi
-import yaml
 
 
 class PreferencesShortcutConfig(object):

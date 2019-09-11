@@ -16,7 +16,7 @@
 #
 
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import QSize, Qt
+from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import QDialog
 
 from boatswain.common.models.container import Container
