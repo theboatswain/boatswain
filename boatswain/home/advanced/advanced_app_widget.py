@@ -91,7 +91,7 @@ class AdvancedAppWidget:
             file = str(QFileDialog.getExistingDirectory(self.ui, "Select Directory"))
             path = file if file else ''
         if path:
-            input_box.setPath(path)
+            input_box.setPath(path, shotcut.pref_type.lower())
             input_box.resizePaths()
             self.setShortcutValue(shotcut, path)
 
@@ -102,7 +102,7 @@ class AdvancedAppWidget:
         self.ui.grid_layout.addWidget(label, row, 0, 1, 1)
         if shortcut.pref_type in ['File', 'Folder']:
             input_box = PathViewWidget(self.ui.widget)
-            input_box.setPath(shortcut.default_value)
+            input_box.setPath(shortcut.default_value, shortcut.pref_type.lower())
             self.ui.grid_layout.addWidget(input_box, row, 1, 1, 2)
             finder = QPushButton(self.ui.widget)
             finder.setText(' ... ')

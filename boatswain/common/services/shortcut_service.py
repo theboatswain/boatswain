@@ -14,11 +14,15 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
-
+import os
 from typing import List
+
+from peewee import DoesNotExist
+from playhouse.shortcuts import update_model_from_dict
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
+from boatswain.common.utils.logging import logger
 
 
 def getShortcutContainerEnvs(container: Container):
@@ -89,3 +93,21 @@ def cloneAll(from_container: Container, to_container: Container):
 
 def deleteAll(container: Container):
     PreferencesShortcut.delete().where(PreferencesShortcut.container == container).execute()
+
+
+def importShortcuts(container: Container, shortcuts: List[dict]):
+    for shortcut_dict in shortcuts:
+        shortcut = PreferencesShortcut()
+        update_model_from_dict(shortcut, shortcut_dict)
+        shortcut.container = container
+        if shortcut.pref_type in ['File', 'Folder']:
+            if not os.path.exists(shortcut.default_value):
+                shortcut.default_value = ''
+        try:
+            PreferencesShortcut.get((PreferencesShortcut.container == container)
+                                    & (PreferencesShortcut.shortcut == shortcut.shortcut)
+                                    & (PreferencesShortcut.mapping_to == shortcut.mapping_to)
+                                    & (PreferencesShortcut.pref_type == shortcut.pref_type))
+            logger.info("Ignoring shortcut label %s cuz it is already exists" % shortcut.label)
+        except DoesNotExist:
+            shortcut.save()
