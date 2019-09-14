@@ -224,6 +224,10 @@ def deleteContainer(container: Container):
     """
     deleteConfigurations(container)
     tags_service.deleteAll(container)
+    if isContainerRunning(container):
+        stopContainer(container)
+    if isContainerExists(container):
+        docker_service.deleteContainer(container.container_id)
     container.delete_instance()
 
 

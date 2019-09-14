@@ -76,3 +76,8 @@ def isDockerRunning():
         return False
     else:
         return True
+
+
+def deleteContainer(container_id: str):
+    container = client.containers.get(container_id)
+    container.remove(v=True)
