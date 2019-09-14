@@ -27,6 +27,14 @@ def listen(channel: str, func):
         channels[channel] = [func]
 
 
+def deregister(channel: str, func):
+    if channel in channels:
+        try:
+            channels[channel].remove(func)
+        except ValueError:
+            pass
+
+
 def fire(channel: str, data=None):
     if channel in channels:
         for func in channels[channel]:

@@ -17,7 +17,7 @@
 
 from PyQt5.QtCore import QThread
 
-
+from boatswain.common.models.container import Container
 from boatswain.common.services import data_transporter_service, docker_service
 from boatswain.common.utils.logging import logger
 
@@ -28,6 +28,11 @@ def generate_key(event_type, action):
 
 def listen(event_type, action, func):
     data_transporter_service.listen(generate_key(event_type, action), func)
+
+
+def deregister(event_type, action, func):
+    key = generate_key(event_type, action)
+    data_transporter_service.deregister(key, func)
 
 
 class BoatswainDaemon(QThread):

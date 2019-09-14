@@ -16,6 +16,7 @@
 #
 
 from PyQt5.QtCore import QPropertyAnimation, QCoreApplication
+from PyQt5.QtGui import QResizeEvent
 from PyQt5.QtWidgets import QLabel, QComboBox, QSizePolicy, QWidget, QLineEdit, QPushButton, QFileDialog
 
 from boatswain.common.models.container import Container
@@ -43,6 +44,7 @@ class AdvancedAppWidget:
         containers_service.listen(self.container, SHORTCUT_CONF_CHANGED_CHANNEL, self.redrawShortcuts)
         if not container.expanded:
             self.ui.setMaximumHeight(0)
+        self.ui.resizeEvent = self.resize
 
     def onImageTagChange(self, full_tag_name):
         if not full_tag_name:
@@ -126,7 +128,7 @@ class AdvancedAppWidget:
         label = QLabel(self.ui.widget)
         self.ui.grid_layout.addWidget(label, row, 0, 1, 1)
         self.tags = QComboBox(self.ui.widget)
-        self.tags.setSizePolicy(BQSizePolicy(h_stretch=4, height=QSizePolicy.Fixed))
+        self.tags.setSizePolicy(BQSizePolicy(h_stretch=4, height=QSizePolicy.Fixed, width=QSizePolicy.Fixed))
         self.ui.grid_layout.addWidget(self.tags, row, 1, 1, 2)
         hidden_widget = QWidget(self.ui.widget)
         hidden_widget.setSizePolicy(BQSizePolicy(h_stretch=1))
@@ -161,3 +163,8 @@ class AdvancedAppWidget:
         shortcut.default_value = value
         shortcut.save()
         config_service.setAppConf(shortcut.container, CONTAINER_CONF_CHANGED, 'true')
+
+    def resize(self, event: QResizeEvent):
+        if self.tags:
+            self.tags.setFixedWidth(event.size().width() * 2 / 3)
+        QWidget.resizeEvent(self.ui, event)

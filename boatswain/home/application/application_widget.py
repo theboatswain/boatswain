@@ -63,6 +63,7 @@ class AppWidget(QObject):
         self.is_mouse_released = True
         self.ui.setAcceptDrops(True)
         self.cleanDraggingEffects()
+        self.ui.destroyed.connect(self.beforeDelete)
 
     def controlApp(self):
         if not containers_service.isContainerRunning(self.container):
@@ -271,3 +272,8 @@ class AppWidget(QObject):
             self.new_group.emit(drop_container, self.ui)
         event.acceptProposedAction()
         self.cleanDraggingEffects()
+
+    def beforeDelete(self):
+        boatswain_daemon.deregister('container', 'start', self.onContainerStart)
+        boatswain_daemon.deregister('container', 'stop', self.onContainerStop)
+        boatswain_daemon.deregister('container', 'die', self.onContainerStop)
