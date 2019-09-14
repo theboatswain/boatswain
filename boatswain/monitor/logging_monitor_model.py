@@ -74,8 +74,10 @@ class LoggingMonitorModel(QAbstractTableModel):
             self.non_showing_data.clear()
 
     def cleanRows(self):
+        parent = self.index(self.rowCount(), 0)
+        self.beginRemoveRows(parent, 0, self.rowCount())
         self.array_data = []
-        self.layoutChanged.emit()
+        self.endRemoveRows()
 
     def flags(self, index):
         return Qt.ItemIsEnabled | Qt.ItemIsSelectable

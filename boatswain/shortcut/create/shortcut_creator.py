@@ -205,7 +205,7 @@ class ShortcutCreator:
             self.ui.default_value_des.setText(self._translate(
                 self.template, "The default value that will be display in the expanding window \n"
                                "This value will not make any effective into the current container, the only purpose of "
-                               "This is for showing some default configuration values.\n\n"                               
+                               "this property is for showing some default configuration values.\n"                               
                                "This value can not be changed in the expanding window."))
 
     def retranslateUi(self):
