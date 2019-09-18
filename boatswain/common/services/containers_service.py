@@ -282,14 +282,15 @@ def getContainerInfo(container_name, is_official=True):
         result['name'] = container_info['name']
         result['description'] = container_info['description']
         result['star_count'] = container_info['star_count']
-        result['from'] = 'dockerhub'
-        img_res = requests.get("%s/%s" % (DOCKER_AVATAR_API, container_name))
-        if img_res.ok:
-            img_info = img_res.json()
-            if 'logo_url' in img_info:
-                keys = list(img_info['logo_url'])
-                if len(keys) > 0:
-                    result['logo_url'] = img_info['logo_url'][keys[0]]
     return result
 
 
+def getContainerLogo(container_name):
+    img_res = requests.get("%s/%s" % (DOCKER_AVATAR_API, container_name))
+    if img_res.ok:
+        img_info = img_res.json()
+        if 'logo_url' in img_info and type(img_info['logo_url']) is dict:
+            keys = list(img_info['logo_url'])
+            if len(keys) > 0:
+                return img_info['logo_url'][keys[0]]
+    return None

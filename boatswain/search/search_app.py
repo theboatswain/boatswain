@@ -20,8 +20,8 @@ from typing import List
 from PyQt5.QtCore import Qt, QCoreApplication
 from PyQt5.QtGui import QResizeEvent
 from PyQt5.QtWidgets import QDialog
+
 from boatswain.common.models.group import Group
-import multiprocessing as mp
 from boatswain.common.services import containers_service
 from boatswain.common.utils.constants import SEARCH_APP_WIDTH
 from boatswain.search.application.short_app_widget import ShortAppWidget
@@ -34,12 +34,14 @@ class SearchAppDialog(object):
     template = 'SearchAppDialog'
     items_per_row = 3
     repositories = ['All repos']
-    default_containers = ['wordpress', 'mysql', 'mongo', 'mariadb', 'arangodb', 'postgres', 'django', 'redis',
-                          'memcached', 'nginx', 'tomcat']
     apps: List[ShortAppWidget] = []
 
     def __init__(self, title, parent, group: Group) -> None:
         super().__init__()
+        self.default_containers = ['wordpress', 'mysql', 'mongo', 'mariadb', 'arangodb', 'postgres', 'django',
+                                   'redis', 'memcached', 'nginx', 'tomcat']
+        for index, item in enumerate(self.default_containers):
+            self.default_containers[index] = {'name': item, 'from': 'dockerhub', 'is_official': True}
         self.title = title
         self.dialog = QDialog(parent)
         self.ui = SearchAppDialogUi(self.dialog)
@@ -55,8 +57,7 @@ class SearchAppDialog(object):
         self.ui.key_search.returnPressed.connect(self.searchApp)
 
         # Loading default search images
-        search_result = self.getDefaultSearchResult()
-        self.loadResult(search_result)
+        self.loadResult(self.default_containers)
         self.dialog.resizeEvent = self.resizeEvent
 
     def searchApp(self):
@@ -64,11 +65,11 @@ class SearchAppDialog(object):
         if len(keyword) != 0:
             docker_images = containers_service.searchImages(keyword, self.ui.repo_select.currentText())
         else:
-            docker_images = self.getDefaultSearchResult()
+            docker_images = self.default_containers
         self.loadResult(docker_images)
 
     def loadResult(self, docker_images):
-        self.apps = docker_images
+        self.apps.clear()
         self.cleanSearchResults()
         col = 0
         row = 0
@@ -79,6 +80,7 @@ class SearchAppDialog(object):
                 col = 0
                 row += 1
             self.ui.search_result_area.layout().addWidget(widget.ui, row, col, 1, 1)
+            self.apps.append(widget)
             col += 1
 
     def cleanSearchResults(self):
@@ -89,11 +91,16 @@ class SearchAppDialog(object):
     def show(self):
         self.dialog.exec_()
 
-    def getDefaultSearchResult(self):
-        pool = mp.Pool(mp.cpu_count())
-        return pool.map(containers_service.getContainerInfo, self.default_containers)
-
     def resizeEvent(self, event: QResizeEvent):
         if math.trunc(event.size().width() / float(SEARCH_APP_WIDTH)) != self.items_per_row:
-            self.loadResult(self.apps)
+            col = 0
+            row = 0
+            self.items_per_row = math.trunc(self.dialog.size().width() / float(SEARCH_APP_WIDTH))
+            for widget in self.apps:
+                if col == self.items_per_row:
+                    col = 0
+                    row += 1
+                widget.ui.parentWidget().layout().removeWidget(widget.ui)
+                self.ui.search_result_area.layout().addWidget(widget.ui, row, col, 1, 1)
+                col += 1
         QDialog.resizeEvent(self.dialog, event)

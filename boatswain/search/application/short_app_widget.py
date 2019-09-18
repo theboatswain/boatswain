@@ -34,26 +34,40 @@ class ShortAppWidget:
         self.ui = ShortAppWidgetUi(parent_widget, self)
         self.disable_button = False
         self.group = group
-        if len(container_info['description']) > 0:
-            self.ui.description.setText(self._translate("widget", container_info['description']))
 
         self.ui.from_repo.setText(self._translate(self.template, "#Dockerhub"))
         self.ui.install.setText(self._translate(self.template, "Install"))
         self.ui.name.setText(self._translate(self.template, container_info['name']))
-        if not container_info['is_official']:
-            self.ui.is_official.hide()
-        self.ui.is_official.setText("⚜ Official")
-        self.ui.stars.setText(self._translate(self.template, "☆ " + str(container_info['star_count'])))
 
         if containers_service.isAppInstalled(container_info['name']):
             self.ui.install.setText(self._translate("widget", "Installed"))
             self.disable_button = True
 
         self.ui.install.clicked.connect(self.installApp)
-        if 'logo_url' in container_info:
-            worker = Worker(self.getImage, container_info['logo_url'])
-            worker.signals.result.connect(lambda x: self.ui.icon.setPixmap(x))
+        if 'description' not in container_info:
+            worker = Worker(containers_service.getContainerInfo, container_info['name'], container_info['is_official'])
+            worker.signals.result.connect(self.showInfo)
             threadpool.start(worker)
+        else:
+            self.showInfo(container_info)
+        worker = Worker(containers_service.getContainerLogo, container_info['name'])
+        worker.signals.result.connect(self.showLogo)
+        threadpool.start(worker)
+
+    def showLogo(self, logo):
+        if logo is not None:
+            worker = Worker(self.getImage, logo)
+            worker.signals.result.connect(lambda x: self.ui.icon.setPixmap(x))
+            threadpool.start(worker, 99)
+
+    def showInfo(self, container_info):
+        if len(container_info['description']) > 0:
+            self.ui.description.setText(self._translate("widget", container_info['description']))
+        self.ui.stars.setText(self._translate(self.template, "☆ " + str(container_info['star_count'])))
+
+        if not container_info['is_official']:
+            self.ui.is_official.hide()
+        self.ui.is_official.setText("⚜ Official")
 
     def installApp(self):
         if self.disable_button:
@@ -73,5 +87,5 @@ class ShortAppWidget:
         data = requests.get(url)
         img = QImage()
         img.loadFromData(data.content)
-        pixmap = QPixmap(img).scaledToHeight(32, Qt.SmoothTransformation)
+        pixmap = QPixmap(img).scaledToWidth(32, Qt.SmoothTransformation)
         return pixmap
