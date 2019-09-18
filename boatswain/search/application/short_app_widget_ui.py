@@ -19,7 +19,7 @@ from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget, QLabel
 
-from boatswain.common.services.system_service import rt
+from boatswain.common.services.system_service import rt, applyFontRatio
 from boatswain.common.utils.constants import SEARCH_APP_WIDTH
 from boatswain.resources_utils import get_resource
 
@@ -29,9 +29,9 @@ class ShortAppWidgetUi(QWidget):
     def __init__(self, parent_widget, ui_handler) -> None:
         super().__init__(parent_widget)
         self.ui_handler = ui_handler
-        self.setMinimumSize(QtCore.QSize(SEARCH_APP_WIDTH, 136))
-        self.setMaximumHeight(136)
-        self.setMaximumWidth(SEARCH_APP_WIDTH)
+        self.setMinimumSize(QtCore.QSize(rt(SEARCH_APP_WIDTH), rt(136)))
+        self.setMaximumHeight(rt(136))
+        self.setMaximumWidth(rt(SEARCH_APP_WIDTH))
         self.central_layout = QtWidgets.QVBoxLayout(self)
         self.central_layout.setContentsMargins(0, 0, 0, 0)
         self.central_layout.setSpacing(0)
@@ -40,7 +40,7 @@ class ShortAppWidgetUi(QWidget):
 
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.central_widget)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout.setSpacing(10)
+        self.horizontalLayout.setSpacing(rt(10))
         self.avatar_area = QtWidgets.QWidget(self)
 
         self.icon = QLabel(self.avatar_area)
@@ -49,7 +49,7 @@ class ShortAppWidgetUi(QWidget):
 
         self.avatar_area.setStyleSheet('background: rgb(89, 173, 223)')
         self.avatar_layout = QtWidgets.QVBoxLayout(self.avatar_area)
-        self.avatar_layout.setContentsMargins(8, 5, 8, 5)
+        self.avatar_layout.setContentsMargins(rt(8), rt(5), rt(8), rt(5))
         self.avatar_layout.addWidget(self.icon)
         self.avatar_layout.setAlignment(QtCore.Qt.AlignTop)
         self.horizontalLayout.addWidget(self.avatar_area)
@@ -60,11 +60,11 @@ class ShortAppWidgetUi(QWidget):
         sizePolicy.setHeightForWidth(self.description_area.sizePolicy().hasHeightForWidth())
         self.description_area.setSizePolicy(sizePolicy)
         self.verticalLayout = QtWidgets.QVBoxLayout(self.description_area)
-        self.verticalLayout.setContentsMargins(0, 0, 0, 6)
-        self.verticalLayout.setSpacing(4)
+        self.verticalLayout.setContentsMargins(0, 0, 0, rt(6))
+        self.verticalLayout.setSpacing(rt(4))
         self.name = QtWidgets.QLabel(self.description_area)
         font = QtGui.QFont()
-        font.setPointSize(14)
+        font.setPointSize(applyFontRatio(14))
         font.setBold(True)
         font.setWeight(65)
         self.name.setFont(font)
@@ -76,7 +76,7 @@ class ShortAppWidgetUi(QWidget):
         sizePolicy.setHeightForWidth(self.description.sizePolicy().hasHeightForWidth())
         self.description.setSizePolicy(sizePolicy)
         font = QtGui.QFont()
-        font.setPointSize(12)
+        font.setPointSize(applyFontRatio(12))
         self.description.setFont(font)
         self.description.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.description.setWordWrap(True)
@@ -85,15 +85,11 @@ class ShortAppWidgetUi(QWidget):
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.tags_widget)
         self.horizontalLayout_3.setSizeConstraint(QtWidgets.QLayout.SetFixedSize)
         self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout_3.setSpacing(6)
+        self.horizontalLayout_3.setSpacing(rt(6))
         self.is_official = QtWidgets.QLabel(self.tags_widget)
-        font = QtGui.QFont()
-        font.setPointSize(12)
         self.is_official.setFont(font)
         self.horizontalLayout_3.addWidget(self.is_official)
         self.from_repo = QtWidgets.QLabel(self.tags_widget)
-        font = QtGui.QFont()
-        font.setPointSize(12)
         self.from_repo.setFont(font)
         self.horizontalLayout_3.addWidget(self.from_repo)
         self.verticalLayout.addWidget(self.tags_widget)
@@ -104,7 +100,7 @@ class ShortAppWidgetUi(QWidget):
         self.widget = QtWidgets.QWidget(self.description_area)
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.widget)
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout_2.setSpacing(6)
+        self.horizontalLayout_2.setSpacing(rt(6))
         self.addition_widget = QtWidgets.QWidget(self.widget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(1)
@@ -113,7 +109,7 @@ class ShortAppWidgetUi(QWidget):
         self.addition_widget.setSizePolicy(sizePolicy)
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.addition_widget)
         self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout_4.setSpacing(6)
+        self.horizontalLayout_4.setSpacing(rt(6))
         self.stars = QtWidgets.QLabel(self.addition_widget)
         self.horizontalLayout_4.addWidget(self.stars)
         self.horizontalLayout_2.addWidget(self.addition_widget)

@@ -14,11 +14,13 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
+
 import requests
-from PyQt5.QtCore import QCoreApplication, Qt
+from PyQt5.QtCore import QCoreApplication, Qt, QRect, QPoint
 from PyQt5.QtGui import QPixmap, QImage
 
 from boatswain.common.services import data_transporter_service, containers_service
+from boatswain.common.services.system_service import rt
 from boatswain.common.services.worker_service import Worker, threadpool
 from boatswain.common.utils.constants import CONTAINER_CHANNEL
 from boatswain.search.application.short_app_widget_ui import ShortAppWidgetUi
@@ -41,6 +43,7 @@ class ShortAppWidget:
 
         if containers_service.isAppInstalled(container_info['name']):
             self.ui.install.setText(self._translate("widget", "Installed"))
+            self.ui.install.setStyleSheet('border: 1px solid gray; padding: 1px 6px; color: gray')
             self.disable_button = True
 
         self.ui.install.clicked.connect(self.installApp)
@@ -57,8 +60,14 @@ class ShortAppWidget:
     def showLogo(self, logo):
         if logo is not None:
             worker = Worker(self.getImage, logo)
-            worker.signals.result.connect(lambda x: self.ui.icon.setPixmap(x))
+            worker.signals.result.connect(self.drawLogo)
             threadpool.start(worker, 99)
+
+    def drawLogo(self, pixmap: QPixmap):
+        self.ui.icon.setPixmap(pixmap)
+        color = self.analyzeColor(pixmap.toImage())
+        color_str = "rgb(%d, %d, %d)" % (color.red(), color.green(), color.blue())
+        self.ui.avatar_area.setStyleSheet("background: %s" % color_str)
 
     def showInfo(self, container_info):
         if len(container_info['description']) > 0:
@@ -87,5 +96,21 @@ class ShortAppWidget:
         data = requests.get(url)
         img = QImage()
         img.loadFromData(data.content)
-        pixmap = QPixmap(img).scaledToWidth(32, Qt.SmoothTransformation)
+        pixmap = QPixmap(img).scaledToWidth(rt(32), Qt.SmoothTransformation)
         return pixmap
+
+    def analyzeColor(self, img: QImage):
+        rect: QRect = img.rect()
+        mid_top = QPoint(rect.width() / 2 + rect.x(), rect.y())
+        top_color = self.getFirstColor(img, mid_top)
+        return top_color.lighter(140)
+
+    def getFirstColor(self, img: QImage, point: QPoint, x=False, unit=1):
+        color = img.pixelColor(point)
+        while color.alpha() == 0:
+            if x:
+                point.setX(point.x() + unit)
+            else:
+                point.setY(point.y() + unit)
+            color = img.pixelColor(point)
+        return color

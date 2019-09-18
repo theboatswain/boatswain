@@ -23,6 +23,7 @@ from PyQt5.QtWidgets import QDialog
 
 from boatswain.common.models.group import Group
 from boatswain.common.services import containers_service
+from boatswain.common.services.system_service import rt
 from boatswain.common.utils.constants import SEARCH_APP_WIDTH
 from boatswain.search.application.short_app_widget import ShortAppWidget
 from boatswain.search.search_app_ui import SearchAppDialogUi
@@ -38,8 +39,9 @@ class SearchAppDialog(object):
 
     def __init__(self, title, parent, group: Group) -> None:
         super().__init__()
-        self.default_containers = ['wordpress', 'mysql', 'mongo', 'mariadb', 'arangodb', 'postgres', 'django',
-                                   'redis', 'memcached', 'nginx', 'tomcat']
+        self.default_containers = ['nginx', 'ubuntu', 'mysql', 'node', 'redis', 'postgres', 'mongo', 'jenkins',
+                                   'elasticsearch', 'wordpress', 'mariadb', 'memcached',
+                                   'tomcat', 'rabbitmq', 'django', 'arangodb']
         for index, item in enumerate(self.default_containers):
             self.default_containers[index] = {'name': item, 'from': 'dockerhub', 'is_official': True}
         self.title = title
@@ -73,7 +75,7 @@ class SearchAppDialog(object):
         self.cleanSearchResults()
         col = 0
         row = 0
-        self.items_per_row = math.trunc(self.dialog.size().width() / float(SEARCH_APP_WIDTH))
+        self.items_per_row = math.trunc(self.dialog.size().width() / float(rt(SEARCH_APP_WIDTH)))
         for item in docker_images:
             widget = ShortAppWidget(self.ui.search_result_area, item, self.group)
             if col == self.items_per_row:
@@ -92,10 +94,10 @@ class SearchAppDialog(object):
         self.dialog.exec_()
 
     def resizeEvent(self, event: QResizeEvent):
-        if math.trunc(event.size().width() / float(SEARCH_APP_WIDTH)) != self.items_per_row:
+        if math.trunc(event.size().width() / float(rt(SEARCH_APP_WIDTH))) != self.items_per_row:
             col = 0
             row = 0
-            self.items_per_row = math.trunc(self.dialog.size().width() / float(SEARCH_APP_WIDTH))
+            self.items_per_row = math.trunc(self.dialog.size().width() / float(rt(SEARCH_APP_WIDTH)))
             for widget in self.apps:
                 if col == self.items_per_row:
                     col = 0
