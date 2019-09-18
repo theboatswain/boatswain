@@ -37,6 +37,8 @@ from boatswain.common.utils.utils import EmptyStream
 logger = logging.getLogger(__name__)
 
 PREFERENCES_SHORTCUT_API = "https://raw.githubusercontent.com/theboatswain/preferences-shortcut/master"
+DOCKERHUB_CONTAINER_INFO = "https://hub.docker.com/v2/repositories"
+DOCKER_AVATAR_API = "https://hub.docker.com/api/content/v1/products/images"
 
 # Initialising search engines
 search_engine = SearchImages()
@@ -266,3 +268,28 @@ def listen(container: Container, name, func):
 def fire(container: Container, name, value=None):
     key = CONTAINER_CONF_CHANGED_CHANNEL + '_' + str(container.id) + '_' + name
     data_transporter_service.fire(key, value)
+
+
+def getContainerInfo(container_name, is_official=True):
+    result = {}
+    container_id = container_name
+    if is_official:
+        container_id = 'library/' + container_name
+    res = requests.get("%s/%s" % (DOCKERHUB_CONTAINER_INFO, container_id))
+    if res.ok:
+        container_info = res.json()
+        result['is_official'] = is_official
+        result['name'] = container_info['name']
+        result['description'] = container_info['description']
+        result['star_count'] = container_info['star_count']
+        result['from'] = 'dockerhub'
+        img_res = requests.get("%s/%s" % (DOCKER_AVATAR_API, container_name))
+        if img_res.ok:
+            img_info = img_res.json()
+            if 'logo_url' in img_info:
+                keys = list(img_info['logo_url'])
+                if len(keys) > 0:
+                    result['logo_url'] = img_info['logo_url'][keys[0]]
+    return result
+
+

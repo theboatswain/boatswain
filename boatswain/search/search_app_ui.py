@@ -14,7 +14,7 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
-
+from PyQt5 import QtCore
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtWidgets import QWidget, QSizePolicy, QVBoxLayout, QFrame, QScrollArea, QLineEdit, QComboBox, QGridLayout
 
@@ -27,7 +27,7 @@ class SearchAppDialogUi(object):
 
     def __init__(self, dialog) -> None:
         super().__init__()
-        height = system_service.screen_height / 2
+        height = system_service.screen_height / 1.8
         width = height * 2
         dialog.resize(width, height)
         dialog.setSizePolicy(BQSizePolicy(h_stretch=1))
@@ -40,7 +40,7 @@ class SearchAppDialogUi(object):
         widget = QWidget(dialog)
         widget.setSizePolicy(BQSizePolicy())
         self.grid_container = QGridLayout(widget)
-        self.grid_container.setContentsMargins(0, 0, 0, 0)
+        self.grid_container.setContentsMargins(0, 0, 0, rt(10))
         self.repo_select = QComboBox(widget)
         self.repo_select.setSizePolicy(BQSizePolicy(width=QSizePolicy.Fixed, height=QSizePolicy.Fixed))
         self.grid_container.addWidget(self.repo_select, 0, 0, 1, 1)
@@ -58,6 +58,9 @@ class SearchAppDialogUi(object):
 
         self.search_result_area = QWidget(dialog)
         self.search_result_area.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
-        self.search_result_area.setLayout(QVBoxLayout(self.search_result_area))
-        self.search_result_area.setContentsMargins(0, 0, 0, 0)
+        self.search_result_layout = QGridLayout(self.search_result_area)
+        self.search_result_layout.setContentsMargins(rt(0), rt(10), rt(12), rt(10))
+        self.search_result_layout.setAlignment(QtCore.Qt.AlignTop)
+        self.search_result_area.setLayout(self.search_result_layout)
+        # self.search_result_area.setContentsMargins(0, 0, 0, 0)
         self.scroll_area.setWidget(self.search_result_area)

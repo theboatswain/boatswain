@@ -49,3 +49,7 @@ UNIX_BASE_URL = 'unix://var/run/docker.sock'
 # Global conf
 HOME_WIDTH = 'home_width'
 HOME_HEIGHT = 'home_height'
+
+
+# Other conf
+SEARCH_APP_WIDTH = 305
