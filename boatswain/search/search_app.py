@@ -14,7 +14,9 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
+import json
 import math
+import os
 from typing import List
 
 from PyQt5.QtCore import Qt, QCoreApplication
@@ -24,9 +26,11 @@ from PyQt5.QtWidgets import QDialog
 from boatswain.common.models.group import Group
 from boatswain.common.services import containers_service
 from boatswain.common.services.system_service import rt
-from boatswain.common.utils.constants import SEARCH_APP_WIDTH
+from boatswain.common.utils.constants import SEARCH_APP_WIDTH, DEFAULT_SEARCH_APP_FILE
+from boatswain.resources_utils import get_resource
 from boatswain.search.application.short_app_widget import ShortAppWidget
 from boatswain.search.search_app_ui import SearchAppDialogUi
+from boatswain_updater.utils import pyqt_utils
 
 
 class SearchAppDialog(object):
@@ -39,11 +43,6 @@ class SearchAppDialog(object):
 
     def __init__(self, title, parent, group: Group) -> None:
         super().__init__()
-        self.default_containers = ['nginx', 'ubuntu', 'mysql', 'node', 'redis', 'postgres', 'mongo', 'jenkins',
-                                   'elasticsearch', 'wordpress', 'mariadb', 'memcached',
-                                   'tomcat', 'rabbitmq', 'django', 'arangodb']
-        for index, item in enumerate(self.default_containers):
-            self.default_containers[index] = {'name': item, 'from': 'dockerhub', 'is_official': True}
         self.title = title
         self.dialog = QDialog(parent)
         self.ui = SearchAppDialogUi(self.dialog)
@@ -59,15 +58,21 @@ class SearchAppDialog(object):
         self.ui.key_search.returnPressed.connect(self.searchApp)
 
         # Loading default search images
-        self.loadResult(self.default_containers)
+        self.loadResult(self.getDefaultResult())
         self.dialog.resizeEvent = self.resizeEvent
+
+    def getDefaultResult(self):
+        if not os.path.isfile(DEFAULT_SEARCH_APP_FILE):
+            pyqt_utils.defrostAndSaveInto(get_resource('resources/default_search.json'), DEFAULT_SEARCH_APP_FILE)
+        with open(DEFAULT_SEARCH_APP_FILE) as f:
+            return json.load(f)
 
     def searchApp(self):
         keyword = self.ui.key_search.text()
         if len(keyword) != 0:
             docker_images = containers_service.searchImages(keyword, self.ui.repo_select.currentText())
         else:
-            docker_images = self.default_containers
+            docker_images = self.getDefaultResult()
         self.loadResult(docker_images)
 
     def loadResult(self, docker_images):

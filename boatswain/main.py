@@ -36,10 +36,10 @@ from boatswain.common.models.preferences_shortcut import PreferencesShortcut
 from boatswain.common.models.tag import Tag
 from boatswain.common.models.volume_mount import VolumeMount
 from boatswain.common.models.workspace import Workspace
-from boatswain.common.services import boatswain_daemon, data_transporter_service, docker_service, system_service
+from boatswain.common.services import boatswain_daemon, data_transporter_service, docker_service, system_service, \
+    containers_service
 from boatswain.common.utils import docker_utils
-from boatswain.common.utils.constants import APP_DATA_DIR, APP_EXIT_CHANNEL, PEM_FILE, \
-    UPDATES_CHANNEL
+from boatswain.common.utils.constants import APP_DATA_DIR, APP_EXIT_CHANNEL, PEM_FILE, UPDATES_CHANNEL
 from boatswain.common.utils.logging import logger
 from boatswain.home.home import Home
 from boatswain.resources_utils import get_resource
@@ -111,6 +111,9 @@ def run():
     data_transporter_service.listen(UPDATES_CHANNEL, lambda x: update_dialog.checkForUpdate(silent=x))
 
     window.show()
+
+    # Prefetch default containers for search
+    containers_service.prefetchDefaultContainersInBackground()
 
     # Stop daemon before exit
     data_transporter_service.listen(APP_EXIT_CHANNEL, lambda: daemon.events.close())

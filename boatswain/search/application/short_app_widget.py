@@ -53,9 +53,12 @@ class ShortAppWidget:
             threadpool.start(worker)
         else:
             self.showInfo(container_info)
-        worker = Worker(containers_service.getContainerLogo, container_info['name'])
-        worker.signals.result.connect(self.showLogo)
-        threadpool.start(worker)
+        if 'logo_url' not in container_info:
+            worker = Worker(containers_service.getContainerLogo, container_info['name'])
+            worker.signals.result.connect(self.showLogo)
+            threadpool.start(worker)
+        else:
+            self.showLogo(container_info['logo_url'])
 
     def showLogo(self, logo):
         if logo is not None:
@@ -64,19 +67,25 @@ class ShortAppWidget:
             threadpool.start(worker, 99)
 
     def drawLogo(self, pixmap: QPixmap):
-        self.ui.icon.setPixmap(pixmap)
-        color = self.analyzeColor(pixmap.toImage())
-        color_str = "rgb(%d, %d, %d)" % (color.red(), color.green(), color.blue())
-        self.ui.avatar_area.setStyleSheet("background: %s" % color_str)
+        try:
+            self.ui.icon.setPixmap(pixmap)
+            color = self.analyzeColor(pixmap.toImage())
+            color_str = "rgb(%d, %d, %d)" % (color.red(), color.green(), color.blue())
+            self.ui.avatar_area.setStyleSheet("background: %s" % color_str)
+        except RuntimeError:
+            pass
 
     def showInfo(self, container_info):
-        if len(container_info['description']) > 0:
-            self.ui.description.setText(self._translate("widget", container_info['description']))
-        self.ui.stars.setText(self._translate(self.template, "☆ " + str(container_info['star_count'])))
+        try:
+            if len(container_info['description']) > 0:
+                self.ui.description.setText(self._translate("widget", container_info['description']))
+            self.ui.stars.setText(self._translate(self.template, "☆ " + str(container_info['star_count'])))
 
-        if not container_info['is_official']:
-            self.ui.is_official.hide()
-        self.ui.is_official.setText("⚜ Official")
+            if not container_info['is_official']:
+                self.ui.is_official.hide()
+            self.ui.is_official.setText("⚜ Official")
+        except RuntimeError:
+            pass
 
     def installApp(self):
         if self.disable_button:

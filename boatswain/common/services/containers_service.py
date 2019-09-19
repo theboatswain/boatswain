@@ -14,24 +14,29 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
-
+import json
 import logging
 import os
+import shutil
+import time
 from typing import List
 
 import requests
 from docker.errors import NotFound
+from peewee import DoesNotExist
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.workspace import Workspace
 from boatswain.common.search.dockerhub_searcher import DockerHubSearcher
 from boatswain.common.search.search_images import SearchImages
 from boatswain.common.services import docker_service, system_service, config_service, data_transporter_service, \
-    shortcut_service, group_service, environment_service, port_mapping_service, volume_mount_service, tags_service
+    shortcut_service, group_service, environment_service, port_mapping_service, volume_mount_service, tags_service, \
+    global_preference_service
+from boatswain.common.services.worker_service import Worker, threadpool
 from boatswain.common.shortcut.shortcut_yaml import ShortcutYaml
 from boatswain.common.utils import docker_utils
 from boatswain.common.utils.constants import INCLUDING_ENV_SYSTEM, CONTAINER_CONF_CHANGED, \
-    CONTAINER_CONF_CHANGED_CHANNEL
+    CONTAINER_CONF_CHANGED_CHANNEL, DEFAULT_CONTAINERS, DEFAULT_SEARCH_APP_FILE, DEFAULT_SEARCH_UPDATE_DATE
 from boatswain.common.utils.utils import EmptyStream
 
 logger = logging.getLogger(__name__)
@@ -285,12 +290,39 @@ def getContainerInfo(container_name, is_official=True):
     return result
 
 
+def prefetchDefaultContainersInBackground():
+    """
+    Fetch the default search result in background
+    Will be run once per day
+    """
+    try:
+        last_time_fetched = int(global_preference_service.getPreference(DEFAULT_SEARCH_UPDATE_DATE))
+        if time.time() - last_time_fetched < 24 * 3600:
+            return
+    except DoesNotExist:
+        pass
+    worker = Worker(prefetchDefaultContainers)
+    threadpool.start(worker)
+
+
+def prefetchDefaultContainers():
+    items = []
+    for container in DEFAULT_CONTAINERS:
+        item = getContainerInfo(container, True)
+        item['logo_url'] = getContainerLogo(container)
+        item['from'] = 'dockerhub'
+        items.append(item)
+    with open(DEFAULT_SEARCH_APP_FILE, 'w', encoding='utf-8') as f:
+        json.dump(items, f)
+    global_preference_service.setPreference(DEFAULT_SEARCH_UPDATE_DATE, time.time())
+
+
 def getContainerLogo(container_name):
     img_res = requests.get("%s/%s" % (DOCKER_AVATAR_API, container_name))
     if img_res.ok:
         img_info = img_res.json()
         if 'logo_url' in img_info and type(img_info['logo_url']) is dict:
-            keys = list(img_info['logo_url'])
-            if len(keys) > 0:
-                return img_info['logo_url'][keys[0]]
+            for key in list(img_info['logo_url']):
+                if len(img_info['logo_url'][key]) > 0:
+                    return img_info['logo_url'][key]
     return None
