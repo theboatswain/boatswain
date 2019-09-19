@@ -23,7 +23,7 @@ from PyQt5.QtWidgets import QWidget, QLabel, QScrollArea, QFrame, QSizePolicy
 from boatswain.common.services.system_service import rt, applyFontRatio
 from boatswain.common.ui.custom_ui import BQSizePolicy
 from boatswain.common.utils import utils
-from boatswain.resources_utils import get_resource
+from boatswain.resources_utils import getResource
 
 
 class FolderIcon(QWidget):
@@ -33,7 +33,7 @@ class FolderIcon(QWidget):
         self.horizontal_layout.setContentsMargins(0, 0, 0, 0)
         self.horizontal_layout.setSpacing(rt(2))
         self.icon = QLabel(self)
-        self.icon.setPixmap(QIcon(get_resource('resources/icons/folder.svg'))
+        self.icon.setPixmap(QIcon(getResource('resources/icons/folder.svg'))
                             .pixmap(QSize(rt(16), rt(16))))
         self.horizontal_layout.addWidget(self.icon)
         self.label = QLabel(self)

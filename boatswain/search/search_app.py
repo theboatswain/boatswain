@@ -27,7 +27,7 @@ from boatswain.common.models.group import Group
 from boatswain.common.services import containers_service
 from boatswain.common.services.system_service import rt
 from boatswain.common.utils.constants import SEARCH_APP_WIDTH, DEFAULT_SEARCH_APP_FILE
-from boatswain.resources_utils import get_resource
+from boatswain.resources_utils import getResource
 from boatswain.search.application.short_app_widget import ShortAppWidget
 from boatswain.search.search_app_ui import SearchAppDialogUi
 from boatswain_updater.utils import pyqt_utils
@@ -63,7 +63,7 @@ class SearchAppDialog(object):
 
     def getDefaultResult(self):
         if not os.path.isfile(DEFAULT_SEARCH_APP_FILE):
-            pyqt_utils.defrostAndSaveInto(get_resource('resources/default_search.json'), DEFAULT_SEARCH_APP_FILE)
+            pyqt_utils.defrostAndSaveInto(getResource('resources/default_search.json'), DEFAULT_SEARCH_APP_FILE)
         with open(DEFAULT_SEARCH_APP_FILE) as f:
             return json.load(f)
 

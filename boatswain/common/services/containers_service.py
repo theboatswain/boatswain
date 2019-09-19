@@ -296,7 +296,7 @@ def prefetchDefaultContainersInBackground():
     Will be run once per day
     """
     try:
-        last_time_fetched = int(global_preference_service.getPreference(DEFAULT_SEARCH_UPDATE_DATE))
+        last_time_fetched = float(global_preference_service.getPreference(DEFAULT_SEARCH_UPDATE_DATE).value)
         if time.time() - last_time_fetched < 24 * 3600:
             return
     except DoesNotExist:

@@ -23,7 +23,7 @@ from boatswain.common.services import system_service
 from boatswain.common.utils.constants import HOME_WIDTH, HOME_HEIGHT
 
 
-def getPreference(key):
+def getPreference(key) -> Preference:
     return Preference.get(Preference.name == key)
 
 

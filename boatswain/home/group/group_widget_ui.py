@@ -22,7 +22,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QFrame, QSizePoli
 from boatswain.common.models.group import Group
 from boatswain.common.services.system_service import rt
 from boatswain.common.ui.custom_ui import BQSizePolicy
-from boatswain.resources_utils import get_resource
+from boatswain.resources_utils import getResource
 
 
 class GroupWidgetUi(QWidget):
@@ -45,7 +45,7 @@ class GroupWidgetUi(QWidget):
         top_layout.setSpacing(rt(6))
 
         self.icon = QLabel(self)
-        self.icon.setPixmap(QIcon(get_resource('resources/icons/folder.svg'))
+        self.icon.setPixmap(QIcon(getResource('resources/icons/folder.svg'))
                             .pixmap(QSize(rt(16), rt(16))))
         top_layout.addWidget(self.icon)
         self.container_name = QLineEdit(self.top_widget)

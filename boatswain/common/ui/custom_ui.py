@@ -23,7 +23,7 @@ from PyQt5.QtWidgets import QSizePolicy, QWidget, QStyle, QToolButton, QLineEdit
     QComboBox
 
 from boatswain.common.services import system_service
-from boatswain.resources_utils import get_resource
+from boatswain.resources_utils import getResource
 
 
 class BQSizePolicy(QSizePolicy):
@@ -52,7 +52,7 @@ class PathInputDelegate(QItemDelegate):
 
     def createEditor(self, parent, option, index):
 
-        editor = ButtonLineEdit(get_resource('resources/icons/folder.svg'), parent=parent)
+        editor = ButtonLineEdit(getResource('resources/icons/folder.svg'), parent=parent)
         editor.setText(str(index.data()))
         editor.button_clicked.connect(lambda x: self.fileLooking(editor))
         return editor

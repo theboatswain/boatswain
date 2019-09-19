@@ -42,7 +42,7 @@ from boatswain.common.utils import docker_utils
 from boatswain.common.utils.constants import APP_DATA_DIR, APP_EXIT_CHANNEL, PEM_FILE, UPDATES_CHANNEL
 from boatswain.common.utils.logging import logger
 from boatswain.home.home import Home
-from boatswain.resources_utils import get_resource
+from boatswain.resources_utils import getResource
 
 
 def deFrostPem():
@@ -103,7 +103,7 @@ def run():
     daemon.start()
 
     feed = Feed('theboatswain/boatswain')
-    pixmap = QIcon(get_resource('resources/logo/boatswain.svg')).pixmap(QSize(64, 64))
+    pixmap = QIcon(getResource('resources/logo/boatswain.svg')).pixmap(QSize(64, 64))
     update_dialog = Updater(window.ui, feed)
     update_dialog.setIcon(pixmap)
     update_dialog.installed.connect(onApplicationInstalled)
