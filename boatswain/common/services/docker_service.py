@@ -30,7 +30,7 @@ base_url = WINDOWS_BASE_URL if system_platform == "Windows" else UNIX_BASE_URL
 client = docker.DockerClient(base_url=base_url)
 
 
-def searchDockerhubContainers(keyword):
+def searchDockerImages(keyword):
     ping()
     return client.images.search(keyword)
 

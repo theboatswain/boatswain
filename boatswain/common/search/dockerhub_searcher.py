@@ -24,14 +24,31 @@ from boatswain.common.services import docker_service
 from boatswain.common.search.search_images import SearchProvider
 
 DOCKERHUB_API = 'https://registry.hub.docker.com/v2'
+DOCKERHUB_SEARCH_API = 'https://hub.docker.com/api/content/v1/products/search'
 
 
 class DockerHubSearcher(SearchProvider):
 
     def search(self, keyword, repo):
-        items = docker_service.searchDockerhubContainers(keyword)
-        for item in items:
-            item['from'] = 'dockerhub'
+        url = "%s/?q=%s&type=image&page=1&page_size=25" % (DOCKERHUB_SEARCH_API, keyword)
+        res = requests.get(url, headers={'Search-Version': 'v3'})
+        items = []
+        if res.ok:
+            for item in res.json()['summaries']:
+                image = {
+                    'from': repo,
+                    'name': item['name'],
+                    'description': item['short_description'],
+                    'star_count': item['star_count']
+                }
+                if 'logo_url' in item and type(item['logo_url']) is dict:
+                    for key in list(item['logo_url']):
+                        if len(item['logo_url'][key]) > 0:
+                            image['logo_url'] = item['logo_url'][key]
+                if 'logo_url' not in image:
+                    image['logo_url'] = None
+                image['is_official'] = item['filter_type'] == 'official'
+                items.append(image)
         return items
 
     def searchTags(self, image_name: str, repo: str) -> List[Tag]:
