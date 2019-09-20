@@ -39,7 +39,7 @@ from boatswain.common.models.workspace import Workspace
 from boatswain.common.services import boatswain_daemon, data_transporter_service, docker_service, system_service, \
     containers_service
 from boatswain.common.utils import docker_utils
-from boatswain.common.utils.constants import APP_DATA_DIR, APP_EXIT_CHANNEL, PEM_FILE, UPDATES_CHANNEL
+from boatswain.common.utils.constants import APP_DATA_DIR, APP_EXIT_CHANNEL, PEM_FILE, UPDATES_CHANNEL, APP_AVATAR_DIR
 from boatswain.common.utils.logging import logger
 from boatswain.home.home import Home
 from boatswain.resources_utils import getResource
@@ -83,6 +83,8 @@ def run():
     # Make sure app data dir always exists
     if not os.path.isdir(APP_DATA_DIR):
         os.makedirs(APP_DATA_DIR)
+    if not os.path.isdir(APP_AVATAR_DIR):
+        os.makedirs(APP_AVATAR_DIR)
 
     deFrostPem()
     logger.info("App data path: %s", APP_DATA_DIR)

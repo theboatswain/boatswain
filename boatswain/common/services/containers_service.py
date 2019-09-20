@@ -36,7 +36,8 @@ from boatswain.common.services.worker_service import Worker, threadpool
 from boatswain.common.shortcut.shortcut_yaml import ShortcutYaml
 from boatswain.common.utils import docker_utils
 from boatswain.common.utils.constants import INCLUDING_ENV_SYSTEM, CONTAINER_CONF_CHANGED, \
-    CONTAINER_CONF_CHANGED_CHANNEL, DEFAULT_CONTAINERS, DEFAULT_SEARCH_APP_FILE, DEFAULT_SEARCH_UPDATE_DATE
+    CONTAINER_CONF_CHANGED_CHANNEL, DEFAULT_CONTAINERS, DEFAULT_SEARCH_APP_FILE, DEFAULT_SEARCH_UPDATE_DATE, \
+    APP_AVATAR_DIR
 from boatswain.common.utils.utils import EmptyStream
 
 logger = logging.getLogger(__name__)
@@ -100,6 +101,16 @@ def installContainer(image_name, repo='dockerhub', description='', tag='latest',
         shortcut_service.importShortcuts(container, shortcut_yaml.shortcuts)
 
     updateContainerTags(container)
+    logo = getContainerLogo(container.image_name)
+    if logo is not None:
+        img = requests.get(logo)
+        if img.ok:
+            img_extension = os.path.splitext(logo)[1]
+            avatar_file = os.path.join(APP_AVATAR_DIR, "%s%s" % (container.image_name, img_extension))
+            with open(avatar_file, 'wb') as f:
+                f.write(img.content)
+            container.avatar = avatar_file
+            container.save()
     return container
 
 
@@ -212,6 +223,12 @@ def cloneContainer(container: Container, workspace: Workspace):
     volume_mount_service.cloneAll(container, clone)
     tags_service.cloneAll(container, clone)
     config_service.cloneAll(container, clone)
+    if container.avatar and os.path.isfile(container.avatar):
+        img_extension = os.path.splitext(container.avatar)[1]
+        avatar_file = os.path.join(APP_AVATAR_DIR, "%s-%s%s" % (container.image_name, str(clone.id), img_extension))
+        shutil.copyfile(container.avatar, avatar_file)
+        clone.avatar = avatar_file
+        clone.save()
     return clone
 
 
@@ -235,6 +252,8 @@ def deleteContainer(container: Container):
         stopContainer(container)
     if isContainerExists(container):
         docker_service.deleteContainer(container.container_id)
+    if container.avatar and os.path.isfile(container.avatar):
+        os.remove(container.avatar)
     container.delete_instance()
 
 

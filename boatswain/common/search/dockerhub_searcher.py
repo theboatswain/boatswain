@@ -55,6 +55,8 @@ class DockerHubSearcher(SearchProvider):
         tags = self.recursiveFindImageTag(image_name, 100, 1)
         result = []
         for item in tags:
+            if item['full_size'] is None:
+                continue
             result.append(Tag(name=item['name'], size=item['full_size']))
         return result
 

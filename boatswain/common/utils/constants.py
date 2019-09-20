@@ -23,6 +23,7 @@ APP_AUTHOR = 'theboatswain'
 
 APP_DATA_DIR = user_data_dir(APP_NAME, APP_AUTHOR)
 APP_LOG_DIR = user_log_dir(APP_NAME, APP_AUTHOR)
+APP_AVATAR_DIR = os.path.join(APP_DATA_DIR, "avatars")
 
 PEM_FILE = os.path.join(APP_DATA_DIR, "cacert.pem")
 DEFAULT_SEARCH_APP_FILE = os.path.join(APP_DATA_DIR, "default_search.json")

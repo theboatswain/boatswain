@@ -43,12 +43,7 @@ class AppWidgetUi(QWidget):
         self.vertical_layout.addWidget(self.widget)
         self.horizontal_layout = QHBoxLayout(self.widget)
         self.horizontal_layout.setContentsMargins(rt(20), rt(1), rt(10), rt(3))
-
-        img_name = container.image_name
-        name_part = container.image_name.split('/')
-        if len(name_part) > 1:
-            img_name = name_part[1]
-        self.pic = AppAvatar(text_utils.getSimpleName(img_name), parent=self.widget, radius=rt(20))
+        self.pic = AppAvatar(container, parent=self.widget, radius=rt(20))
         self.horizontal_layout.addWidget(self.pic)
         self.name = QLabel(self.widget)
         self.name.setSizePolicy(BQSizePolicy(h_stretch=2))
