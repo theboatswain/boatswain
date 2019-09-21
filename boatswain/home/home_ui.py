@@ -66,7 +66,7 @@ class HomeUi(QMainWindow):
         self.custom_menu.setText("⋮")
         self.custom_menu.setStyleSheet("border: none; padding: 1px 2px;")
         font = QFont()
-        font.setPointSize(applyFontRatio(18))
+        font.setPointSize(applyFontRatio(16))
         self.custom_menu.setFont(font)
         top_layout.addWidget(self.custom_menu, 0, 4, 1, 1)
 
