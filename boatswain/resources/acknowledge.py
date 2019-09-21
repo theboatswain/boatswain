@@ -21,6 +21,12 @@ acknowledge = '''
                 The Boatswain
             </a>
         </p>
+        <h3>Artwork</h3>
+        <p>
+            Icon by <a href="https://www.stockio.com/free-icon/docker">
+                stockio.com
+            </a>
+        </p>
     </body>
 </html>
 '''

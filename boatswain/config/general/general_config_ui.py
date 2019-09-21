@@ -22,9 +22,8 @@ from PyQt5.QtWidgets import QLabel, QGridLayout, QPushButton, QComboBox, QLineEd
 
 from boatswain.common.models.container import Container
 from boatswain.common.services.system_service import rt
-from boatswain.common.utils import text_utils
-from boatswain.common.utils.app_avatar import AppAvatar
 from boatswain.common.ui.custom_ui import BQSizePolicy, AutoResizeWidget
+from boatswain.common.utils.app_avatar import AppAvatar
 
 
 class GeneralAppConfigUi(AutoResizeWidget):
@@ -43,12 +42,7 @@ class GeneralAppConfigUi(AutoResizeWidget):
         self.horizontal_layout_2.setSpacing(rt(6))
 
         self._translate = QCoreApplication.translate
-
-        img_name = self.container.image_name
-        name_part = self.container.image_name.split('/')
-        if len(name_part) > 1:
-            img_name = name_part[1]
-        self.pic = AppAvatar(text_utils.getSimpleName(img_name), parent=self, radius=rt(20))
+        self.pic = AppAvatar(container, parent=self, radius=rt(20))
 
         self.horizontal_layout_2.addWidget(self.pic)
         self.container_name = QLineEdit(self.widget)

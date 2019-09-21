@@ -15,28 +15,37 @@
 #
 #
 
+import json
 import logging
 import os
+import shutil
+import time
 from typing import List
 
 import requests
 from docker.errors import NotFound
+from peewee import DoesNotExist
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.workspace import Workspace
 from boatswain.common.search.dockerhub_searcher import DockerHubSearcher
 from boatswain.common.search.search_images import SearchImages
 from boatswain.common.services import docker_service, system_service, config_service, data_transporter_service, \
-    shortcut_service, group_service, environment_service, port_mapping_service, volume_mount_service, tags_service
+    shortcut_service, group_service, environment_service, port_mapping_service, volume_mount_service, tags_service, \
+    global_preference_service
+from boatswain.common.services.worker_service import Worker, threadpool
 from boatswain.common.shortcut.shortcut_yaml import ShortcutYaml
 from boatswain.common.utils import docker_utils
 from boatswain.common.utils.constants import INCLUDING_ENV_SYSTEM, CONTAINER_CONF_CHANGED, \
-    CONTAINER_CONF_CHANGED_CHANNEL
+    CONTAINER_CONF_CHANGED_CHANNEL, DEFAULT_CONTAINERS, DEFAULT_SEARCH_APP_FILE, DEFAULT_SEARCH_UPDATE_DATE, \
+    APP_AVATAR_DIR
 from boatswain.common.utils.utils import EmptyStream
 
 logger = logging.getLogger(__name__)
 
 PREFERENCES_SHORTCUT_API = "https://raw.githubusercontent.com/theboatswain/preferences-shortcut/master"
+DOCKERHUB_CONTAINER_INFO = "https://hub.docker.com/v2/repositories"
+DOCKER_AVATAR_API = "https://hub.docker.com/api/content/v1/products/images"
 
 # Initialising search engines
 search_engine = SearchImages()
@@ -93,6 +102,16 @@ def installContainer(image_name, repo='dockerhub', description='', tag='latest',
         shortcut_service.importShortcuts(container, shortcut_yaml.shortcuts)
 
     updateContainerTags(container)
+    logo = getContainerLogo(container.image_name)
+    if logo is not None:
+        img = requests.get(logo)
+        if img.ok:
+            img_extension = os.path.splitext(logo)[1]
+            avatar_file = os.path.join(APP_AVATAR_DIR, "%s%s" % (container.image_name, img_extension))
+            with open(avatar_file, 'wb') as f:
+                f.write(img.content)
+            container.avatar = avatar_file
+            container.save()
     return container
 
 
@@ -205,6 +224,12 @@ def cloneContainer(container: Container, workspace: Workspace):
     volume_mount_service.cloneAll(container, clone)
     tags_service.cloneAll(container, clone)
     config_service.cloneAll(container, clone)
+    if container.avatar and os.path.isfile(container.avatar):
+        img_extension = os.path.splitext(container.avatar)[1]
+        avatar_file = os.path.join(APP_AVATAR_DIR, "%s-%s%s" % (container.image_name, str(clone.id), img_extension))
+        shutil.copyfile(container.avatar, avatar_file)
+        clone.avatar = avatar_file
+        clone.save()
     return clone
 
 
@@ -228,6 +253,8 @@ def deleteContainer(container: Container):
         stopContainer(container)
     if isContainerExists(container):
         docker_service.deleteContainer(container.container_id)
+    if container.avatar and os.path.isfile(container.avatar):
+        os.remove(container.avatar)
     container.delete_instance()
 
 
@@ -266,3 +293,56 @@ def listen(container: Container, name, func):
 def fire(container: Container, name, value=None):
     key = CONTAINER_CONF_CHANGED_CHANNEL + '_' + str(container.id) + '_' + name
     data_transporter_service.fire(key, value)
+
+
+def getContainerInfo(container_name, is_official=True):
+    result = {}
+    container_id = container_name
+    if is_official:
+        container_id = 'library/' + container_name
+    res = requests.get("%s/%s" % (DOCKERHUB_CONTAINER_INFO, container_id))
+    if res.ok:
+        container_info = res.json()
+        result['is_official'] = is_official
+        result['name'] = container_info['name']
+        result['description'] = container_info['description']
+        result['star_count'] = container_info['star_count']
+    return result
+
+
+def prefetchDefaultContainersInBackground():
+    """
+    Fetch the default search result in background
+    Will be run once per day
+    """
+    try:
+        last_time_fetched = float(global_preference_service.getPreference(DEFAULT_SEARCH_UPDATE_DATE).value)
+        if time.time() - last_time_fetched < 24 * 3600:
+            return
+    except DoesNotExist:
+        pass
+    worker = Worker(prefetchDefaultContainers)
+    threadpool.start(worker)
+
+
+def prefetchDefaultContainers():
+    items = []
+    for container in DEFAULT_CONTAINERS:
+        item = getContainerInfo(container, True)
+        item['logo_url'] = getContainerLogo(container)
+        item['from'] = 'dockerhub'
+        items.append(item)
+    with open(DEFAULT_SEARCH_APP_FILE, 'w', encoding='utf-8') as f:
+        json.dump(items, f)
+    global_preference_service.setPreference(DEFAULT_SEARCH_UPDATE_DATE, time.time())
+
+
+def getContainerLogo(container_name):
+    img_res = requests.get("%s/%s" % (DOCKER_AVATAR_API, container_name))
+    if img_res.ok:
+        img_info = img_res.json()
+        if 'logo_url' in img_info and type(img_info['logo_url']) is dict:
+            for key in list(img_info['logo_url']):
+                if len(img_info['logo_url'][key]) > 0:
+                    return img_info['logo_url'][key]
+    return None

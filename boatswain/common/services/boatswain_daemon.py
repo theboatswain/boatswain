@@ -17,7 +17,6 @@
 
 from PyQt5.QtCore import QThread
 
-from boatswain.common.models.container import Container
 from boatswain.common.services import data_transporter_service, docker_service
 from boatswain.common.utils.logging import logger
 

@@ -72,10 +72,7 @@ class ShortcutCreator:
         return self.dialog.exec_()
 
     def cancel(self):
-        button_reply = QMessageBox.question(self.dialog, 'Preference shortcut', "Are you sure?",
-                                            QMessageBox.Ok | QMessageBox.Cancel, QMessageBox.Cancel)
-        if button_reply == QMessageBox.Ok:
-            self.dialog.close()
+        self.dialog.close()
 
     def next(self):
         if not self.ui.shortcut_label.text():
@@ -205,7 +202,7 @@ class ShortcutCreator:
             self.ui.default_value_des.setText(self._translate(
                 self.template, "The default value that will be display in the expanding window \n"
                                "This value will not make any effective into the current container, the only purpose of "
-                               "this property is for showing some default configuration values.\n"                               
+                               "this property is for showing some default configuration values.\n"
                                "This value can not be changed in the expanding window."))
 
     def retranslateUi(self):
