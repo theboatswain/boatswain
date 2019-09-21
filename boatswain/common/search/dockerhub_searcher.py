@@ -20,7 +20,6 @@ from typing import List
 import requests
 
 from boatswain.common.models.tag import Tag
-from boatswain.common.services import docker_service
 from boatswain.common.search.search_images import SearchProvider
 
 DOCKERHUB_API = 'https://registry.hub.docker.com/v2'
