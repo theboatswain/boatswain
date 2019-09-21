@@ -16,11 +16,12 @@
 #
 
 from PyQt5.QtCore import QCoreApplication, Qt
+from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QSizePolicy, QLineEdit, QPushButton, \
-    QMainWindow, QFrame, QScrollArea, QMenuBar, QMenu, QStatusBar, QAction
+    QMainWindow, QFrame, QScrollArea, QMenuBar, QMenu, QStatusBar, QAction, QLabel
 
 from boatswain.common.services import data_transporter_service
-from boatswain.common.services.system_service import rt
+from boatswain.common.services.system_service import rt, applyFontRatio
 from boatswain.common.ui.custom_ui import BQSizePolicy
 from boatswain.common.ui.select_ui import SelectUi
 from boatswain.common.utils.constants import APP_EXIT_CHANNEL
@@ -41,7 +42,7 @@ class HomeUi(QMainWindow):
         widget.setSizePolicy(BQSizePolicy(h_stretch=1))
         widget.setAutoFillBackground(False)
         top_layout = QGridLayout(widget)
-        top_layout.setContentsMargins(rt(11), 0, rt(11), rt(6))
+        top_layout.setContentsMargins(rt(11), 0, rt(4), rt(6))
         top_layout.setSpacing(rt(6))
 
         self.add_app = QPushButton(widget)
@@ -61,6 +62,13 @@ class HomeUi(QMainWindow):
         self.search_app.setFocusPolicy(Qt.ClickFocus)
         self.search_app.setStyleSheet("padding: 1 1 1 5;")
         top_layout.addWidget(self.search_app, 0, 3, 1, 1)
+        self.custom_menu = QPushButton(widget)
+        self.custom_menu.setText("⋮")
+        self.custom_menu.setStyleSheet("border: none; padding: 1px 2px;")
+        font = QFont()
+        font.setPointSize(applyFontRatio(18))
+        self.custom_menu.setFont(font)
+        top_layout.addWidget(self.custom_menu, 0, 4, 1, 1)
 
         hidden_widget = QWidget(widget)
         hidden_widget.setSizePolicy(BQSizePolicy())
@@ -87,18 +95,6 @@ class HomeUi(QMainWindow):
         self.setMenuBar(self.menu_bar)
         self.status_bar = QStatusBar(self)
         self.setStatusBar(self.status_bar)
-        self.action_add = QAction(self)
-        self.menu_file.addAction(self.action_add)
-        self.menu_bar.addAction(self.menu_file.menuAction())
-
-        self.menu_help = QMenu(self.menu_bar)
-        self.about = QAction(self)
-        self.about.setMenuRole(QAction.AboutRole)
-        self.menu_help.addAction(self.about)
-        self.check_for_update = QAction(self)
-        self.check_for_update.setMenuRole(QAction.ApplicationSpecificRole)
-        self.menu_help.addAction(self.check_for_update)
-        self.menu_bar.addAction(self.menu_help.menuAction())
 
         self.retranslateUi(self)
         self.app_list = QWidget(self)
@@ -115,9 +111,6 @@ class HomeUi(QMainWindow):
         boatswain.setWindowTitle(_translate("Boatswain", "Boatswain"))
         self.search_app.setPlaceholderText(_translate("Boatswain", "Filter apps"))
         self.add_app.setText(_translate("Boatswain", "Add"))
-        self.menu_file.setTitle(_translate("Boatswain", "File"))
-        self.action_add.setText(_translate("Boatswain", "Add new app"))
-        self.check_for_update.setText(_translate("Boatswain", "Check for updates"))
 
     def closeEvent(self, event):
         data_transporter_service.fire(APP_EXIT_CHANNEL)

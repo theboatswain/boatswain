@@ -21,7 +21,6 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSizePolicy, QHBoxLayout, QLab
 from boatswain.common.models.container import Container
 from boatswain.common.services.system_service import rt
 from boatswain.common.ui.custom_ui import BQSizePolicy
-from boatswain.common.utils import text_utils
 from boatswain.common.utils.app_avatar import AppAvatar
 from boatswain.home.advanced.advanced_app_widget import AdvancedAppWidget
 

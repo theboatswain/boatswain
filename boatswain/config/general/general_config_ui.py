@@ -22,9 +22,8 @@ from PyQt5.QtWidgets import QLabel, QGridLayout, QPushButton, QComboBox, QLineEd
 
 from boatswain.common.models.container import Container
 from boatswain.common.services.system_service import rt
-from boatswain.common.utils import text_utils
-from boatswain.common.utils.app_avatar import AppAvatar
 from boatswain.common.ui.custom_ui import BQSizePolicy, AutoResizeWidget
+from boatswain.common.utils.app_avatar import AppAvatar
 
 
 class GeneralAppConfigUi(AutoResizeWidget):

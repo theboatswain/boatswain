@@ -17,9 +17,9 @@
 
 from typing import Dict
 
-from PyQt5.QtCore import QCoreApplication
+from PyQt5.QtCore import QCoreApplication, QPoint
 from PyQt5.QtGui import QResizeEvent
-from PyQt5.QtWidgets import QMainWindow, QInputDialog
+from PyQt5.QtWidgets import QMainWindow, QInputDialog, QMenu, QAction
 from boatswain_updater.utils import sys_utils
 from playhouse.shortcuts import update_model_from_dict, model_to_dict
 
@@ -52,7 +52,6 @@ class Home:
         self.ui.resize(global_preference_service.getHomeWindowSize())
         self.ui.setMinimumSize(global_preference_service.getMinimumHomeWindowSize())
         self.ui.add_app.clicked.connect(self.addAppClicked)
-        self.ui.action_add.triggered.connect(self.addAppClicked)
         self.apps: Dict[int, AppWidgetUi] = {}
         self.groups: Dict[int, GroupWidgetUi] = {}
 
@@ -66,9 +65,7 @@ class Home:
         data_transporter_service.listen(ADD_APP_CHANNEL, self.addAppClicked)
         self.ui.resizeEvent = self.resizeEvent
         self.ui.search_app.textChanged.connect(self.search)
-        self.ui.about.triggered.connect(self.showAbout)
-        self.ui.check_for_update.triggered.connect(lambda: data_transporter_service.fire(UPDATES_CHANNEL, False))
-
+        self.ui.custom_menu.clicked.connect(self.onMenuClicked)
         self.loadApps()
 
     def loadApps(self):
@@ -215,3 +212,20 @@ class Home:
     def showAbout(self):
         about = AboutDialog(self.ui)
         about.show()
+
+    def onMenuClicked(self):
+        menu_help = QMenu(self.ui)
+        about = QAction(self.ui)
+        about.setMenuRole(QAction.AboutRole)
+        about.setText(self._translate("Boatswain", "About"))
+        about.triggered.connect(self.showAbout)
+        menu_help.addAction(about)
+        menu_help.addSeparator()
+        check_for_update = QAction(self.ui)
+        check_for_update.setText(self._translate("Boatswain", "Check for updates"))
+        check_for_update.setMenuRole(QAction.ApplicationSpecificRole)
+        check_for_update.triggered.connect(lambda: data_transporter_service.fire(UPDATES_CHANNEL, False))
+        menu_help.addAction(check_for_update)
+        point: QPoint = self.ui.mapToGlobal(self.ui.custom_menu.pos())
+        point.setY(point.y() + self.ui.custom_menu.height() + rt(5))
+        menu_help.exec_(point)

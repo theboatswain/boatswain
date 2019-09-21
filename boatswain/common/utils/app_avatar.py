@@ -14,13 +14,12 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
-import requests
+
 from PyQt5.QtCore import Qt, QCoreApplication, QRect, QPoint, QSize
-from PyQt5.QtGui import QFont, QImage, QPixmap, QIcon
+from PyQt5.QtGui import QFont, QImage, QIcon
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QSizePolicy
 
 from boatswain.common.models.container import Container
-from boatswain.common.services import containers_service
 from boatswain.common.services.system_service import applyFontRatio, rt
 from boatswain.common.utils import text_utils
 
@@ -62,7 +61,6 @@ class AppAvatar(QWidget):
 
         self.setLayout(self.avatar_layout)
         self.status = QWidget(self)
-        # self.status.setFixedSize(rt(12), rt(12))
         self.status.setStyleSheet('background: rgb(101, 180, 67); border-radius: ' + str(rt(6)))
         self.status.setGeometry(radius * 1.38, radius * 1.38, rt(12), rt(12))
         self.status.hide()

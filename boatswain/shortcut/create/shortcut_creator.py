@@ -72,10 +72,7 @@ class ShortcutCreator:
         return self.dialog.exec_()
 
     def cancel(self):
-        button_reply = QMessageBox.question(self.dialog, 'Preference shortcut', "Are you sure?",
-                                            QMessageBox.Ok | QMessageBox.Cancel, QMessageBox.Cancel)
-        if button_reply == QMessageBox.Ok:
-            self.dialog.close()
+        self.dialog.close()
 
     def next(self):
         if not self.ui.shortcut_label.text():
