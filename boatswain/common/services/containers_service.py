@@ -170,15 +170,15 @@ def startContainer(container: Container):
         docker_container.start()
         return container
 
-    container_envs = {}
+    envs = {}
 
     if config_service.isAppConf(container, INCLUDING_ENV_SYSTEM, 'true'):
-        container_envs = {key: os.environ[key] for key in os.environ if key != 'PATH'}
+        envs = {key: os.environ[key] for key in os.environ if key != 'PATH'}
 
     for environment in environment_service.getEnvironments(container):
-        container_envs[environment.name] = environment.value
+        envs[environment.name] = environment.value
 
-    container_envs = {**container_envs, **shortcut_service.getShortcutContainerEnvs(container)}
+    envs = {**envs, **shortcut_service.getShortcutContainerEnvs(container)}
 
     ports = {}
     for port in port_mapping_service.getPortMappings(container):
@@ -191,8 +191,15 @@ def startContainer(container: Container):
         volumes[volume.host_path] = {'bind': volume.container_path, 'mode': volume.mode}
 
     volumes = {**volumes, **shortcut_service.getShortcutVolumeMounts(container)}
-
-    docker_container = docker_service.run(container.image_name, container.tag, ports, container_envs, volumes)
+    entrypoint = container.entrypoint if container.entrypoint else None
+    kwargs = {}
+    if container.memory_limit:
+        kwargs['mem_limit'] = "%dm" % container.memory_limit
+    if container.cpu_limit:
+        kwargs['cpu_period'] = 100000
+        kwargs['cpu_quota'] = container.cpu_limit * 100000
+    docker_container = docker_service.run(container.image_name, container.tag, ports, envs, volumes, entrypoint,
+                                          **kwargs)
     container.container_id = docker_container.short_id
     return container
 

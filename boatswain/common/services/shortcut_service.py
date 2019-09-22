@@ -18,11 +18,15 @@ import os
 from typing import List
 
 from peewee import DoesNotExist
-from playhouse.shortcuts import update_model_from_dict
+from playhouse.shortcuts import update_model_from_dict, model_to_dict
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
 from boatswain.common.utils.logging import logger
+
+
+def getShortcut(shortcut_id: int):
+    return PreferencesShortcut.get(shortcut_id)
 
 
 def getShortcutContainerEnvs(container: Container):
@@ -111,3 +115,12 @@ def importShortcuts(container: Container, shortcuts: List[dict]):
             logger.info("Ignoring shortcut label %s cuz it is already exists" % shortcut.label)
         except DoesNotExist:
             shortcut.save()
+
+
+def hasChanged(shortcut: PreferencesShortcut):
+    try:
+        model_source = model_to_dict(shortcut)
+        model_dest = model_to_dict(getShortcut(shortcut.id))
+        return model_source != model_dest
+    except DoesNotExist:
+        return True

@@ -22,7 +22,7 @@ from PyQt5.QtWidgets import QDialog, QWidget, QToolTip, QMessageBox, QFileDialog
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
-from boatswain.common.services import containers_service, config_service
+from boatswain.common.services import containers_service, config_service, shortcut_service
 from boatswain.common.services.system_service import rt
 from boatswain.common.utils.constants import SHORTCUT_CONF_CHANGED_CHANNEL, CONTAINER_CONF_CHANGED
 from boatswain.shortcut.create.shortcut_creator_ui import ShortcutCreatorUi
@@ -72,7 +72,21 @@ class ShortcutCreator:
         return self.dialog.exec_()
 
     def cancel(self):
-        self.dialog.close()
+        shortcut = shortcut_service.getShortcut(self.shortcut.id)
+        shortcut.label = self.ui.shortcut_label.text()
+        shortcut.default_value = self.ui.default_value.text()
+        shortcut.pref_type = self.ui.data_type.currentText()
+        shortcut.shortcut = self.ui.shortcut_type.currentText()
+        shortcut.mapping_to = self.ui.mapping_to.text()
+        shortcut.description = self.ui.description.toPlainText()
+        if shortcut_service.hasChanged(shortcut):
+            button_reply = QMessageBox.question(self.dialog, 'Preference shortcut', "You have made some changes, \n"
+                                                                                    "Do you want to discard all of it?",
+                                                QMessageBox.Ok | QMessageBox.Cancel, QMessageBox.Cancel)
+            if button_reply == QMessageBox.Ok:
+                self.dialog.close()
+        else:
+            self.dialog.close()
 
     def next(self):
         if not self.ui.shortcut_label.text():
@@ -130,9 +144,10 @@ class ShortcutCreator:
         self.shortcut.mapping_to = self.ui.mapping_to.text()
         self.shortcut.description = self.ui.description.toPlainText()
 
-        self.shortcut.save()
-        config_service.setAppConf(self.shortcut.container, CONTAINER_CONF_CHANGED, 'true')
-        containers_service.fire(self.container, SHORTCUT_CONF_CHANGED_CHANNEL)
+        if shortcut_service.hasChanged(self.shortcut):
+            self.shortcut.save()
+            config_service.setAppConf(self.shortcut.container, CONTAINER_CONF_CHANGED, 'true')
+            containers_service.fire(self.container, SHORTCUT_CONF_CHANGED_CHANNEL)
         self.dialog.accept()
 
     def onShortcutTypeChange(self, shortcut_type):
