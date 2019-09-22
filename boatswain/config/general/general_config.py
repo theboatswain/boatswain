@@ -43,7 +43,7 @@ class GeneralAppConfig:
 
         self.ui.limit_cpu.setMinimum(0)
         self.ui.limit_cpu.setMaximum(multiprocessing.cpu_count() * 100 * 80 / 100)
-        self.ui.limit_cpu.setValue(self.container.cpu_limit)
+        self.ui.limit_cpu.setValue(self.container.cpu_limit * 100)
         self.ui.limit_cpu.valueChanged.connect(self.onCpuChanged)
         self.onCpuChanged()
 
