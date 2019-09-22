@@ -40,10 +40,10 @@ def getContainerInfo(container_id) -> Container:
     return client.containers.get(container_id)
 
 
-def run(image_name, tag, ports, envs, volumes):
+def run(image_name, tag, ports, envs, volumes, entrypoint=None):
     ping()
     return client.containers.run(image_name + ":" + tag, detach=True, ports=ports,
-                                 environment=envs, volumes=volumes)
+                                 environment=envs, volumes=volumes, entrypoint=entrypoint)
 
 
 def streamLogs(container_id: str):

@@ -191,8 +191,8 @@ def startContainer(container: Container):
         volumes[volume.host_path] = {'bind': volume.container_path, 'mode': volume.mode}
 
     volumes = {**volumes, **shortcut_service.getShortcutVolumeMounts(container)}
-
-    docker_container = docker_service.run(container.image_name, container.tag, ports, container_envs, volumes)
+    entrypoint = container.entrypoint if container.entrypoint else None
+    docker_container = docker_service.run(container.image_name, container.tag, ports, envs, volumes, entrypoint)
     container.container_id = docker_container.short_id
     return container
 

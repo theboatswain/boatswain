@@ -47,6 +47,7 @@ class GeneralAppConfig:
         self.ui.sync.clicked.connect(self.onSyncClicked)
         self.ui.container_name.textChanged.connect(self.onNameChanged)
         self.ui.image_tags.currentIndexChanged.connect(self.onImageTagChange)
+        self.ui.entrypoint.textChanged.connect(self.onEntrypointChanged)
 
     def retranslateUi(self):
         self.ui.container_name.setText(self._translate(self.template, self.container.name))
@@ -83,6 +84,11 @@ class GeneralAppConfig:
             self.container.name = name
         containers_service.fire(self.container, 'name', name)
         self.container.save()
+
+    def onEntrypointChanged(self, entrypoint):
+        self.container.entrypoint = entrypoint
+        self.container.save()
+        config_service.setAppConf(self.container, CONTAINER_CONF_CHANGED, 'true')
 
     def onImageTagChange(self, index):
         if index > 0:
