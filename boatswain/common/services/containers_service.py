@@ -192,7 +192,14 @@ def startContainer(container: Container):
 
     volumes = {**volumes, **shortcut_service.getShortcutVolumeMounts(container)}
     entrypoint = container.entrypoint if container.entrypoint else None
-    docker_container = docker_service.run(container.image_name, container.tag, ports, envs, volumes, entrypoint)
+    kwargs = {}
+    if container.memory_limit:
+        kwargs['mem_limit'] = "%dm" % container.memory_limit
+    if container.cpu_limit:
+        kwargs['cpu_period'] = 100000
+        kwargs['cpu_quota'] = container.cpu_limit * 100000
+    docker_container = docker_service.run(container.image_name, container.tag, ports, envs, volumes, entrypoint,
+                                          **kwargs)
     container.container_id = docker_container.short_id
     return container
 

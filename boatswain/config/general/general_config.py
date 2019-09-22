@@ -107,6 +107,7 @@ class GeneralAppConfig:
     def onMemoryChanged(self):
         self.container.memory_limit = self.ui.limit_memory.value()
         self.container.save()
+        config_service.setAppConf(self.container, CONTAINER_CONF_CHANGED, 'true')
         if self.ui.limit_memory.value() > 0:
             self.ui.current_n_memory.setText(str(self.container.memory_limit) + " MB")
         else:
@@ -115,6 +116,7 @@ class GeneralAppConfig:
     def onCpuChanged(self):
         self.container.cpu_limit = self.ui.limit_cpu.value() / 100.0
         self.container.save()
+        config_service.setAppConf(self.container, CONTAINER_CONF_CHANGED, 'true')
         if self.ui.limit_cpu.value() > 0:
             self.ui.current_n_cpus.setText(str(self.container.cpu_limit) + " CPUs")
         else:
