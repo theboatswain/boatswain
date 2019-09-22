@@ -44,7 +44,6 @@ from boatswain.common.utils.logging import logger
 from boatswain.home.home import Home
 from boatswain.resources_utils import getResource
 
-
 def deFrostPem():
     """
     When the application is being frozen, all resource files will be encoded into the executable file

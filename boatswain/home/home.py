@@ -17,7 +17,7 @@
 
 from typing import Dict
 
-from PyQt5.QtCore import QCoreApplication, QPoint
+from PyQt5.QtCore import QCoreApplication, QPoint, Qt
 from PyQt5.QtGui import QResizeEvent
 from PyQt5.QtWidgets import QMainWindow, QInputDialog, QMenu, QAction
 from playhouse.shortcuts import update_model_from_dict, model_to_dict
@@ -220,12 +220,14 @@ class Home:
         about.setText(self._translate("Boatswain", "About"))
         about.triggered.connect(self.showAbout)
         menu_help.addAction(about)
-        menu_help.addSeparator()
         check_for_update = QAction(self.ui)
         check_for_update.setText(self._translate("Boatswain", "Check for updates"))
         check_for_update.setMenuRole(QAction.ApplicationSpecificRole)
         check_for_update.triggered.connect(lambda: data_transporter_service.fire(UPDATES_CHANNEL, False))
         menu_help.addAction(check_for_update)
+        menu_help.addSeparator()
+        preferences = QAction("Preferences…", self.ui)
+        menu_help.addAction(preferences)
         point: QPoint = self.ui.mapToGlobal(self.ui.custom_menu.pos())
         point.setY(point.y() + self.ui.custom_menu.height() + rt(5))
         menu_help.exec_(point)

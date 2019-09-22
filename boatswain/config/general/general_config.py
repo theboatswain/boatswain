@@ -14,8 +14,10 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
+import multiprocessing
 
 from PyQt5.QtCore import QCoreApplication
+from boatswain.common.utils import utils
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.tag import Tag
@@ -26,20 +28,24 @@ from boatswain.config.general.general_config_ui import GeneralAppConfigUi
 
 
 class GeneralAppConfig:
-    _translate = QCoreApplication.translate
+    _tr = QCoreApplication.translate
     template = 'GeneralAppConfig'
-    memory_units = ['MB', 'GB']
-    cpu_units = ['CPUs', 'Period', 'Quota']
 
     def __init__(self, parent, container: Container) -> None:
         self.container = container
         self.ui = GeneralAppConfigUi(parent, container, self)
 
-        for unit in self.memory_units:
-            self.ui.memory_unit.addItem(self._translate(self.template, unit))
+        self.ui.limit_memory.setMinimum(0)
+        self.ui.limit_memory.setMaximum(utils.getPhysicalMemory() * 70 / 100)
+        self.ui.limit_memory.setValue(self.container.memory_limit)
+        self.ui.limit_memory.valueChanged.connect(self.onMemoryChanged)
+        self.onMemoryChanged()
 
-        for unit in self.cpu_units:
-            self.ui.cpu_unit.addItem(self._translate(self.template, unit))
+        self.ui.limit_cpu.setMinimum(0)
+        self.ui.limit_cpu.setMaximum(multiprocessing.cpu_count() * 100 * 80 / 100)
+        self.ui.limit_cpu.setValue(self.container.cpu_limit)
+        self.ui.limit_cpu.valueChanged.connect(self.onCpuChanged)
+        self.onCpuChanged()
 
         self.retranslateUi()
         self.loadTags()
@@ -50,23 +56,23 @@ class GeneralAppConfig:
         self.ui.entrypoint.textChanged.connect(self.onEntrypointChanged)
 
     def retranslateUi(self):
-        self.ui.container_name.setText(self._translate(self.template, self.container.name))
-        self.ui.repo_source.setText(self._translate(self.template, "Repo source:     Dockerhub"))
-        self.ui.sync.setText(self._translate(self.template, "Sync"))
-        self.ui.img_tag_label.setText(self._translate(self.template, "Image tag:"))
-        self.ui.limit_cpu_label.setText(self._translate(self.template, "CPU limit:"))
-        self.ui.entrypoint_label.setText(self._translate(self.template, "Entrypoint"))
+        self.ui.container_name.setText(self._tr(self.template, self.container.name))
+        self.ui.repo_source.setText(self._tr(self.template, "Repo source:     " + self.container.repo.title()))
+        self.ui.sync.setText(self._tr(self.template, "Sync"))
+        self.ui.img_tag_label.setText(self._tr(self.template, "Image tag:"))
+        self.ui.limit_cpu_label.setText(self._tr(self.template, "CPU limit:"))
+        self.ui.entrypoint_label.setText(self._tr(self.template, "Entrypoint"))
         self.ui.entrypoint.setPlaceholderText(
-            self._translate(self.template, "Override the default command of the container"))
-        self.ui.limit_memory_label.setText(self._translate(self.template, "Memory limit:   "))
-        self.ui.start_with_boatswain.setText(self._translate(self.template, " Start with Boatswain"))
-        self.ui.stop_with_boatswain.setText(self._translate(self.template, " Stop when Boatswain exit"))
-        self.ui.container_id.setText(self._translate(self.template, "Container ID:     " + self.container.container_id))
+            self._tr(self.template, "Override the default entrypoint of the container"))
+        self.ui.limit_memory_label.setText(self._tr(self.template, "Memory limit:   "))
+        self.ui.start_with_boatswain.setText(self._tr(self.template, " Start with Boatswain"))
+        self.ui.stop_with_boatswain.setText(self._tr(self.template, " Stop when Boatswain exits"))
+        self.ui.container_id.setText(self._tr(self.template, "Container ID:     " + self.container.container_id))
 
     def onSyncClicked(self):
-        self.ui.sync.setText(self._translate(self.template, "Syncing"))
+        self.ui.sync.setText(self._tr(self.template, "Syncing"))
         worker = Worker(containers_service.updateContainerTags, self.container)
-        worker.signals.result.connect(lambda: self.ui.sync.setText(self._translate(self.template, "Sync")))
+        worker.signals.result.connect(lambda: self.ui.sync.setText(self._tr(self.template, "Sync")))
         worker.signals.finished.connect(self.loadTags)
         threadpool.start(worker)
 
@@ -97,3 +103,19 @@ class GeneralAppConfig:
             self.container.save()
             config_service.setAppConf(self.container, CONTAINER_CONF_CHANGED, 'true')
             containers_service.fire(self.container, 'tag_index', index)
+
+    def onMemoryChanged(self):
+        self.container.memory_limit = self.ui.limit_memory.value()
+        self.container.save()
+        if self.ui.limit_memory.value() > 0:
+            self.ui.current_n_memory.setText(str(self.container.memory_limit) + " MB")
+        else:
+            self.ui.current_n_memory.setText(self._tr(self.template, "Unlimited"))
+
+    def onCpuChanged(self):
+        self.container.cpu_limit = self.ui.limit_cpu.value() / 100.0
+        self.container.save()
+        if self.ui.limit_cpu.value() > 0:
+            self.ui.current_n_cpus.setText(str(self.container.cpu_limit) + " CPUs")
+        else:
+            self.ui.current_n_cpus.setText(self._tr(self.template, "Unlimited"))

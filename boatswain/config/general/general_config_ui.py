@@ -18,7 +18,7 @@
 from PyQt5.QtCore import QCoreApplication, Qt
 from PyQt5.QtGui import QIntValidator, QDoubleValidator
 from PyQt5.QtWidgets import QLabel, QGridLayout, QPushButton, QComboBox, QLineEdit, QCheckBox, QWidget, QVBoxLayout, \
-    QHBoxLayout, QFrame
+    QHBoxLayout, QFrame, QSlider, QSizePolicy
 
 from boatswain.common.models.container import Container
 from boatswain.common.services.system_service import rt
@@ -88,10 +88,10 @@ class GeneralAppConfigUi(AutoResizeWidget):
         self.grid_layout.addWidget(self.widget_8, 2, 5, 1, 1)
         self.img_tag_label = QLabel(self.widget_4)
         self.grid_layout.addWidget(self.img_tag_label, 2, 0, 1, 1)
-        self.memory_unit = QComboBox(self.widget_4)
-        self.grid_layout.addWidget(self.memory_unit, 3, 2, 1, 1)
-        self.cpu_unit = QComboBox(self.widget_4)
-        self.grid_layout.addWidget(self.cpu_unit, 4, 2, 1, 1)
+        self.current_n_memory = QLabel(self.widget_4)
+        self.grid_layout.addWidget(self.current_n_memory, 3, 3, 1, 1)
+        self.current_n_cpus = QLabel(self.widget_4)
+        self.grid_layout.addWidget(self.current_n_cpus, 4, 3, 1, 1)
         self.widget_7 = QWidget(self.widget_4)
         self.widget_7.setSizePolicy(BQSizePolicy(h_stretch=1))
         self.grid_layout.addWidget(self.widget_7, 3, 3, 1, 1)
@@ -103,18 +103,11 @@ class GeneralAppConfigUi(AutoResizeWidget):
         self.grid_layout.addWidget(self.image_tags, 2, 1, 1, 3)
         self.limit_memory_label = QLabel(self.widget_4)
         self.grid_layout.addWidget(self.limit_memory_label, 3, 0, 1, 1)
-        self.limit_memory = QLineEdit(self.widget_4)
-        self.limit_memory.setAttribute(Qt.WA_MacShowFocusRect, 0)
-        self.limit_memory.setFocusPolicy(Qt.ClickFocus)
-        self.limit_memory.setText(str(self.container.memory_limit))
-        self.limit_memory.setValidator(QIntValidator(0, 9999999))
-        self.grid_layout.addWidget(self.limit_memory, 3, 1, 1, 1)
-        self.limit_cpu = QLineEdit(self.widget_4)
-        self.limit_cpu.setAttribute(Qt.WA_MacShowFocusRect, 0)
-        self.limit_cpu.setFocusPolicy(Qt.ClickFocus)
-        self.limit_cpu.setText(str(self.container.cpu_limit))
-        self.limit_cpu.setValidator(QDoubleValidator(0, 99999999, 2))
-        self.grid_layout.addWidget(self.limit_cpu, 4, 1, 1, 1)
+        self.limit_memory = QSlider(Qt.Horizontal)
+        self.limit_memory.setSizePolicy(BQSizePolicy(h_stretch=3))
+        self.grid_layout.addWidget(self.limit_memory, 3, 1, 1, 2)
+        self.limit_cpu = QSlider(Qt.Horizontal)
+        self.grid_layout.addWidget(self.limit_cpu, 4, 1, 1, 2)
         self.entrypoint = QLineEdit(self.widget_4)
         self.entrypoint.setAttribute(Qt.WA_MacShowFocusRect, 0)
         self.entrypoint.setFocusPolicy(Qt.ClickFocus)

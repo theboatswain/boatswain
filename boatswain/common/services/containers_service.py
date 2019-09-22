@@ -170,15 +170,15 @@ def startContainer(container: Container):
         docker_container.start()
         return container
 
-    container_envs = {}
+    envs = {}
 
     if config_service.isAppConf(container, INCLUDING_ENV_SYSTEM, 'true'):
-        container_envs = {key: os.environ[key] for key in os.environ if key != 'PATH'}
+        envs = {key: os.environ[key] for key in os.environ if key != 'PATH'}
 
     for environment in environment_service.getEnvironments(container):
-        container_envs[environment.name] = environment.value
+        envs[environment.name] = environment.value
 
-    container_envs = {**container_envs, **shortcut_service.getShortcutContainerEnvs(container)}
+    envs = {**envs, **shortcut_service.getShortcutContainerEnvs(container)}
 
     ports = {}
     for port in port_mapping_service.getPortMappings(container):

@@ -18,6 +18,8 @@
 import os
 
 from docker.types import CancellableStream
+from ctypes import Structure, c_int32, c_uint64, sizeof
+from boatswain_updater.utils import sys_utils
 
 
 class EmptyStream(CancellableStream):
@@ -35,6 +37,23 @@ class EmptyStream(CancellableStream):
 
     def close(self):
         pass
+
+
+class MemoryStatusEx(Structure):
+    _fields_ = [
+        ('length', c_int32),
+        ('memoryLoad', c_int32),
+        ('totalPhys', c_uint64),
+        ('availPhys', c_uint64),
+        ('totalPageFile', c_uint64),
+        ('availPageFile', c_uint64),
+        ('totalVirtual', c_uint64),
+        ('availVirtual', c_uint64),
+        ('availExtendedVirtual', c_uint64)]
+
+    def __init__(self, *args, **kw):
+        super().__init__(*args, **kw)
+        self.length = sizeof(self)
 
 
 def split_all(path):
@@ -58,3 +77,14 @@ def disconnectAllSignals(widget):
         widget.disconnect()
     except TypeError:
         return
+
+
+def getPhysicalMemory():
+    if sys_utils.isWin():
+        from ctypes import windll, byref
+        m = MemoryStatusEx()
+        windll.kernel32.GlobalMemoryStatusEx(byref(m))
+        return m.totalPhys / (1024. ** 2)
+    else:
+        mem_bytes = os.sysconf('SC_PAGE_SIZE') * os.sysconf('SC_PHYS_PAGES')  # e.g. 4015976448
+        return mem_bytes / (1024. ** 2)
