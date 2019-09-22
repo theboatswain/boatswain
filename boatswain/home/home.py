@@ -17,7 +17,7 @@
 
 from typing import Dict
 
-from PyQt5.QtCore import QCoreApplication, QPoint, Qt
+from PyQt5.QtCore import QCoreApplication, QPoint
 from PyQt5.QtGui import QResizeEvent
 from PyQt5.QtWidgets import QMainWindow, QInputDialog, QMenu, QAction
 from playhouse.shortcuts import update_model_from_dict, model_to_dict
