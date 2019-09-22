@@ -16,9 +16,8 @@
 #
 
 from PyQt5.QtCore import QCoreApplication, Qt
-from PyQt5.QtGui import QIntValidator, QDoubleValidator
 from PyQt5.QtWidgets import QLabel, QGridLayout, QPushButton, QComboBox, QLineEdit, QCheckBox, QWidget, QVBoxLayout, \
-    QHBoxLayout, QFrame, QSlider, QSizePolicy
+    QHBoxLayout, QFrame, QSlider
 
 from boatswain.common.models.container import Container
 from boatswain.common.services.system_service import rt
@@ -100,6 +99,7 @@ class GeneralAppConfigUi(AutoResizeWidget):
         self.entrypoint_label = QLabel(self.widget_4)
         self.grid_layout.addWidget(self.entrypoint_label, 5, 0, 1, 1)
         self.image_tags = QComboBox(self.widget_4)
+        self.image_tags.setMinimumWidth(rt(300))
         self.grid_layout.addWidget(self.image_tags, 2, 1, 1, 3)
         self.limit_memory_label = QLabel(self.widget_4)
         self.grid_layout.addWidget(self.limit_memory_label, 3, 0, 1, 1)
@@ -111,7 +111,7 @@ class GeneralAppConfigUi(AutoResizeWidget):
         self.entrypoint = QLineEdit(self.widget_4)
         self.entrypoint.setAttribute(Qt.WA_MacShowFocusRect, 0)
         self.entrypoint.setFocusPolicy(Qt.ClickFocus)
-        self.grid_layout.addWidget(self.entrypoint, 5, 1, 1, 3)
+        self.grid_layout.addWidget(self.entrypoint, 5, 1, 1, 5)
         self.vertical_layout_2.addWidget(self.widget_4)
         self.line_2 = QFrame(self)
         self.line_2.setFrameShape(QFrame.HLine)
