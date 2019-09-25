@@ -33,7 +33,7 @@ from boatswain.shortcut.preferences_shortcut_config_ui import PreferencesShortcu
 
 
 class PreferencesShortcutConfig(object):
-    _translate = QtCore.QCoreApplication.translate
+    _tr = QtCore.QCoreApplication.translate
     template = 'PreferencesShortcutConfig'
     DOWN = 1
     UP = -1
@@ -62,13 +62,13 @@ class PreferencesShortcutConfig(object):
         self.ui.import_shortcut.clicked.connect(self.importFromYaml)
 
     def retranslateUi(self):
-        self.dialog.setWindowTitle(self._translate(self.template, "Preferences shortcut") + " - " + self.container.name)
-        self.ui.import_shortcut.setText(self._translate(self.template, "Import"))
-        self.ui.export_shortcut.setText(self._translate(self.template, "Export"))
-        self.ui.new_shortcut.setText(self._translate(self.template, "+"))
-        self.ui.delete_shortcut.setText(self._translate(self.template, "-"))
-        self.ui.move_up.setText(self._translate(self.template, "↑"))
-        self.ui.move_down.setText(self._translate(self.template, "↓"))
+        self.dialog.setWindowTitle(self._tr(self.template, "Preferences shortcut") + " - " + self.container.name)
+        self.ui.import_shortcut.setText(self._tr(self.template, "Import"))
+        self.ui.export_shortcut.setText(self._tr(self.template, "Export"))
+        self.ui.new_shortcut.setText(self._tr(self.template, "+"))
+        self.ui.delete_shortcut.setText(self._tr(self.template, "-"))
+        self.ui.move_up.setText(self._tr(self.template, "↑"))
+        self.ui.move_down.setText(self._tr(self.template, "↓"))
 
     def drawSwitches(self, table_data):
         for i, record in enumerate(table_data):
