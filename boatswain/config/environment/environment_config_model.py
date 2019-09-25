@@ -21,8 +21,9 @@ from PyQt5.QtCore import QVariant
 from PyQt5.QtCore import Qt
 
 from boatswain.common.models.container import Container
-from boatswain.common.services import config_service
-from boatswain.common.utils.constants import CONTAINER_CONF_CHANGED
+from boatswain.common.models.environment import Environment
+from boatswain.common.services import auditing_service
+from boatswain.common.utils.constants import STATUS_DELETED
 
 
 class EnvironmentConfigModel(QAbstractTableModel):
@@ -49,11 +50,12 @@ class EnvironmentConfigModel(QAbstractTableModel):
 
     def setData(self, index, value, role=Qt.EditRole):
         if role == Qt.EditRole:
-            setattr(self.array_data[index.row()], self.header_data[index.column()], value)
-            self.array_data[index.row()].save()
-            container = self.array_data[index.row()].container
-            if container is not None:
-                config_service.setAppConf(self.container, CONTAINER_CONF_CHANGED, 'true')
+            record: Environment = self.array_data[index.row()]
+            attr = self.header_data[index.column()]
+            previous_val = getattr(record, attr)
+            setattr(record, attr, value)
+            record.save()
+            auditing_service.audit_update(self.container, record.tableName(), record.id, attr, previous_val, value)
             return True
         else:
             return False
@@ -70,14 +72,16 @@ class EnvironmentConfigModel(QAbstractTableModel):
             self.array_data.sort(key=lambda x: getattr(x, self.header_data[col]))
         self.layoutChanged.emit()
 
-    def addRecord(self, record):
+    def addRecord(self, record: Environment):
+        record.save()
+        auditing_service.audit_create(self.container, record.tableName(), record.id)
         self.array_data.append(record)
         self.layoutChanged.emit()
 
     def removeRow(self, p_int, parent=None, *args, **kwargs):
-        if self.array_data[p_int].container is not None:
-            self.array_data[p_int].delete_instance()
-            config_service.setAppConf(self.container, CONTAINER_CONF_CHANGED, 'true')
+        self.array_data[p_int].status = STATUS_DELETED
+        self.array_data[p_int].save()
+        auditing_service.audit_delete(self.container, self.array_data[p_int].tableName(), self.array_data[p_int].id)
 
         self.array_data.pop(p_int)
         self.layoutChanged.emit()

@@ -19,10 +19,11 @@ from typing import List
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.environment import Environment
+from boatswain.common.utils.constants import STATUS_ADDED
 
 
 def getEnvironments(container: Container) -> List[Environment]:
-    return Environment.select().where(Environment.container == container)
+    return Environment.select().where((Environment.container == container) & (Environment.status == STATUS_ADDED))
 
 
 def cloneAll(from_container: Container, to_container: Container):

@@ -21,6 +21,9 @@ import sys
 from PyQt5.QtCore import Qt, QCoreApplication, QSize
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication
+
+from boatswain.common.models.audit import Audit
+from boatswain.common.models.audit_update import AuditUpdate
 from boatswain_updater.models.feed import Feed
 from boatswain_updater.updater import Updater
 from boatswain_updater.utils import pyqt_utils
@@ -92,7 +95,7 @@ def run():
     # Connect to SQLite DB
     db.connect()
     db.create_tables([Container, Environment, PortMapping, VolumeMount, Tag, Configuration, PreferencesShortcut,
-                      Preference, Workspace, Group])
+                      Preference, Workspace, Group, Audit, AuditUpdate])
 
     # Load home window
     window = Home()

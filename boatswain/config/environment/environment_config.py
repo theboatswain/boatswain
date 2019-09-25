@@ -18,12 +18,12 @@
 import os
 
 from PyQt5 import QtCore
-from PyQt5.QtCore import QItemSelectionModel, Qt
+from PyQt5.QtCore import QItemSelectionModel, Qt, QModelIndex
 from PyQt5.QtWidgets import QTableView, QAbstractItemView
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.environment import Environment
-from boatswain.common.services import config_service
+from boatswain.common.services import config_service, auditing_service, environment_service
 from boatswain.common.utils.constants import INCLUDING_ENV_SYSTEM
 from boatswain.common.ui.custom_ui import PathInputDelegate
 from boatswain.config.environment.environment_config_model import EnvironmentConfigModel
@@ -39,7 +39,7 @@ class EnvironmentConfig:
         self.container = container
         self.ui = EnvironmentConfigUi(parent, container)
 
-        table_data = Environment.select().where(Environment.container == self.container)
+        table_data = environment_service.getEnvironments(self.container)
         headers = ['name', 'value', 'description']
         self.configureEnvTable(self.ui.user_table, headers, list(table_data), self.container)
         self.ui.user_table.setItemDelegateForColumn(1, PathInputDelegate(self.ui.user_table))
@@ -47,21 +47,27 @@ class EnvironmentConfig:
         sys_headers = ['name', 'value']
         self.configureEnvTable(self.ui.sys_env_table, sys_headers, self.getAllSysEnv(), self.container)
         self.ui.sys_env_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        if config_service.isAppConf(self.container, INCLUDING_ENV_SYSTEM, 'true'):
-            self.ui.include_sys_env.setChecked(True)
+        self.ui.sys_env_table.doubleClicked.connect(self.onDoubleClickItem)
 
         self.retranslateUi()
 
         self.ui.new_env.clicked.connect(self.onNewEnvClicked)
         self.ui.delete_env.clicked.connect(self.onDeleteEnvClicked)
-        self.ui.include_sys_env.stateChanged.connect(self.onIncludeSysEnvCheck)
 
     def retranslateUi(self):
         self.ui.user_env_label.setText(self._translate(self.template, "User environment variables:"))
         self.ui.new_env.setText(self._translate(self.template, "Add"))
         self.ui.delete_env.setText(self._translate(self.template, "Delete"))
         self.ui.include_sys_env.setText(
-            self._translate(self.template, " Include System environment variables (except PATH):"))
+            self._translate(self.template, "System environments (double click to copy)"))
+
+    def onDoubleClickItem(self, index: QModelIndex):
+        data = self.ui.sys_env_table.model().array_data[index.row()]
+        self.ui.user_table.model().addRecord(data)
+        flags = QItemSelectionModel.ClearAndSelect | QItemSelectionModel.Rows
+        index = self.ui.user_table.model().index(self.ui.user_table.model().rowCount() - 1, 0)
+        self.ui.user_table.selectionModel().select(index, flags)
+        self.ui.user_table.resizeRowsToContents()
 
     def onNewEnvClicked(self):
         self.ui.user_table.model().addRecord(
@@ -77,15 +83,11 @@ class EnvironmentConfig:
             self.ui.user_table.model().removeRow(item.row())
         self.ui.user_table.resizeRowsToContents()
 
-    def onIncludeSysEnvCheck(self, state):
-        val = 'true' if state == Qt.Checked else 'false'
-        config_service.setAppConf(self.container, INCLUDING_ENV_SYSTEM, val)
-
     def getAllSysEnv(self):
         envs = []
         for item in os.environ:
             if item != 'PATH':
-                envs.append(Environment(name=item, value=os.environ[item]))
+                envs.append(Environment(name=item, value=os.environ[item], container=self.container))
         return envs
 
     def configureEnvTable(self, tv: QTableView, header, data, container: Container):
@@ -115,3 +117,4 @@ class EnvironmentConfig:
         tv.setSortingEnabled(True)
 
         tv.setSelectionBehavior(QAbstractItemView.SelectRows)
+        return table_model
