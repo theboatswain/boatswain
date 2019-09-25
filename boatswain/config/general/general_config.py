@@ -21,7 +21,7 @@ from boatswain.common.utils import utils
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.tag import Tag
-from boatswain.common.services import config_service, containers_service
+from boatswain.common.services import config_service, containers_service, auditing_service
 from boatswain.common.services.worker_service import Worker, threadpool
 from boatswain.common.utils.constants import CONTAINER_CONF_CHANGED
 from boatswain.config.general.general_config_ui import GeneralAppConfigUi
@@ -38,14 +38,16 @@ class GeneralAppConfig:
         self.ui.limit_memory.setMinimum(0)
         self.ui.limit_memory.setMaximum(utils.getPhysicalMemory() * 70 / 100)
         self.ui.limit_memory.setValue(self.container.memory_limit)
-        self.ui.limit_memory.valueChanged.connect(self.onMemoryChanged)
-        self.onMemoryChanged()
+        self.ui.limit_memory.sliderReleased.connect(self.onMemoryChanged)
+        self.ui.limit_memory.valueChanged.connect(self.onMemoryChanging)
+        self.onMemoryChanging()
 
         self.ui.limit_cpu.setMinimum(0)
         self.ui.limit_cpu.setMaximum(multiprocessing.cpu_count() * 100 * 80 / 100)
         self.ui.limit_cpu.setValue(self.container.cpu_limit * 100)
-        self.ui.limit_cpu.valueChanged.connect(self.onCpuChanged)
-        self.onCpuChanged()
+        self.ui.limit_cpu.sliderReleased.connect(self.onCpuChanged)
+        self.ui.limit_cpu.valueChanged.connect(self.onCpuChanging)
+        self.onCpuChanging()
 
         self.retranslateUi()
         self.loadTags()
@@ -92,32 +94,44 @@ class GeneralAppConfig:
         self.container.save()
 
     def onEntrypointChanged(self, entrypoint):
+        previous_entrypoint = self.container.entrypoint
         self.container.entrypoint = entrypoint
         self.container.save()
-        config_service.setAppConf(self.container, CONTAINER_CONF_CHANGED, 'true')
+        auditing_service.audit_update(self.container, self.container.tableName(),
+                                      self.container.id, "entrypoint", previous_entrypoint, entrypoint)
 
     def onImageTagChange(self, index):
         if index > 0:
             tag = self.ui.image_tags.itemText(index).split(':')[1]
+            previous_tag = self.container.tag
             self.container.tag = tag
             self.container.save()
-            config_service.setAppConf(self.container, CONTAINER_CONF_CHANGED, 'true')
+            auditing_service.audit_update(self.container, self.container.__class__.__name__,
+                                          self.container.id, "tag", previous_tag, tag)
             containers_service.fire(self.container, 'tag_index', index)
 
     def onMemoryChanged(self):
+        previous_memory_limit = self.container.memory_limit
         self.container.memory_limit = self.ui.limit_memory.value()
         self.container.save()
-        config_service.setAppConf(self.container, CONTAINER_CONF_CHANGED, 'true')
-        if self.ui.limit_memory.value() > 0:
-            self.ui.current_n_memory.setText(str(self.container.memory_limit) + " MB")
-        else:
-            self.ui.current_n_memory.setText(self._tr(self.template, "Unlimited"))
+        auditing_service.audit_update(self.container, self.container.tableName(), self.container.id,
+                                      "memory_limit", previous_memory_limit, self.container.memory_limit)
 
     def onCpuChanged(self):
+        previous_cpu_limit = self.container.cpu_limit
         self.container.cpu_limit = self.ui.limit_cpu.value() / 100.0
         self.container.save()
-        config_service.setAppConf(self.container, CONTAINER_CONF_CHANGED, 'true')
+        auditing_service.audit_update(self.container, self.container.tableName(), self.container.id,
+                                      "cpu_limit", previous_cpu_limit, self.container.cpu_limit)
+
+    def onCpuChanging(self):
         if self.ui.limit_cpu.value() > 0:
-            self.ui.current_n_cpus.setText(str(self.container.cpu_limit) + " CPUs")
+            self.ui.current_n_cpus.setText(str(self.ui.limit_cpu.value() / 100.0) + " CPUs")
         else:
             self.ui.current_n_cpus.setText(self._tr(self.template, "Unlimited"))
+
+    def onMemoryChanging(self):
+        if self.ui.limit_memory.value() > 0:
+            self.ui.current_n_memory.setText(str(self.ui.limit_memory.value()) + " MB")
+        else:
+            self.ui.current_n_memory.setText(self._tr(self.template, "Unlimited"))
