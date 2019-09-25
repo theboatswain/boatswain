@@ -19,10 +19,11 @@ from typing import List
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.port_mapping import PortMapping
+from boatswain.common.utils.constants import STATUS_ADDED
 
 
 def getPortMappings(container: Container) -> List[PortMapping]:
-    return PortMapping.select().where(PortMapping.container == container)
+    return PortMapping.select().where((PortMapping.container == container) & (PortMapping.status == STATUS_ADDED))
 
 
 def cloneAll(from_container: Container, to_container: Container):

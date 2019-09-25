@@ -18,6 +18,7 @@
 from PyQt5 import QtCore
 from PyQt5.QtCore import QItemSelectionModel
 from PyQt5.QtWidgets import QTableView, QAbstractItemView
+from boatswain.common.services import port_mapping_service
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.port_mapping import PortMapping
@@ -43,7 +44,7 @@ class PortMappingConfig:
         self.ui.new_port.clicked.connect(self.onNewPortClicked)
         self.ui.delete_port.clicked.connect(self.onDeletePortClicked)
 
-        table_data = PortMapping.select().where(PortMapping.container == container)
+        table_data = port_mapping_service.getPortMappings(self.container)
         headers = ['target_port', 'port', 'protocol', 'description']
         display_headers = ['Host Port', 'Container Port', 'Protocol', 'Description']
         self.configurePortTable(self.ui.mapping_table, headers, display_headers, list(table_data), container)

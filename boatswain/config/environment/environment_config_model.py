@@ -79,9 +79,10 @@ class EnvironmentConfigModel(QAbstractTableModel):
         self.layoutChanged.emit()
 
     def removeRow(self, p_int, parent=None, *args, **kwargs):
-        self.array_data[p_int].status = STATUS_DELETED
-        self.array_data[p_int].save()
-        auditing_service.audit_delete(self.container, self.array_data[p_int].tableName(), self.array_data[p_int].id)
+        record = self.array_data[p_int]
+        record.status = STATUS_DELETED
+        record.save()
+        auditing_service.audit_delete(self.container, record.tableName(), record.id)
 
         self.array_data.pop(p_int)
         self.layoutChanged.emit()
