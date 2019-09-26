@@ -21,12 +21,12 @@ from PyQt5.QtWidgets import QDialog, QAbstractItemView, QTableView, QHeaderView,
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
-from boatswain.common.services import containers_service, config_service, shortcut_service
+from boatswain.common.services import containers_service, shortcut_service
 from boatswain.common.services.system_service import rt
 from boatswain.common.shortcut.shortcut_yaml import ShortcutYaml
 from boatswain.common.ui.switch import SwitchBox
 from boatswain.common.utils import message_utils
-from boatswain.common.utils.constants import SHORTCUT_CONF_CHANGED_CHANNEL, CONTAINER_CONF_CHANGED
+from boatswain.common.utils.constants import SHORTCUT_CONF_CHANGED_CHANNEL
 from boatswain.shortcut.create.shortcut_creator import ShortcutCreator
 from boatswain.shortcut.preferences_shortcut_config_model import ShortcutCreatorModel
 from boatswain.shortcut.preferences_shortcut_config_ui import PreferencesShortcutConfigUi
@@ -88,7 +88,6 @@ class PreferencesShortcutConfig(object):
             self.ui.shortcut_table.model().removeRow(item.row())
         self.ui.shortcut_table.resizeRowsToContents()
         containers_service.fire(self.container, SHORTCUT_CONF_CHANGED_CHANNEL)
-        config_service.setAppConf(self.container, CONTAINER_CONF_CHANGED, 'true')
 
     def onDoubleClickItem(self, index: QModelIndex):
         data = self.table_model.array_data[index.row()]

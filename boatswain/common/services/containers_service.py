@@ -36,8 +36,8 @@ from boatswain.common.services import docker_service, system_service, config_ser
 from boatswain.common.services.worker_service import Worker, threadpool
 from boatswain.common.shortcut.shortcut_yaml import ShortcutYaml
 from boatswain.common.utils import docker_utils
-from boatswain.common.utils.constants import INCLUDING_ENV_SYSTEM, CONTAINER_CONF_CHANGED, \
-    CONTAINER_CONF_CHANGED_CHANNEL, DEFAULT_CONTAINERS, DEFAULT_SEARCH_APP_FILE, DEFAULT_SEARCH_UPDATE_DATE, \
+from boatswain.common.utils.constants import INCLUDING_ENV_SYSTEM, CONTAINER_CONF_CHANGED_CHANNEL, DEFAULT_CONTAINERS, \
+    DEFAULT_SEARCH_APP_FILE, DEFAULT_SEARCH_UPDATE_DATE, \
     APP_AVATAR_DIR
 from boatswain.common.utils.utils import EmptyStream
 
@@ -159,11 +159,6 @@ def startContainer(container: Container):
     :param container: container to be start
     :return: assign the container id and return container object
     """
-    if config_service.isAppConf(container, CONTAINER_CONF_CHANGED, 'true'):
-        container.container_id = ""
-        container.save()
-        config_service.setAppConf(container, CONTAINER_CONF_CHANGED, 'false')
-        # Todo: Should we do the clean up? delete the downloaded image
 
     if isContainerExists(container):
         docker_container = docker_service.getContainerInfo(container.container_id)

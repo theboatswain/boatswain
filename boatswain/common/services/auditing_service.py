@@ -22,7 +22,10 @@ def audit_update(container: Container, table: str, record_id: int, field: str, v
                                             & (AuditUpdate.record_id == record_id))
         for audit in audits:
             if audit.field == field:
-                audit.val_to = val_to
+                if audit.value_to == audit.value_from:
+                    audit.delete_instance()
+                    return
+                audit.value_to = val_to
                 # val_from should be the old one that we had already recorded
                 audit.save()
                 return

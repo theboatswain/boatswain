@@ -22,6 +22,7 @@ from playhouse.shortcuts import update_model_from_dict, model_to_dict
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
+from boatswain.common.utils.constants import STATUS_ADDED
 from boatswain.common.utils.logging import logger
 
 
@@ -78,13 +79,15 @@ def getShortcutVolumeMounts(container: Container):
 
 
 def getShortcuts(container: Container) -> List[PreferencesShortcut]:
-    return PreferencesShortcut.select().where(PreferencesShortcut.container == container)\
+    return PreferencesShortcut.select().where((PreferencesShortcut.container == container)
+                                              & (PreferencesShortcut.status == STATUS_ADDED))\
         .order_by(PreferencesShortcut.order.asc())
 
 
 def getEnabledShortcuts(container: Container) -> List[PreferencesShortcut]:
-    return PreferencesShortcut.select().where(
-        (PreferencesShortcut.container == container) & PreferencesShortcut.enabled) \
+    return PreferencesShortcut.select()\
+        .where((PreferencesShortcut.container == container) & PreferencesShortcut.enabled
+               & (PreferencesShortcut.status == STATUS_ADDED)) \
         .order_by(PreferencesShortcut.order.asc())
 
 

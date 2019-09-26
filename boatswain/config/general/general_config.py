@@ -17,13 +17,12 @@
 import multiprocessing
 
 from PyQt5.QtCore import QCoreApplication
-from boatswain.common.utils import utils
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.tag import Tag
-from boatswain.common.services import config_service, containers_service, auditing_service
+from boatswain.common.services import containers_service, auditing_service
 from boatswain.common.services.worker_service import Worker, threadpool
-from boatswain.common.utils.constants import CONTAINER_CONF_CHANGED
+from boatswain.common.utils import utils
 from boatswain.config.general.general_config_ui import GeneralAppConfigUi
 
 

@@ -21,6 +21,8 @@ from PyQt5.QtCore import QVariant
 from PyQt5.QtCore import Qt
 
 from boatswain.common.models.container import Container
+from boatswain.common.services import auditing_service
+from boatswain.common.utils.constants import STATUS_DELETED
 
 
 class ShortcutCreatorModel(QAbstractTableModel):
@@ -58,8 +60,11 @@ class ShortcutCreatorModel(QAbstractTableModel):
         self.layoutChanged.emit()
 
     def removeRow(self, p_int, parent=None, *args, **kwargs):
-        if self.array_data[p_int].container is not None:
-            self.array_data[p_int].delete_instance()
+        record = self.array_data[p_int]
+        record.status = STATUS_DELETED
+        record.save()
+        auditing_service.audit_delete(self.container, record.tableName(), record.id)
+
         self.array_data.pop(p_int)
         self.layoutChanged.emit()
 
