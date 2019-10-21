@@ -26,13 +26,15 @@ import requests
 from docker.errors import NotFound
 from peewee import DoesNotExist
 
+from boatswain.audit.app_audit import AppAudit
+from boatswain.common.exceptions.exceptions import ContainerConfigurationChangedException
 from boatswain.common.models.container import Container
 from boatswain.common.models.workspace import Workspace
 from boatswain.common.search.dockerhub_searcher import DockerHubSearcher
 from boatswain.common.search.search_images import SearchImages
 from boatswain.common.services import docker_service, system_service, config_service, data_transporter_service, \
     shortcut_service, group_service, environment_service, port_mapping_service, volume_mount_service, tags_service, \
-    global_preference_service
+    global_preference_service, auditing_service
 from boatswain.common.services.worker_service import Worker, threadpool
 from boatswain.common.shortcut.shortcut_yaml import ShortcutYaml
 from boatswain.common.utils import docker_utils
@@ -150,25 +152,36 @@ def isContainerRunning(container: Container):
     return False
 
 
-def startContainer(container: Container):
+def startContainer(container: Container, start_only=False, force=False):
     """
     Start the given container
     Collecting all configurations of the given container including environments, port mapping, volume mounts and
     shortcuts. The preferences of Shortcut take highest priority and will override if it existing in
     any other configurations
     :param container: container to be start
+    :param start_only: start the container
+    :param force: force reset the container
     :return: assign the container id and return container object
     """
 
-    if isContainerExists(container):
+    container_tag = container.tag
+    if isContainerExists(container) and not start_only and not force:
+        level = auditing_service.containerChangingLevel(container)
+        if level == 0:
+            start_only = True
+        else:
+            raise ContainerConfigurationChangedException()
+
+    if isContainerExists(container) and start_only and not force:
         docker_container = docker_service.getContainerInfo(container.container_id)
         docker_container.start()
         return container
 
-    envs = {}
+    if isContainerExists(container):
+        # At this time, the container should be reset, so, clean it up
+        docker_service.deleteContainer(container.container_id)
 
-    if config_service.isAppConf(container, INCLUDING_ENV_SYSTEM, 'true'):
-        envs = {key: os.environ[key] for key in os.environ if key != 'PATH'}
+    envs = {}
 
     for environment in environment_service.getEnvironments(container):
         envs[environment.name] = environment.value
@@ -186,14 +199,15 @@ def startContainer(container: Container):
         volumes[volume.host_path] = {'bind': volume.container_path, 'mode': volume.mode}
 
     volumes = {**volumes, **shortcut_service.getShortcutVolumeMounts(container)}
+
     entrypoint = container.entrypoint if container.entrypoint else None
     kwargs = {}
     if container.memory_limit:
         kwargs['mem_limit'] = "%dm" % container.memory_limit
     if container.cpu_limit:
         kwargs['cpu_period'] = 100000
-        kwargs['cpu_quota'] = container.cpu_limit * 100000
-    docker_container = docker_service.run(container.image_name, container.tag, ports, envs, volumes, entrypoint,
+        kwargs['cpu_quota'] = int(container.cpu_limit * 100000)
+    docker_container = docker_service.run(container.image_name, container_tag, ports, envs, volumes, entrypoint,
                                           **kwargs)
     container.container_id = docker_container.short_id
     return container

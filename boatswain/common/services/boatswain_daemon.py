@@ -39,5 +39,8 @@ class BoatswainDaemon(QThread):
         self.events = docker_service.streamEvents()
         for event in self.events:
             channel = generate_key(event['Type'], event['Action'])
-            data_transporter_service.fire(channel, event)
+            try:
+                data_transporter_service.fire(channel, event)
+            except Exception as e:
+                logger.error("exception occurred", exc_info=1)
             logger.debug("Received an event: %s", event)

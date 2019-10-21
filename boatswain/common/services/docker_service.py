@@ -28,6 +28,7 @@ from boatswain.common.utils.logging import logger
 system_platform = platform.system()
 base_url = WINDOWS_BASE_URL if system_platform == "Windows" else UNIX_BASE_URL
 client = docker.DockerClient(base_url=base_url)
+api_client = docker.APIClient(base_url=base_url)
 
 
 def searchDockerImages(keyword):
@@ -38,6 +39,11 @@ def searchDockerImages(keyword):
 def getContainerInfo(container_id) -> Container:
     ping()
     return client.containers.get(container_id)
+
+
+def inspect(container_id):
+    ping()
+    return api_client.inspect_container(container_id)
 
 
 def run(image_name, tag, ports, envs, volumes, entrypoint=None, **kwargs):
@@ -78,6 +84,10 @@ def isDockerRunning():
         return True
 
 
-def deleteContainer(container_id: str):
+def deleteContainer(container_id: str, delete_volumes=True):
     container = client.containers.get(container_id)
-    container.remove(v=True)
+    container.remove(v=delete_volumes)
+
+
+def deleteVolume(volume_id):
+    client.volumes.get(volume_id).remove()

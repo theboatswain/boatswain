@@ -14,3 +14,4 @@ class AuditUpdate(BaseModel):
     field = CharField()
     value_from = CharField()
     value_to = CharField()
+    time = IntegerField()

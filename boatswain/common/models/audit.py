@@ -13,3 +13,4 @@ class Audit(BaseModel):
     audit_mode = CharField()
     table = CharField(index=True)
     record_id = IntegerField(index=True)
+    time = IntegerField()

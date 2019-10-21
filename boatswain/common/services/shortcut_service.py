@@ -26,7 +26,7 @@ from boatswain.common.utils.constants import STATUS_ADDED
 from boatswain.common.utils.logging import logger
 
 
-def getShortcut(shortcut_id: int):
+def getShortcut(shortcut_id: int) -> PreferencesShortcut:
     return PreferencesShortcut.get(shortcut_id)
 
 

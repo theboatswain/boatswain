@@ -55,8 +55,7 @@ class VolumeMountModel(QAbstractTableModel):
             previous_val = getattr(record, attr)
             setattr(record, attr, value)
             record.save()
-            if attr != 'description':
-                auditing_service.audit_update(self.container, record.tableName(), record.id, attr, previous_val, value)
+            auditing_service.audit_update(self.container, record.tableName(), record.id, attr, previous_val, value)
             return True
         else:
             return False

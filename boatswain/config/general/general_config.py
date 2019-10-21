@@ -105,7 +105,7 @@ class GeneralAppConfig:
             previous_tag = self.container.tag
             self.container.tag = tag
             self.container.save()
-            auditing_service.audit_update(self.container, self.container.__class__.__name__,
+            auditing_service.audit_update(self.container, self.container.tableName(),
                                           self.container.id, "tag", previous_tag, tag)
             containers_service.fire(self.container, 'tag_index', index)
 

@@ -18,3 +18,7 @@
 
 class KnownException(Exception):
     pass
+
+
+class ContainerConfigurationChangedException(KnownException):
+    pass

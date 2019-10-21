@@ -149,7 +149,7 @@ class ShortcutCreator:
             model_original = model_to_dict(shortcut_service.getShortcut(self.shortcut.id))
             changes = []
             for key in model:
-                if model[key] != model_original[key] and key != 'label':
+                if model[key] != model_original[key]:
                     # Record changes, except label because it will not affect to the container it self
                     changes.append({'from': model_original[key], 'to': model[key], 'key': key})
             self.shortcut.save()

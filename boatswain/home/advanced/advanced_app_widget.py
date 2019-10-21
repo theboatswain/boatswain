@@ -53,7 +53,7 @@ class AdvancedAppWidget:
         previous_val = self.container.tag
         self.container.tag = tag
         self.container.save()
-        auditing_service.audit_update(self.container, self.container.tableName(), self.container.id, "default_value",
+        auditing_service.audit_update(self.container, self.container.tableName(), self.container.id, "tag",
                                       previous_val, tag)
 
     def onAdvancedConfigurationClicked(self):

@@ -15,13 +15,15 @@
 #
 #
 
-from PyQt5.QtCore import QCoreApplication, Qt, QMimeData, QTimer, QPoint, pyqtSignal, QObject
+from PyQt5.QtCore import Qt, QMimeData, QTimer, QPoint, pyqtSignal, QObject
 from PyQt5.QtGui import QMouseEvent, QDrag, QPixmap, QDragEnterEvent, QDragLeaveEvent, QDragMoveEvent, QRegion, \
     QDropEvent, QPalette, QColor
 from PyQt5.QtWidgets import QMenu, QMessageBox, QWidget, QApplication
 from docker.errors import APIError
 
+from boatswain.audit.app_audit import AppAudit
 from boatswain.common.exceptions.docker_exceptions import DockerNotAvailableException
+from boatswain.common.exceptions.exceptions import ContainerConfigurationChangedException
 from boatswain.common.models.container import Container
 from boatswain.common.services import containers_service, data_transporter_service, boatswain_daemon, workspace_service
 from boatswain.common.services.worker_service import Worker, threadpool
@@ -35,8 +37,6 @@ from boatswain.shortcut.preferences_shortcut_config import PreferencesShortcutCo
 class AppWidget(QObject):
     """ Class to customise app's widgets """
 
-    _translate = QCoreApplication.translate
-    template = 'AppWidget'
     move_app = pyqtSignal(Container, AppWidgetUi)
     new_group = pyqtSignal(Container, AppWidgetUi)
 
@@ -47,7 +47,7 @@ class AppWidget(QObject):
 
         self.autoSetContainerStatus()
         self.ui.status.clicked.connect(self.controlApp)
-        self.ui.name.setText(self._translate(self.template, self.container.name))
+        self.ui.name.setText(self.tr(self.container.name))
 
         self.ui.widget.mouseReleaseEvent = self.onMouseReleased
         self.ui.widget.mousePressEvent = self.mousePressEvent
@@ -65,10 +65,10 @@ class AppWidget(QObject):
         self.cleanDraggingEffects()
         self.ui.destroyed.connect(self.beforeDelete)
 
-    def controlApp(self):
+    def controlApp(self, start_only=False, force=False):
         if not containers_service.isContainerRunning(self.container):
             self.ui.status.setText('Starting')
-            worker = Worker(containers_service.startContainer, self.container)
+            worker = Worker(containers_service.startContainer, self.container, start_only, force)
             worker.signals.result.connect(self.onAppStarted)
         else:
             self.ui.status.setText('Stopping')
@@ -82,12 +82,17 @@ class AppWidget(QObject):
         self.autoSetContainerStatus()
 
     def onFailure(self, exception):
+        self.autoSetContainerStatus()
         if isinstance(exception, DockerNotAvailableException):
             docker_utils.notifyDockerNotAvailable()
         if isinstance(exception, APIError):
             message = exception.response.json()
             docker_utils.notifyDockerException(message['message'])
-        self.autoSetContainerStatus()
+        if isinstance(exception, ContainerConfigurationChangedException):
+            app_audit = AppAudit(None, self.container)
+            app_audit.start_old_conf.connect(lambda: self.controlApp(start_only=True))
+            app_audit.start_new_conf.connect(lambda: self.controlApp(force=True))
+            app_audit.show()
         # Todo: Handle more exceptions
 
     def onMouseReleased(self, event: QMouseEvent):
@@ -110,31 +115,31 @@ class AppWidget(QObject):
 
     def contextMenuEvent(self, event):
         menu = QMenu(self.ui)
-        add_action = menu.addAction(self._translate(self.template, 'Add...'))
+        add_action = menu.addAction(self.tr('Add...'))
         add_action.triggered.connect(lambda: data_transporter_service.fire(ADD_APP_CHANNEL))
         menu.addSeparator()
-        terminal = menu.addAction(self._translate(self.template, 'Connect to terminal'))
+        terminal = menu.addAction(self.tr('Connect to terminal'))
         terminal.triggered.connect(lambda: containers_service.connectToContainer(self.container))
-        monitor = menu.addAction(self._translate(self.template, 'Monitor log'))
+        monitor = menu.addAction(self.tr('Monitor log'))
         monitor.triggered.connect(self.monitorLog)
         menu.addSeparator()
-        conf = menu.addAction(self._translate(self.template, 'Configuration'))
+        conf = menu.addAction(self.tr('Configuration'))
         conf.triggered.connect(self.ui.advanced_app.onAdvancedConfigurationClicked)
-        pref_shortcut = menu.addAction(self._translate(self.template, 'Preferences shortcut'))
+        pref_shortcut = menu.addAction(self.tr('Preferences shortcut'))
         pref_shortcut.triggered.connect(self.onPreferenceShortcutClicked)
         menu.addSeparator()
-        clone_to = QMenu(self._translate(self.template, 'Clone to...'), self.ui)
-        clone_to.addAction(self._translate(self.template, 'Unspecified workspace'))
+        clone_to = QMenu(self.tr('Clone to...'), self.ui)
+        clone_to.addAction(self.tr('Unspecified workspace'))
         for workspace in workspace_service.getWorkspaces():
             clone_to.addAction(workspace.name)
         clone_to.triggered.connect(self.cloneContainer)
         menu.addMenu(clone_to)
         menu.addSeparator()
-        restart = menu.addAction(self._translate(self.template, 'Restart'))
+        restart = menu.addAction(self.tr('Restart'))
         restart.triggered.connect(self.restartContainer)
-        reset = menu.addAction(self._translate(self.template, 'Reset'))
+        reset = menu.addAction(self.tr('Reset'))
         reset.triggered.connect(self.resetContainer)
-        delete = menu.addAction(self._translate(self.template, 'Delete'))
+        delete = menu.addAction(self.tr('Delete'))
         delete.triggered.connect(self.deleteContainer)
         menu.exec_(self.ui.mapToGlobal(event.pos()))
 
@@ -168,15 +173,15 @@ class AppWidget(QObject):
 
     def autoSetContainerStatus(self):
         status = "Stop" if containers_service.isContainerRunning(self.container) else "Start"
-        self.ui.status.setText(self._translate(self.template, status))
+        self.ui.status.setText(self.tr(status))
         if status == "Stop":
             self.ui.pic.updateStatus(True)
         else:
             self.ui.pic.updateStatus(False)
 
     def deleteContainer(self):
-        message = self._translate(self.template, "Are you sure you want to delete this container? All configurations "
-                                                 "you made for it will be deleted also!")
+        message = self.tr("Are you sure you want to delete this container? All configurations "
+                          "you made for it will be deleted also!")
         button_reply = QMessageBox.question(self.ui, 'Delete container', message,
                                             QMessageBox.Ok | QMessageBox.Cancel, QMessageBox.Cancel)
         if button_reply == QMessageBox.Ok:
@@ -184,8 +189,8 @@ class AppWidget(QObject):
             self.ui.deleteLater()
 
     def resetContainer(self):
-        message = self._translate(self.template, "Are you sure you want to reset this container? All configurations "
-                                                 "you made for it will be lost!")
+        message = self.tr("Are you sure you want to reset this container? All configurations "
+                          "you made for it will be lost!")
         button_reply = QMessageBox.question(self.ui, 'Reset container', message,
                                             QMessageBox.Ok | QMessageBox.Cancel, QMessageBox.Cancel)
         if button_reply == QMessageBox.Ok:
