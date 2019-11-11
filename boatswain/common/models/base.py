@@ -22,14 +22,12 @@ from peewee import SqliteDatabase, Model
 from boatswain.common.utils.constants import APP_DATA_DIR, APP_DB
 
 db = SqliteDatabase(os.path.join(APP_DATA_DIR, APP_DB))
-tables = {}
 
 
 class BaseModel(Model):
     """ Base model for boat swain """
 
     def __init__(self, *args, **kwargs):
-        tables[self.__class__.__name__] = self
         super().__init__(*args, **kwargs)
 
     class Meta:

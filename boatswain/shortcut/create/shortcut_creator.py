@@ -67,6 +67,7 @@ class ShortcutCreator:
         self.ui.description.setText(self.shortcut.description)
         if shortcut.pref_type in ['File', 'Folder']:
             self.ui.default_value.button.setVisible(True)
+        self.is_creative_move = self.shortcut.label is None
 
     def show(self):
         return self.dialog.exec_()
@@ -110,9 +111,6 @@ class ShortcutCreator:
             self.ui.mapping_to_des.show()
             self.ui.description.setMaximumHeight(rt(60))
 
-    def isCreateMode(self):
-        return self.shortcut.label is None
-
     def finish(self):
         if not self.ui.mapping_to.text() and self.ui.shortcut_type.currentText() != 'Constant':
             message = self._translate(self.template, 'The value of \'Mapping to\' can not be empty')
@@ -122,7 +120,7 @@ class ShortcutCreator:
         mapping_to = self.ui.mapping_to.text()
 
         # Is create mode
-        if self.isCreateMode() and self.findShortcut(self.container, shortcut_type, mapping_to):
+        if self.is_creative_move and self.findShortcut(self.container, shortcut_type, mapping_to):
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Critical)
 
@@ -132,7 +130,7 @@ class ShortcutCreator:
             msg.setStandardButtons(QMessageBox.Ok)
             return msg.exec_()
 
-        if self.isCreateMode():
+        if self.is_creative_move:
             order = PreferencesShortcut.select().where(PreferencesShortcut.container == self.container).count() * 10000
             self.shortcut.order = order
 
@@ -149,11 +147,11 @@ class ShortcutCreator:
             model_original = model_to_dict(shortcut_service.getShortcut(self.shortcut.id))
             changes = []
             for key in model:
-                if model[key] != model_original[key]:
+                if model[key] != model_original[key] and key != 'id':
                     # Record changes, except label because it will not affect to the container it self
                     changes.append({'from': model_original[key], 'to': model[key], 'key': key})
             self.shortcut.save()
-            if self.isCreateMode():
+            if self.is_creative_move:
                 auditing_service.audit_create(self.container, self.shortcut.tableName(), self.shortcut.id)
             else:
                 for change in changes:

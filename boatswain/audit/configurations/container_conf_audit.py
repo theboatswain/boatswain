@@ -9,7 +9,7 @@ from boatswain.common.models.audit_update import AuditUpdate
 class ContainerConfAudit(ConfAudit):
 
     def getConfUpdate(self, conf_obj: AuditUpdate, parent=None) -> QWidget:
-        conf_audit = ConfAuditHandler(parent, self.container).ui
+        conf_audit = ConfAuditHandler(parent, self.container, conf_obj).ui
         if conf_obj.field == "tag":
             conf_audit.name.setText("Image Tag changed from %s to %s" % (conf_obj.value_from, conf_obj.value_to))
         elif conf_obj.field == "memory_limit":

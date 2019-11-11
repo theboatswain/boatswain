@@ -24,7 +24,7 @@ def audit_update(container: Container, table: str, record_id: int, field: str, v
                                             & (AuditUpdate.record_id == record_id))
         for audit in audits:
             if audit.field == field:
-                if val_to == audit.value_from:
+                if str(val_to) == audit.value_from:
                     audit.delete_instance()
                     return
                 audit.value_to = val_to
