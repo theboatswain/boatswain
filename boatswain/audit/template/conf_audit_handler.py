@@ -23,7 +23,7 @@ class ConfAuditHandler(object):
             setattr(self.container, self.conf_obj.field, self.conf_obj.value_from)
             self.container.save()
         else:
-            for table in tables.tables:
+            for table in tables.db_tables:
                 if self.conf_obj.table.lower() != table._meta.name.lower():
                     continue
                 obj_instance = table.get(table.id == self.conf_obj.record_id)

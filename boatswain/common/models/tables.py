@@ -15,5 +15,5 @@ from boatswain.common.models.environment import Environment
 from boatswain.common.models.port_mapping import PortMapping
 from boatswain.common.models.volume_mount import VolumeMount
 
-tables = [Container, Environment, PortMapping, VolumeMount, Tag, Configuration, PreferencesShortcut,
-          Preference, Workspace, Group, Audit, AuditUpdate]
+db_tables = [Container, Environment, PortMapping, VolumeMount, Tag, Configuration, PreferencesShortcut,
+             Preference, Workspace, Group, Audit, AuditUpdate]

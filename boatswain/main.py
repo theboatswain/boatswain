@@ -22,8 +22,8 @@ from PyQt5.QtCore import Qt, QCoreApplication, QSize
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication
 
-from boatswain.common.models import tables
 from boatswain.common.models.base import db
+from boatswain.common.models.tables import db_tables
 from boatswain.common.services import boatswain_daemon, data_transporter_service, docker_service, system_service, \
     containers_service
 from boatswain.common.utils import docker_utils
@@ -82,7 +82,7 @@ def run():
 
     # Connect to SQLite DB
     db.connect()
-    db.create_tables(tables.tables)
+    db.create_tables(db_tables)
 
     # Load home window
     window = Home()
