@@ -35,3 +35,7 @@ def cloneAll(from_container: Container, to_container: Container):
 
 def deleteAll(container: Container):
     Environment.delete().where(Environment.container == container).execute()
+
+
+def getEnvironment(env_id):
+    return Environment.get(env_id)

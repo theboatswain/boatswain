@@ -26,6 +26,10 @@ def getVolumeMounts(container: Container) -> List[VolumeMount]:
     return VolumeMount.select().where((VolumeMount.container == container) & (VolumeMount.status == STATUS_ADDED))
 
 
+def getVolumeMount(mount_id: int):
+    return VolumeMount.get(mount_id)
+
+
 def cloneAll(from_container: Container, to_container: Container):
     for volume_mount in getVolumeMounts(from_container):
         volume_mount.id = None
