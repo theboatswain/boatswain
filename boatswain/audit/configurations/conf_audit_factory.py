@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QWidget
 
 from boatswain.audit.configurations.container_conf_audit import ContainerConfAudit
+from boatswain.audit.configurations.port_mapping_conf_audit import PortMappingConfAudit
 from boatswain.audit.configurations.shortcut_conf_audit import ShortcutConfAudit
 from boatswain.common.models.audit import Audit
 from boatswain.common.models.audit_update import AuditUpdate
@@ -28,3 +29,5 @@ class ConfAuditFactory(object):
             return ContainerConfAudit(container)
         elif table_name == "PreferencesShortcut":
             return ShortcutConfAudit(container)
+        elif table_name == 'PortMapping':
+            return PortMappingConfAudit(container)

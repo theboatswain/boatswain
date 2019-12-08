@@ -35,3 +35,7 @@ def cloneAll(from_container: Container, to_container: Container):
 
 def deleteAll(container: Container):
     PortMapping.delete().where(PortMapping.container == container).execute()
+
+
+def getPortMapping(port_id: int):
+    return PortMapping.get(port_id)
