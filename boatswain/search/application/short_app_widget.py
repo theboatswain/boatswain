@@ -99,7 +99,11 @@ class ShortAppWidget:
 
     def onAppInstalled(self, container):
         data_transporter_service.fire(CONTAINER_CHANNEL, container)
-        self.ui.install.setText(self._translate(self.template, "Installed"))
+        try:
+            self.ui.install.setText(self._translate(self.template, "Installed"))
+        except RuntimeError:
+            # When user close the add app dialog before app is installed
+            pass
 
     def getImage(self, url):
         data = requests.get(url)
