@@ -42,5 +42,5 @@ class BoatswainDaemon(QThread):
             try:
                 data_transporter_service.fire(channel, event)
             except Exception as e:
-                logger.error("exception occurred", exc_info=1)
+                logger.error("exception occurred", e, exc_info=1)
             logger.debug("Received an event: %s", event)

@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QSizePolicy, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QFrame
+from PyQt5.QtWidgets import QWidget, QSizePolicy, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
 
 from boatswain.common.services.system_service import rt
 from boatswain.common.ui.custom_ui import BQSizePolicy

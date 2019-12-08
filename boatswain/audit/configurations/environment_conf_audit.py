@@ -1,10 +1,10 @@
 from PyQt5.QtWidgets import QWidget
-from boatswain.common.services import port_mapping_service, volume_mount_service, environment_service
 
 from boatswain.audit.configurations.conf_audit import ConfAudit
 from boatswain.audit.template.conf_audit_handler import ConfAuditHandler
 from boatswain.common.models.audit import Audit
 from boatswain.common.models.audit_update import AuditUpdate
+from boatswain.common.services import environment_service
 
 
 class EnvironmentConfAudit(ConfAudit):

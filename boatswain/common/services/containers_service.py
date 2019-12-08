@@ -26,7 +26,6 @@ import requests
 from docker.errors import NotFound
 from peewee import DoesNotExist
 
-from boatswain.audit.app_audit import AppAudit
 from boatswain.common.exceptions.exceptions import ContainerConfigurationChangedException
 from boatswain.common.models.container import Container
 from boatswain.common.models.workspace import Workspace
@@ -38,9 +37,8 @@ from boatswain.common.services import docker_service, system_service, config_ser
 from boatswain.common.services.worker_service import Worker, threadpool
 from boatswain.common.shortcut.shortcut_yaml import ShortcutYaml
 from boatswain.common.utils import docker_utils
-from boatswain.common.utils.constants import INCLUDING_ENV_SYSTEM, CONTAINER_CONF_CHANGED_CHANNEL, DEFAULT_CONTAINERS, \
-    DEFAULT_SEARCH_APP_FILE, DEFAULT_SEARCH_UPDATE_DATE, \
-    APP_AVATAR_DIR
+from boatswain.common.utils.constants import CONTAINER_CONF_CHANGED_CHANNEL, DEFAULT_CONTAINERS, \
+    DEFAULT_SEARCH_APP_FILE, DEFAULT_SEARCH_UPDATE_DATE, APP_AVATAR_DIR
 from boatswain.common.utils.utils import EmptyStream
 
 logger = logging.getLogger(__name__)

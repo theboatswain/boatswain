@@ -16,7 +16,7 @@
 #
 
 from PyQt5.QtCore import QSize
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTableView, QCheckBox
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTableView
 
 from boatswain.common.models.container import Container
 from boatswain.common.services.system_service import rt
