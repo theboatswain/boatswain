@@ -32,3 +32,6 @@ class BaseModel(Model):
 
     class Meta:
         database = db
+
+    def tableName(self):
+        return self.__class__.__name__

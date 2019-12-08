@@ -18,6 +18,7 @@ from peewee import IntegerField, ForeignKeyField, CharField
 
 from boatswain.common.models.base import BaseModel
 from boatswain.common.models.container import Container
+from boatswain.common.utils.constants import STATUS_ADDED
 
 
 class Environment(BaseModel):
@@ -26,3 +27,4 @@ class Environment(BaseModel):
     name = CharField()
     value = CharField()
     description = CharField(default='')
+    status = IntegerField(index=True, default=STATUS_ADDED)

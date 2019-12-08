@@ -19,6 +19,7 @@ from peewee import ForeignKeyField, CharField, IntegerField, BooleanField, TextF
 
 from boatswain.common.models.base import BaseModel
 from boatswain.common.models.container import Container
+from boatswain.common.utils.constants import STATUS_ADDED
 
 
 class PreferencesShortcut(BaseModel):
@@ -40,3 +41,5 @@ class PreferencesShortcut(BaseModel):
     enabled = BooleanField(default=True)
     # description about this preference shortcut
     description = TextField(default='')
+
+    status = BooleanField(index=True, default=STATUS_ADDED)

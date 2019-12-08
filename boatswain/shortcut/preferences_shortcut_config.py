@@ -21,19 +21,19 @@ from PyQt5.QtWidgets import QDialog, QAbstractItemView, QTableView, QHeaderView,
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
-from boatswain.common.services import containers_service, config_service, shortcut_service
+from boatswain.common.services import containers_service, shortcut_service
 from boatswain.common.services.system_service import rt
 from boatswain.common.shortcut.shortcut_yaml import ShortcutYaml
 from boatswain.common.ui.switch import SwitchBox
 from boatswain.common.utils import message_utils
-from boatswain.common.utils.constants import SHORTCUT_CONF_CHANGED_CHANNEL, CONTAINER_CONF_CHANGED
+from boatswain.common.utils.constants import SHORTCUT_CONF_CHANGED_CHANNEL
 from boatswain.shortcut.create.shortcut_creator import ShortcutCreator
 from boatswain.shortcut.preferences_shortcut_config_model import ShortcutCreatorModel
 from boatswain.shortcut.preferences_shortcut_config_ui import PreferencesShortcutConfigUi
 
 
 class PreferencesShortcutConfig(object):
-    _translate = QtCore.QCoreApplication.translate
+    _tr = QtCore.QCoreApplication.translate
     template = 'PreferencesShortcutConfig'
     DOWN = 1
     UP = -1
@@ -62,13 +62,13 @@ class PreferencesShortcutConfig(object):
         self.ui.import_shortcut.clicked.connect(self.importFromYaml)
 
     def retranslateUi(self):
-        self.dialog.setWindowTitle(self._translate(self.template, "Preferences shortcut") + " - " + self.container.name)
-        self.ui.import_shortcut.setText(self._translate(self.template, "Import"))
-        self.ui.export_shortcut.setText(self._translate(self.template, "Export"))
-        self.ui.new_shortcut.setText(self._translate(self.template, "+"))
-        self.ui.delete_shortcut.setText(self._translate(self.template, "-"))
-        self.ui.move_up.setText(self._translate(self.template, "↑"))
-        self.ui.move_down.setText(self._translate(self.template, "↓"))
+        self.dialog.setWindowTitle(self._tr(self.template, "Preferences shortcut") + " - " + self.container.name)
+        self.ui.import_shortcut.setText(self._tr(self.template, "Import"))
+        self.ui.export_shortcut.setText(self._tr(self.template, "Export"))
+        self.ui.new_shortcut.setText(self._tr(self.template, "+"))
+        self.ui.delete_shortcut.setText(self._tr(self.template, "-"))
+        self.ui.move_up.setText(self._tr(self.template, "↑"))
+        self.ui.move_down.setText(self._tr(self.template, "↓"))
 
     def drawSwitches(self, table_data):
         for i, record in enumerate(table_data):
@@ -88,7 +88,6 @@ class PreferencesShortcutConfig(object):
             self.ui.shortcut_table.model().removeRow(item.row())
         self.ui.shortcut_table.resizeRowsToContents()
         containers_service.fire(self.container, SHORTCUT_CONF_CHANGED_CHANNEL)
-        config_service.setAppConf(self.container, CONTAINER_CONF_CHANGED, 'true')
 
     def onDoubleClickItem(self, index: QModelIndex):
         data = self.table_model.array_data[index.row()]

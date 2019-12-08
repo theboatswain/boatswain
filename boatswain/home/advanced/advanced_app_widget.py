@@ -21,11 +21,11 @@ from PyQt5.QtWidgets import QLabel, QComboBox, QSizePolicy, QWidget, QLineEdit, 
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
-from boatswain.common.services import config_service, containers_service, shortcut_service, tags_service
+from boatswain.common.services import containers_service, shortcut_service, tags_service, auditing_service
 from boatswain.common.services.system_service import rt
 from boatswain.common.ui.custom_ui import BQSizePolicy
 from boatswain.common.ui.path_view import PathViewWidget
-from boatswain.common.utils.constants import CONTAINER_CONF_CHANGED, SHORTCUT_CONF_CHANGED_CHANNEL
+from boatswain.common.utils.constants import SHORTCUT_CONF_CHANGED_CHANNEL
 from boatswain.config.app_config import AppConfig
 from boatswain.home.advanced.advanced_app_widget_ui import AdvancedAppWidgetUi
 
@@ -50,10 +50,11 @@ class AdvancedAppWidget:
         if not full_tag_name:
             return
         tag = full_tag_name.split(':')[1]
+        previous_val = self.container.tag
         self.container.tag = tag
         self.container.save()
-        config_service.setAppConf(self.container, CONTAINER_CONF_CHANGED, 'true')
-        # Todo: Should we do the clean up? delete the downloaded image
+        auditing_service.audit_update(self.container, self.container.tableName(), self.container.id, "tag",
+                                      previous_val, tag)
 
     def onAdvancedConfigurationClicked(self):
         app_config = AppConfig(self.ui, self.container)
@@ -160,9 +161,11 @@ class AdvancedAppWidget:
         self.tags.setCurrentIndex(index)
 
     def setShortcutValue(self, shortcut: PreferencesShortcut, value):
+        previous_val = shortcut.default_value
         shortcut.default_value = value
         shortcut.save()
-        config_service.setAppConf(shortcut.container, CONTAINER_CONF_CHANGED, 'true')
+        auditing_service.audit_update(self.container, shortcut.tableName(), shortcut.id, "default_value",
+                                      previous_val, value)
 
     def resize(self, event: QResizeEvent):
         if self.tags:

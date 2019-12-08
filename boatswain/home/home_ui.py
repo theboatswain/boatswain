@@ -82,7 +82,7 @@ class HomeUi(QMainWindow):
         main_layout.addWidget(line)
 
         self.scroll_area = QScrollArea(central_widget)
-        self.scroll_area.setSizePolicy(BQSizePolicy(v_stretch=20))
+        self.scroll_area.setSizePolicy(BQSizePolicy(v_stretch=2))
         self.scroll_area.setFrameShape(QFrame.NoFrame)
         self.scroll_area.setFrameShadow(QFrame.Plain)
         self.scroll_area.setWidgetResizable(True)

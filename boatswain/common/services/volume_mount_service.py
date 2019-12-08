@@ -19,10 +19,15 @@ from typing import List
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.volume_mount import VolumeMount
+from boatswain.common.utils.constants import STATUS_ADDED
 
 
 def getVolumeMounts(container: Container) -> List[VolumeMount]:
-    return VolumeMount.select().where(VolumeMount.container == container)
+    return VolumeMount.select().where((VolumeMount.container == container) & (VolumeMount.status == STATUS_ADDED))
+
+
+def getVolumeMount(mount_id: int):
+    return VolumeMount.get(mount_id)
 
 
 def cloneAll(from_container: Container, to_container: Container):

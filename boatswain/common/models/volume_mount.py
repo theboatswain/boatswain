@@ -18,6 +18,7 @@ from peewee import IntegerField, ForeignKeyField, CharField
 
 from boatswain.common.models.base import BaseModel
 from boatswain.common.models.container import Container
+from boatswain.common.utils.constants import STATUS_ADDED
 
 
 class VolumeMount(BaseModel):
@@ -29,3 +30,4 @@ class VolumeMount(BaseModel):
     container_path = CharField()
     mode = CharField(default='rw')
     description = CharField(default='')
+    status = IntegerField(index=True, default=STATUS_ADDED)

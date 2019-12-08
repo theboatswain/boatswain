@@ -21,21 +21,9 @@ import sys
 from PyQt5.QtCore import Qt, QCoreApplication, QSize
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication
-from boatswain_updater.models.feed import Feed
-from boatswain_updater.updater import Updater
-from boatswain_updater.utils import pyqt_utils
 
+from boatswain.common.models import tables
 from boatswain.common.models.base import db
-from boatswain.common.models.configurations import Configuration
-from boatswain.common.models.container import Container
-from boatswain.common.models.environment import Environment
-from boatswain.common.models.group import Group
-from boatswain.common.models.port_mapping import PortMapping
-from boatswain.common.models.preference import Preference
-from boatswain.common.models.preferences_shortcut import PreferencesShortcut
-from boatswain.common.models.tag import Tag
-from boatswain.common.models.volume_mount import VolumeMount
-from boatswain.common.models.workspace import Workspace
 from boatswain.common.services import boatswain_daemon, data_transporter_service, docker_service, system_service, \
     containers_service
 from boatswain.common.utils import docker_utils
@@ -43,6 +31,9 @@ from boatswain.common.utils.constants import APP_DATA_DIR, APP_EXIT_CHANNEL, PEM
 from boatswain.common.utils.logging import logger
 from boatswain.home.home import Home
 from boatswain.resources_utils import getResource
+from boatswain_updater.models.feed import Feed
+from boatswain_updater.updater import Updater
+from boatswain_updater.utils import pyqt_utils
 
 
 def deFrostPem():
@@ -91,8 +82,7 @@ def run():
 
     # Connect to SQLite DB
     db.connect()
-    db.create_tables([Container, Environment, PortMapping, VolumeMount, Tag, Configuration, PreferencesShortcut,
-                      Preference, Workspace, Group])
+    db.create_tables(tables.tables)
 
     # Load home window
     window = Home()

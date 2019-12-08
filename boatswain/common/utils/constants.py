@@ -32,7 +32,6 @@ APP_DB = 'boatswain.db'
 
 # Settings
 INCLUDING_ENV_SYSTEM = 'including_env_system'
-CONTAINER_CONF_CHANGED = 'container_conf_changed'
 CURRENT_ACTIVATED_WORKSPACE = 'current_activated_workspace'
 
 # Channels
@@ -58,3 +57,9 @@ DEFAULT_SEARCH_UPDATE_DATE = 'default_search_update_date'
 SEARCH_APP_WIDTH = 305
 DEFAULT_CONTAINERS = ['nginx', 'ubuntu', 'mysql', 'node', 'redis', 'postgres', 'mongo', 'jenkins',
                       'elasticsearch', 'wordpress', 'mariadb', 'memcached', 'tomcat', 'rabbitmq', 'django', 'arangodb']
+
+STATUS_DELETED = 0
+STATUS_ADDED = 1
+
+AUDIT_CREATE = "Create"
+AUDIT_DELETE = "Delete"

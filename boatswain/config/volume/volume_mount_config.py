@@ -18,6 +18,7 @@
 from PyQt5 import QtCore
 from PyQt5.QtCore import QItemSelectionModel
 from PyQt5.QtWidgets import QTableView, QAbstractItemView
+from boatswain.common.services import volume_mount_service
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.volume_mount import VolumeMount
@@ -39,9 +40,9 @@ class VolumeMountConfig:
         self.ui.new_mount.clicked.connect(self.onNewMountClicked)
         self.ui.delete_mount.clicked.connect(self.onDeleteMountClicked)
 
-        table_data = VolumeMount.select().where(VolumeMount.container == self.container)
-        headers = ['host_path', 'mode', 'container_path']
-        display_headers = ['Host Path', 'Mode', 'Container Path']
+        table_data = volume_mount_service.getVolumeMounts(self.container)
+        headers = ['host_path', 'mode', 'container_path', 'description']
+        display_headers = ['Host Path', 'Mode', 'Container Path', 'Description']
         self.configureVolumeTable(self.ui.mount_table, headers, display_headers, list(table_data), self.container)
         self.ui.mount_table.setItemDelegateForColumn(0, PathInputDelegate(self.ui.mount_table))
         modes = ['rw', 'ro']
