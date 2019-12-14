@@ -18,12 +18,12 @@
 from PyQt5.QtCore import QObject, QPropertyAnimation, Qt, QMimeData, QPoint, QTimer, pyqtSignal
 from PyQt5.QtGui import QMouseEvent, QDrag, QPixmap, QRegion, QDragEnterEvent, QDragMoveEvent, QPalette, QColor, \
     QDragLeaveEvent, QDropEvent, QFocusEvent, QKeyEvent
-from PyQt5.QtWidgets import QLayout, QApplication, QWidget, QMenu, QLineEdit, QMessageBox
-from boatswain.common.utils.constants import ADD_APP_CHANNEL
+from PyQt5.QtWidgets import QLayout, QApplication, QWidget, QMenu, QLineEdit
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.group import Group
 from boatswain.common.services import containers_service, group_service, data_transporter_service
+from boatswain.common.utils.constants import ADD_APP_CHANNEL
 from boatswain.home.group.group_widget_ui import GroupWidgetUi
 
 
@@ -31,8 +31,9 @@ class GroupWidget(QObject):
     animation: QPropertyAnimation
     move_app = pyqtSignal(Container, GroupWidgetUi)
     move_group = pyqtSignal(Group, GroupWidgetUi)
+    delete_group = pyqtSignal(Group)
 
-    def __init__(self, group: Group, parent=None):
+    def __init__(self, group: Group, parent=None, delete_action=None):
         super().__init__(parent)
         self.group = group
         self.ui = GroupWidgetUi(parent, group, self)
@@ -55,6 +56,7 @@ class GroupWidget(QObject):
             self.ui.app_list.setMaximumHeight(0)
         self.ui.setAcceptDrops(True)
         self.cleanDraggingEffects()
+        self.delete_action = delete_action
 
     def onMouseReleased(self, event: QMouseEvent):
         if event.button() == Qt.LeftButton:
@@ -171,7 +173,7 @@ class GroupWidget(QObject):
         rename = menu.addAction(self.tr('Rename'))
         rename.triggered.connect(self.onRenameTriggered)
         delete = menu.addAction(self.tr('Delete'))
-        delete.triggered.connect(self.onDeleteGroupTriggered)
+        delete.triggered.connect(lambda: self.delete_group.emit(self.group))
         menu.exec_(self.ui.mapToGlobal(event.pos()))
 
     def onRenameTriggered(self):
@@ -192,24 +194,3 @@ class GroupWidget(QObject):
             self.ui.container_name.setText(self.group.name)
             self.ui.container_name.setReadOnly(True)
         QLineEdit.keyPressEvent(self.ui.container_name, event)
-
-    def onDeleteGroupTriggered(self):
-        if self.group.is_default:
-            msg = QMessageBox()
-            msg.setIcon(QMessageBox.Critical)
-
-            msg.setText(self.tr("Unable to delete group"))
-            msg.setInformativeText(self.tr("You can't delete default group!!!"))
-            msg.setStandardButtons(QMessageBox.Ok)
-            msg.exec_()
-            return
-        message = self.tr("Are you sure you want to delete this folder? All apps inside will be deleted also!")
-        button_reply = QMessageBox.question(self.ui, 'Delete folder', message,
-                                            QMessageBox.Ok | QMessageBox.Cancel, QMessageBox.Cancel)
-        if button_reply == QMessageBox.Ok:
-            for i in reversed(range(self.ui.app_list_layout.count())):
-                container = self.ui.app_list_layout.itemAt(i).widget().container
-                containers_service.deleteContainer(container)
-                self.ui.app_list_layout.itemAt(i).widget().setParent(None)
-            group_service.deleteGroup(self.group)
-            self.ui.deleteLater()

@@ -19,7 +19,7 @@ from typing import Dict
 
 from PyQt5.QtCore import QCoreApplication, QPoint
 from PyQt5.QtGui import QResizeEvent
-from PyQt5.QtWidgets import QMainWindow, QInputDialog, QMenu, QAction
+from PyQt5.QtWidgets import QMainWindow, QInputDialog, QMenu, QAction, QMessageBox
 from playhouse.shortcuts import update_model_from_dict, model_to_dict
 
 from boatswain.about.about import AboutDialog
@@ -111,6 +111,7 @@ class Home:
         group_widget = GroupWidget(group, self.ui.app_list)
         group_widget.move_app.connect(self.moveAppToGroup)
         group_widget.move_group.connect(self.moveGroup)
+        group_widget.delete_group.connect(self.deleteGroup)
         self.groups[group.id] = group_widget.ui
         self.ui.app_list.layout().addWidget(group_widget.ui)
 
@@ -122,8 +123,9 @@ class Home:
             if container.group.workspace.name != current_workspace:
                 self.groups[container.group.id].hide()
         widget = AppWidget(self.groups[container.group.id].app_list, container)
-        widget.move_app.connect(self.moveWidget)
+        widget.move_app.connect(self.moveAppWidget)
         widget.new_group.connect(self.createGroup)
+        widget.delete_app.connect(self.deleteApp)
         self.apps[container.id] = widget.ui
         self.groups[container.group.id].app_list_layout.addWidget(widget.ui)
 
@@ -137,7 +139,12 @@ class Home:
     #     for container in containers_service.getAllContainer():
     #         self.addAppFromContainer(container)
 
-    def moveWidget(self, container, widget: AppWidgetUi):
+    def moveAppWidget(self, container, widget: AppWidgetUi):
+        """
+        Reorder the position of App
+        @param container: App is being dragged
+        @param widget: App is getting dropped
+        """
         widget_to_be_moved = self.apps[container.id]
 
         # Update the in-memory object of container
@@ -147,6 +154,11 @@ class Home:
         widget.parentWidget().layout().insertWidget(index + 1, widget_to_be_moved)
 
     def moveAppToGroup(self, container, widget: GroupWidgetUi):
+        """
+        Move an app into a group
+        @param container:   Container of the app, which is being dragged
+        @param widget: Group which is getting dropped
+        """
         widget_to_be_moved = self.apps[container.id]
 
         # Update the in-memory object of container
@@ -155,6 +167,11 @@ class Home:
         widget.app_list_layout.addWidget(widget_to_be_moved)
 
     def moveGroup(self, group: Group, widget: GroupWidgetUi):
+        """
+        Re-order the position of groups
+        @param group: Group which is being drag to reorder
+        @param widget: Current group
+        """
         group_to_be_moved: GroupWidgetUi = self.groups[group.id]
         update_model_from_dict(group_to_be_moved.group, model_to_dict(group))
         group_to_be_moved.parentWidget().layout().removeWidget(group_to_be_moved)
@@ -162,21 +179,62 @@ class Home:
         widget.parentWidget().layout().insertWidget(index + 1, group_to_be_moved)
 
     def createGroup(self, container, widget: AppWidgetUi):
+        """
+        Create group when user drag two apps together
+        @param container: Container is being dragged
+        @param widget: Container is getting dropped
+        """
         widget_to_be_moved = self.apps[container.id]
         # Update the in-memory object of container
         update_model_from_dict(widget_to_be_moved.container, model_to_dict(container))
         group = group_service.createGroup(self._tr('New Folder'))
+        self.addGroupWidget(group)
         widget_to_be_moved.container.group = group
         widget_to_be_moved.container.save()
         widget.container.group = group
         widget.container.save()
-        group_widget = GroupWidget(group, self.ui.app_list)
-        self.groups[group.id] = group_widget.ui
-        self.ui.app_list.layout().addWidget(group_widget.ui)
+        group_widget = self.groups[group.id]
+        self.groups[group.id] = group_widget
+        self.ui.app_list.layout().addWidget(group_widget)
         widget_to_be_moved.parentWidget().layout().removeWidget(widget_to_be_moved)
-        group_widget.ui.app_list_layout.addWidget(widget_to_be_moved)
+        group_widget.app_list_layout.addWidget(widget_to_be_moved)
         widget.parentWidget().layout().removeWidget(widget)
-        group_widget.ui.app_list_layout.addWidget(widget)
+        group_widget.app_list_layout.addWidget(widget)
+
+    def deleteGroup(self, group: Group):
+        if group.is_default:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Critical)
+
+            msg.setText(self._tr("Unable to delete group"))
+            msg.setInformativeText(self._tr("You can't delete default group!!!"))
+            msg.setStandardButtons(QMessageBox.Ok)
+            msg.exec_()
+            return
+        message = self._tr("Are you sure you want to delete this folder? All apps inside will be deleted also!")
+        button_reply = QMessageBox.question(self.ui, 'Delete folder', message,
+                                            QMessageBox.Ok | QMessageBox.Cancel, QMessageBox.Cancel)
+        if button_reply != QMessageBox.Ok:
+            return
+        for i in reversed(range(self.groups[group.id].app_list_layout.count())):
+            container = self.groups[group.id].app_list_layout.itemAt(i).widget().container
+            containers_service.deleteContainer(container)
+            self.groups[group.id].app_list_layout.itemAt(i).widget().setParent(None)
+            del self.apps[container.id]
+        self.groups[group.id].deleteLater()
+        del self.groups[group.id]
+        group_service.deleteGroup(group)
+
+    def deleteApp(self, container):
+        message = self._tr("Are you sure you want to delete this container? All configurations "
+                           "you made for it will be deleted also!")
+        button_reply = QMessageBox.question(self.ui, 'Delete container', message,
+                                            QMessageBox.Ok | QMessageBox.Cancel, QMessageBox.Cancel)
+        if button_reply != QMessageBox.Ok:
+            return
+        containers_service.deleteContainer(container)
+        self.apps[container.id].deleteLater()
+        del self.apps[container.id]
 
     def onWorkspaceChanged(self, workspace_name: str):
         workspace_service.activeWorkspace(workspace_name)

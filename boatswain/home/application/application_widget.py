@@ -39,6 +39,7 @@ class AppWidget(QObject):
 
     move_app = pyqtSignal(Container, AppWidgetUi)
     new_group = pyqtSignal(Container, AppWidgetUi)
+    delete_app = pyqtSignal(Container)
 
     def __init__(self, parent, container: Container) -> None:
         super().__init__(parent)
@@ -140,7 +141,7 @@ class AppWidget(QObject):
         reset = menu.addAction(self.tr('Reset'))
         reset.triggered.connect(self.resetContainer)
         delete = menu.addAction(self.tr('Delete'))
-        delete.triggered.connect(self.deleteContainer)
+        delete.triggered.connect(lambda: self.delete_app.emit(self.container))
         menu.exec_(self.ui.mapToGlobal(event.pos()))
 
     def monitorLog(self):
@@ -178,15 +179,6 @@ class AppWidget(QObject):
             self.ui.pic.updateStatus(True)
         else:
             self.ui.pic.updateStatus(False)
-
-    def deleteContainer(self):
-        message = self.tr("Are you sure you want to delete this container? All configurations "
-                          "you made for it will be deleted also!")
-        button_reply = QMessageBox.question(self.ui, 'Delete container', message,
-                                            QMessageBox.Ok | QMessageBox.Cancel, QMessageBox.Cancel)
-        if button_reply == QMessageBox.Ok:
-            containers_service.deleteContainer(self.container)
-            self.ui.deleteLater()
 
     def resetContainer(self):
         message = self.tr("Are you sure you want to reset this container? All configurations "
