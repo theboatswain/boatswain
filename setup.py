@@ -9,12 +9,19 @@ setup(name='boatswain',
           'PyQt5==5.13.0',
           'peewee==3.9.6',
           'appdirs==1.4.3',
-          'semantic_version==2.6.0',
+          'boatswain_updater',
           'requests'
       ],
+      author='Manh Tu VU',
+      author_email='glmanhtu@gmail.com',
       package_data={
           '': ['*.svg']
       },
+      classifiers=[
+          "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.7",
+      ],
       entry_points={
           'gui_scripts': [
               'boatswain = boatswain:main'
