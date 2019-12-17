@@ -31,7 +31,7 @@ class PreferencesShortcutConfigUi(object):
         self.container = container
         self.handler = handler
         self.dialog = dialog
-        height = system_service.screen_height / 2.2
+        height = system_service.getScaleHeight() / 2.2
         width = height * 2
         dialog.resize(width, height)
         dialog.setSizePolicy(BQSizePolicy(h_stretch=1))

@@ -28,7 +28,7 @@ class LicenseUi(object):
 
     def __init__(self, dialog) -> None:
         super().__init__()
-        height = system_service.screen_height / 2.6
+        height = system_service.getScaleHeight() / 2.6
         width = height * 2
         dialog.resize(width, height)
         dialog.setSizePolicy(BQSizePolicy(h_stretch=1))

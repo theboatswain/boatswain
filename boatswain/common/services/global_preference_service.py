@@ -20,6 +20,7 @@ from peewee import DoesNotExist
 
 from boatswain.common.models.preference import Preference
 from boatswain.common.services import system_service
+from boatswain.common.services.system_service import rt
 from boatswain.common.utils.constants import HOME_WIDTH, HOME_HEIGHT
 
 
@@ -42,7 +43,7 @@ def setHomeWindowSize(size: QSize):
 
 
 def getMinimumHomeWindowSize():
-    height = system_service.screen_height * 4.2 / 5
+    height = system_service.getScaleHeight() * 4.2 / 5
     width = height / 1.8
     return QSize(width, height)
 

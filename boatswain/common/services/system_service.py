@@ -26,9 +26,13 @@ from boatswain_updater.utils import sys_utils
 screen_width: int
 screen_height: int
 
-ref_dpi = 72
-ref_height = 900
-ref_width = 1440
+ref_dpi = 72.
+
+
+def getScaleHeight():
+    if screen_height > rt(900):
+        return rt(900)
+    return screen_height
 
 
 def startTerminalWithCommand(command):
@@ -44,20 +48,14 @@ def startTerminalWithCommand(command):
 
 
 def rt(pixel):
-    rect = QGuiApplication.primaryScreen().geometry()
-    height = min(rect.width(), rect.height())
-    width = max(rect.width(), rect.height())
-    ratio = min(height / ref_height, width / ref_width)
-    return round(pixel * ratio)
+    dpi = QGuiApplication.primaryScreen().logicalDotsPerInch()
+    ratio = dpi / ref_dpi
+    return max(2, round(pixel * ratio))
 
 
 def applyFontRatio(point):
     dpi = QGuiApplication.primaryScreen().logicalDotsPerInch()
-    rect = QGuiApplication.primaryScreen().geometry()
-    height = min(rect.width(), rect.height())
-    width = max(rect.width(), rect.height())
-    ratio_font = min(height * ref_dpi / (dpi * ref_height), width * ref_dpi / (dpi * ref_width))
-    return round(point * ratio_font)
+    return max(round(point * dpi / ref_dpi), 1)
 
 
 def resetStyle():
