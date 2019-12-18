@@ -67,10 +67,6 @@ def run():
     if not docker_service.isDockerRunning():
         return docker_utils.notifyDockerNotAvailable()
 
-    screen_resolution = app.desktop().screenGeometry()
-    system_service.screen_width = screen_resolution.width()
-    system_service.screen_height = screen_resolution.height()
-
     # Make sure app data dir always exists
     if not os.path.isdir(APP_DATA_DIR):
         os.makedirs(APP_DATA_DIR)

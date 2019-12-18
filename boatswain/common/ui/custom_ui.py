@@ -40,7 +40,7 @@ class ReloadableWidget:
 
 class AutoResizeWidget(QWidget):
     def preferableSize(self) -> QSize:
-        height = system_service.screen_height / 2
+        height = system_service.getRefHeight() / 2
         width = height * 1.6
         return QSize(width, height)
 
