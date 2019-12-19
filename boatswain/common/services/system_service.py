@@ -60,16 +60,18 @@ def startTerminalWithCommand(command):
 
 
 def rt(pixel):
+    if sys_utils.isMac():
+        return pixel
     dpi = getPrimaryScreen().logicalDotsPerInch()
-    device_pixel_ratio = QApplication.instance().devicePixelRatio()
     scale = dpi / ref_dpi
-    return round(pixel * scale * device_pixel_ratio)
+    return round(pixel * scale)
 
 
 def applyFontRatio(point):
-    device_pixel_ratio = QApplication.instance().devicePixelRatio()
+    if sys_utils.isMac():
+        return point
     scale = getPrimaryScreen().logicalDotsPerInch() / getPrimaryScreen().physicalDotsPerInch()
-    return round(point * scale * device_pixel_ratio)
+    return round(point * scale)
 
 
 def resetStyle():
