@@ -5,4 +5,5 @@ release
 sysroot-macos-64
 sysroot-win-32
 build*
+sysroot*
 *.egg-info

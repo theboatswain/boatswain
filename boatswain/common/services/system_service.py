@@ -24,13 +24,13 @@ from PyQt5.QtWidgets import QApplication
 
 from boatswain_updater.utils import sys_utils
 
-ref_dpi = 72
+ref_dpi = 94
 ref_height = 1440
 ref_width = 2560
 
 
 def getRefHeight():
-    return rt(900)
+    return rt(920)
 
 
 def getPrimaryScreen():
@@ -65,7 +65,7 @@ def rt(pixel):
     width = max(rect.width(), rect.height())
     ratio = min(height / ref_height, width / ref_width)
     device_pixel_ratio = QApplication.instance().devicePixelRatio()
-    return round(pixel * ratio * device_pixel_ratio * 0.9)
+    return round(pixel * ratio * device_pixel_ratio)
 
 
 def applyFontRatio(point):
@@ -75,7 +75,7 @@ def applyFontRatio(point):
     width = max(rect.width(), rect.height())
     ratio_font = min(height * ref_dpi / (dpi * ref_height), width * ref_dpi / (dpi * ref_width))
     device_pixel_ratio = QApplication.instance().devicePixelRatio()
-    return round(point * ratio_font * device_pixel_ratio * 0.9)
+    return round(point * ratio_font * device_pixel_ratio)
 
 
 def resetStyle():
