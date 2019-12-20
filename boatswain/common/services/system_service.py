@@ -57,6 +57,8 @@ def startTerminalWithCommand(command):
         proc.waitForFinished(-1)
     elif sys_utils.isWin():
         os.system("start cmd /c %s" % command)
+    else:
+        os.system("x-terminal-emulator -e " + command)
 
 
 def rt(pixel):
