@@ -33,7 +33,7 @@ class AppConfigUi(object):
         super().__init__()
         self.container = container
 
-        height = system_service.screen_height / 2
+        height = system_service.getRefHeight() / 2
         width = height * 1.6
         dialog.resize(width, height)
         dialog.setSizePolicy(BQSizePolicy(h_stretch=1))

@@ -28,7 +28,7 @@ from boatswain.monitor.logging_table_ui import UniformRowHeights
 class LoggingMonitorUi(QObject):
     def __init__(self, dialog: QDialog) -> None:
         super().__init__()
-        height = system_service.screen_height / 2
+        height = system_service.getRefHeight() / 2
         width = height * 2
         dialog.resize(width, height)
         dialog.setSizePolicy(BQSizePolicy(h_stretch=1))

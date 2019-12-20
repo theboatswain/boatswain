@@ -21,14 +21,30 @@ import tempfile
 from PyQt5.QtCore import QProcess
 from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtWidgets import QApplication
+
 from boatswain_updater.utils import sys_utils
 
-screen_width: int
-screen_height: int
+ref_dpi = 94
+ref_height = 1440
+ref_width = 2560
 
-ref_dpi = 72
-ref_height = 900
-ref_width = 1440
+
+def getRefHeight():
+    return rt(800)
+
+
+def getPrimaryScreen():
+    return QGuiApplication.primaryScreen()
+
+
+def getScreenWidth():
+    rect = getPrimaryScreen().geometry()
+    return rect.width()
+
+
+def getScreenHeight():
+    rect = getPrimaryScreen().geometry()
+    return rect.height()
 
 
 def startTerminalWithCommand(command):
@@ -44,20 +60,19 @@ def startTerminalWithCommand(command):
 
 
 def rt(pixel):
-    rect = QGuiApplication.primaryScreen().geometry()
-    height = min(rect.width(), rect.height())
-    width = max(rect.width(), rect.height())
-    ratio = min(height / ref_height, width / ref_width)
-    return round(pixel * ratio)
+    if sys_utils.isMac():
+        return pixel
+    dpi = getPrimaryScreen().logicalDotsPerInch()
+    scale = dpi / ref_dpi
+    return round(pixel * scale)
 
 
 def applyFontRatio(point):
-    dpi = QGuiApplication.primaryScreen().logicalDotsPerInch()
-    rect = QGuiApplication.primaryScreen().geometry()
-    height = min(rect.width(), rect.height())
-    width = max(rect.width(), rect.height())
-    ratio_font = min(height * ref_dpi / (dpi * ref_height), width * ref_dpi / (dpi * ref_width))
-    return round(point * ratio_font)
+    if sys_utils.isMac():
+        return point
+    scale = getPrimaryScreen().logicalDotsPerInch() / getPrimaryScreen().physicalDotsPerInch()
+    size_factor = getScreenWidth() / ref_width
+    return round(point * scale * size_factor)
 
 
 def resetStyle():
