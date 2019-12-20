@@ -57,7 +57,7 @@ class AdvancedAppWidget:
                                       previous_val, tag)
 
     def onAdvancedConfigurationClicked(self):
-        app_config = AppConfig(self.ui, self.container)
+        app_config = AppConfig(None, self.container)
         app_config.show()
 
     def onCollapsed(self):

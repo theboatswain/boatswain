@@ -76,7 +76,7 @@ class Home:
             self.addAppFromContainer(container)
 
     def addAppClicked(self, group=None):
-        dialog = SearchAppDialog(self._tr("Add app"), self.ui, group)
+        dialog = SearchAppDialog(self._tr("Add app"), None, group)
         dialog.show()
 
     def _tr(self, message):
@@ -268,7 +268,7 @@ class Home:
         QMainWindow.resizeEvent(self.ui, event)
 
     def showAbout(self):
-        about = AboutDialog(self.ui)
+        about = AboutDialog(None)
         about.show()
 
     def onMenuClicked(self):

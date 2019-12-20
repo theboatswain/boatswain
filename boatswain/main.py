@@ -92,7 +92,7 @@ def run():
 
     feed = Feed('theboatswain/boatswain')
     pixmap = QIcon(getResource('resources/logo/boatswain.svg')).pixmap(QSize(64, 64))
-    update_dialog = Updater(window.ui, feed)
+    update_dialog = Updater(None, feed)
     update_dialog.setIcon(pixmap)
     update_dialog.installed.connect(onApplicationInstalled)
     update_dialog.checkForUpdate(silent=True)

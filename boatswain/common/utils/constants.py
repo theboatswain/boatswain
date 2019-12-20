@@ -54,7 +54,7 @@ DEFAULT_SEARCH_UPDATE_DATE = 'default_search_update_date'
 
 
 # Other conf
-SEARCH_APP_WIDTH = 305
+SEARCH_APP_WIDTH = 275
 DEFAULT_CONTAINERS = ['nginx', 'ubuntu', 'mysql', 'node', 'redis', 'postgres', 'mongo', 'jenkins',
                       'elasticsearch', 'wordpress', 'mariadb', 'memcached', 'tomcat', 'rabbitmq', 'django', 'arangodb']
 

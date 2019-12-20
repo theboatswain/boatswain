@@ -102,7 +102,7 @@ class AppWidget(QObject):
             self.ui.advanced_app.toggleWindow()
 
     def onPreferenceShortcutClicked(self):
-        shortcut = PreferencesShortcutConfig(self.ui, self.ui.container)
+        shortcut = PreferencesShortcutConfig(None, self.ui.container)
         shortcut.show()
 
     def onContainerStart(self, event):
