@@ -71,7 +71,8 @@ def applyFontRatio(point):
     if sys_utils.isMac():
         return point
     scale = getPrimaryScreen().logicalDotsPerInch() / getPrimaryScreen().physicalDotsPerInch()
-    return round(point * scale)
+    size_factor = getScreenWidth() / ref_width
+    return round(point * scale * size_factor)
 
 
 def resetStyle():
