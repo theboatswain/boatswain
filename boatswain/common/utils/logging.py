@@ -27,13 +27,17 @@ log_file = os.path.join(APP_LOG_DIR, 'boatswain.log')
 if not os.path.isdir(APP_LOG_DIR):
     os.makedirs(APP_LOG_DIR)
 
-logging.basicConfig(filename=log_file,
-                    filemode='a',
-                    format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
-                    datefmt='%H:%M:%S',
-                    level=logging.INFO)
 
 logger = logging.getLogger('boatswain')
+logger.setLevel(logging.INFO)
+# create file handler which logs even debug messages
+fh = logging.FileHandler(log_file)
+fh.setLevel(logging.INFO)
+# create formatter and add it to the handlers
+formatter = logging.Formatter('%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s', "%Y-%m-%d %H:%M:%S")
+fh.setFormatter(formatter)
+# add the handlers to logger
+logger.addHandler(fh)
 
 
 class LoggerWriter:

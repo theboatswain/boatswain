@@ -22,6 +22,7 @@ from PyQt5.QtCore import QProcess
 from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtWidgets import QApplication
 
+from boatswain import resources_utils
 from boatswain_updater.utils import sys_utils
 
 ref_dpi = 94
@@ -49,16 +50,28 @@ def getScreenHeight():
 
 def startTerminalWithCommand(command):
     if sys_utils.isMac():
-        tmp = tempfile.NamedTemporaryFile(suffix='.command', mode='w', delete=False)
-        tmp.write('#!/bin/sh\n%s\n' % command)
-        os.system('chmod u+x ' + tmp.name)
-        proc = QProcess()
-        proc.start("open", {tmp.name})
-        proc.waitForFinished(-1)
+        term = resources_utils.getExternalResource('run_with_mac_terminal.sh')
+        if os.path.exists("/Applications/iTerm.app"):
+            term = resources_utils.getExternalResource('run_with_iterm.sh')
+        os.system('chmod u+x ' + term)
+        os.system("%s \"%s\"" % (term, command))
     elif sys_utils.isWin():
         os.system("start cmd /c %s" % command)
     else:
-        os.system("x-terminal-emulator -e " + command)
+        default_linux_term = 'xterm'
+        if os.path.exists('/etc/debian_version'):
+            default_linux_term = 'x-terminal-emulator'
+        elif os.path.exists('/usr/bin/xfce4-terminal'):
+            default_linux_term = 'xfce4-terminal'
+        elif os.environ['DESKTOP_SESSION'] == 'gnome':
+            default_linux_term = 'gnome-terminal'
+        elif os.environ['DESKTOP_SESSION'] == 'kde-plasma':
+            default_linux_term = 'konsole'
+        elif 'COLORTERM' in os.environ:
+            default_linux_term = os.environ['COLORTERM']
+        elif 'TERM' in os.environ:
+            default_linux_term = os.environ['TERM']
+        os.system("%s -e %s" % (default_linux_term, command))
 
 
 def rt(pixel):

@@ -16,24 +16,24 @@
 #
 
 import os
-import sys
 
+import sys
 from PyQt5.QtCore import Qt, QCoreApplication, QSize
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication
 
+from boatswain import resources_utils
 from boatswain.common.models.base import db
 from boatswain.common.models.tables import db_tables
 from boatswain.common.services import boatswain_daemon, data_transporter_service, docker_service, system_service, \
     containers_service
 from boatswain.common.utils import docker_utils
-from boatswain.common.utils.constants import APP_DATA_DIR, APP_EXIT_CHANNEL, PEM_FILE, UPDATES_CHANNEL, APP_AVATAR_DIR
+from boatswain.common.utils.constants import APP_DATA_DIR, APP_EXIT_CHANNEL, UPDATES_CHANNEL, APP_AVATAR_DIR
 from boatswain.common.utils.logging import logger
 from boatswain.home.home import Home
-from boatswain.resources_utils import getResource
+from boatswain.resources_utils import getExternalResource
 from boatswain_updater.models.feed import Feed
 from boatswain_updater.updater import Updater
-from boatswain_updater.utils import pyqt_utils
 
 
 def deFrostPem():
@@ -41,14 +41,11 @@ def deFrostPem():
     When the application is being frozen, all resource files will be encoded into the executable file
     And with the requests library, it required to have the cacert.pem file available and accessible as a normal file
     thus caused the problem of invalid path: :/certifi/cacert.pem
-    This function will workaround the problem by reading the content of the pem file and write it into app data folder
-    and then relink back the location of REQUESTS_CA_BUNDLE into this file
+    This function will workaround the problem by relink back the location of REQUESTS_CA_BUNDLE into the file from
+    resource folder
     """
-    if not os.path.isfile(PEM_FILE):
-        pyqt_utils.defrostAndSaveInto(':/certifi/cacert.pem', PEM_FILE)
-
-    if os.path.isfile(PEM_FILE):
-        os.environ['REQUESTS_CA_BUNDLE'] = PEM_FILE
+    logger.info("CA Bundle: %s" % resources_utils.getExternalResource('cacert.pem'))
+    os.environ['REQUESTS_CA_BUNDLE'] = resources_utils.getExternalResource('cacert.pem')
 
 
 def onApplicationInstalled():
@@ -91,7 +88,7 @@ def run():
     daemon.start()
 
     feed = Feed('theboatswain/boatswain')
-    pixmap = QIcon(getResource('resources/logo/boatswain.svg')).pixmap(QSize(64, 64))
+    pixmap = QIcon(getExternalResource('boatswain.svg')).pixmap(QSize(64, 64))
     update_dialog = Updater(None, feed)
     update_dialog.setIcon(pixmap)
     update_dialog.installed.connect(onApplicationInstalled)

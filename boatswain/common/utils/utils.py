@@ -17,6 +17,9 @@
 
 import os
 import subprocess
+from contextlib import closing
+
+from PyQt5.QtCore import QFile
 
 from boatswain_updater.utils import sys_utils
 from docker.types import CancellableStream
@@ -70,3 +73,10 @@ def getPhysicalMemory():
     else:
         mem_bytes = os.sysconf('SC_PAGE_SIZE') * os.sysconf('SC_PHYS_PAGES')  # e.g. 4015976448
         return mem_bytes / (1024. ** 2)
+
+
+def isFrost():
+    with closing(QFile(':/certifi/cacert.pem')) as frozen_file:
+        if frozen_file.open(QFile.ReadOnly):
+            return True
+    return False
