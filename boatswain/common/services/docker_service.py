@@ -28,7 +28,7 @@ from boatswain.common.utils.logging import logger
 system_platform = platform.system()
 base_url = WINDOWS_BASE_URL if system_platform == "Windows" else UNIX_BASE_URL
 client = docker.DockerClient(base_url=base_url)
-api_client = docker.APIClient(base_url=base_url)
+api_client = docker.api
 
 
 def searchDockerImages(keyword):
@@ -70,7 +70,7 @@ def streamEvents():
 def ping():
     try:
         client.ping()
-    except ConnectionError:
+    except ConnectionError as e:
         raise DockerNotAvailableException()
 
 

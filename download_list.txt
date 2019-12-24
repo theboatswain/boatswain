@@ -1,4 +1,5 @@
 https://ftp.openssl.org/source/old/1.1.0/openssl-1.1.0j.tar.gz
+https://ftp.openssl.org/source/old/1.0.2/openssl-1.0.2s.tar.gz
 https://www.zlib.net/zlib-1.2.11.tar.gz
 http://mirrors.ukfast.co.uk/sites/qt.io/archive/qt/5.13/5.13.0/single/qt-everywhere-src-5.13.0.tar.xz
 https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tar.xz
