@@ -53,6 +53,7 @@ class GeneralAppConfig:
         self.ui.container_name.textChanged.connect(self.onNameChanged)
         self.ui.image_tags.currentIndexChanged.connect(self.onImageTagChange)
         self.ui.entrypoint.textChanged.connect(self.onEntrypointChanged)
+        self.ui.entrypoint.setText(container.entrypoint)
 
     def retranslateUi(self):
         self.ui.container_name.setText(self._tr(self.template, self.container.name))
