@@ -14,9 +14,7 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
-import multiprocessing
-
-from PyQt5.QtCore import QCoreApplication
+from PyQt5.QtCore import QCoreApplication, QThread
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.tag import Tag
@@ -42,7 +40,7 @@ class GeneralAppConfig:
         self.onMemoryChanging()
 
         self.ui.limit_cpu.setMinimum(0)
-        self.ui.limit_cpu.setMaximum(multiprocessing.cpu_count() * 100 * 80 / 100)
+        self.ui.limit_cpu.setMaximum(int(QThread.idealThreadCount()) * 100 * 80 / 100)
         self.ui.limit_cpu.setValue(self.container.cpu_limit * 100)
         self.ui.limit_cpu.sliderReleased.connect(self.onCpuChanged)
         self.ui.limit_cpu.valueChanged.connect(self.onCpuChanging)

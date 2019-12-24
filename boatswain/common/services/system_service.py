@@ -16,14 +16,12 @@
 #
 
 import os
-import tempfile
 
-from PyQt5.QtCore import QProcess
 from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtWidgets import QApplication
+from boatswain_updater.utils import sys_utils
 
 from boatswain import resources_utils
-from boatswain_updater.utils import sys_utils
 
 ref_dpi = 94
 ref_height = 1440
@@ -54,7 +52,7 @@ def startTerminalWithCommand(command):
         if os.path.exists("/Applications/iTerm.app"):
             term = resources_utils.getExternalResource('run_with_iterm.sh')
         os.system('chmod u+x ' + term)
-        os.system("%s \"%s\"" % (term, command))
+        os.system("%s \"%s\" &" % (term, command))
     elif sys_utils.isWin():
         os.system("start cmd /c %s" % command)
     else:
@@ -71,7 +69,7 @@ def startTerminalWithCommand(command):
             default_linux_term = os.environ['COLORTERM']
         elif 'TERM' in os.environ:
             default_linux_term = os.environ['TERM']
-        os.system("%s -e %s" % (default_linux_term, command))
+        os.system("%s -e %s &" % (default_linux_term, command))
 
 
 def rt(pixel):

@@ -22,25 +22,10 @@ from docker.types import CancellableStream
 
 from boatswain.common.models.container import Container
 from boatswain.common.services import containers_service
-from boatswain.common.services import data_transporter_service
 from boatswain.common.services.system_service import applyFontRatio, rt
 from boatswain.common.services.worker_service import Worker, threadpool
-from boatswain.common.utils.constants import APP_EXIT_CHANNEL
 from boatswain.monitor.logging_monitor_model import LoggingMonitorModel
 from boatswain.monitor.logging_monitor_ui import LoggingMonitorUi
-
-to_be_delete = {}
-
-
-def cleanUp():
-    widgets = []
-    for item in to_be_delete:
-        widgets.append(to_be_delete[item])
-    for widget in widgets:
-        widget.close()
-
-
-data_transporter_service.listen(APP_EXIT_CHANNEL, cleanUp)
 
 
 class LoggingMonitor(QObject):
@@ -74,7 +59,6 @@ class LoggingMonitor(QObject):
         selection_model.selectionChanged.connect(self.updateLogDetails)
         self.ui.search.returnPressed.connect(self.find)
         self.dialog.closeEvent = self.closeEvent
-        to_be_delete[self.container.id] = self.dialog
 
     def show(self):
         self.dialog.show()
@@ -139,7 +123,6 @@ class LoggingMonitor(QObject):
             self.ui.log_details.hide()
 
     def closeEvent(self, event):
-        to_be_delete.pop(self.container.id)
         self.logs.close()
         QDialog.closeEvent(self.dialog, event)
 
