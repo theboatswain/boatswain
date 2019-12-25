@@ -23,13 +23,11 @@ from boatswain_updater.utils import sys_utils
 
 from boatswain import resources_utils
 
-ref_dpi = 94
-ref_height = 1440
-ref_width = 2560
+ref_dpi = 72 if sys_utils.isMac() else 96
 
 
 def getRefHeight():
-    return rt(800)
+    return rt(900)
 
 
 def getPrimaryScreen():
@@ -73,19 +71,13 @@ def startTerminalWithCommand(command):
 
 
 def rt(pixel):
-    if sys_utils.isMac():
-        return pixel
-    dpi = getPrimaryScreen().logicalDotsPerInch()
-    scale = dpi / ref_dpi
+    scale = getPrimaryScreen().logicalDotsPerInch() / ref_dpi
     return round(pixel * scale)
 
 
 def applyFontRatio(point):
-    if sys_utils.isMac():
-        return point
-    scale = getPrimaryScreen().logicalDotsPerInch() / getPrimaryScreen().physicalDotsPerInch()
-    size_factor = getScreenWidth() / ref_width
-    return round(point * scale * size_factor)
+    scale = getPrimaryScreen().logicalDotsPerInch() / ref_dpi
+    return round(point * scale)
 
 
 def resetStyle():

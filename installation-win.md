@@ -1,4 +1,3 @@
-
 # Boatswain installation for windows  
 This instruction is applied for pyqtdeploy version 2.4 and Python version 3.7
 ## Preparation  
