@@ -1,4 +1,5 @@
 # Boatswain installation for linux
+This instruction is applied for pyqtdeploy version 2.4 and Python version 3.7
 ## Preparation
 Make sure you have the following libraries installed:
 + Python version 3.7+

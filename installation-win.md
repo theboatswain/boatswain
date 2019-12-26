@@ -13,7 +13,7 @@ Python version 3.7 (64-bit) will be used for running the build.
 + Install Python   
   + Check the add Python to PATH checkbox  
   + After finished installation, check the Disable Path Length Limit  
-+ Download Python 2.7 for Windows fromhttps://www.python.org/ftp/python/2.7.15/python-2.7.15.amd64.msi  
++ Download Python 2.7 for Windows from https://www.python.org/ftp/python/2.7.15/python-2.7.15.amd64.msi  
 + Install Python  
   + Check Add python.exe to Path  
 #### Installing Perl  
