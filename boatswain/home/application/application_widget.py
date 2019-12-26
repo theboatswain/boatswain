@@ -29,6 +29,7 @@ from boatswain.common.services import containers_service, data_transporter_servi
 from boatswain.common.services.worker_service import Worker, threadpool
 from boatswain.common.utils import docker_utils
 from boatswain.common.utils.constants import ADD_APP_CHANNEL, SHORTCUT_CONF_CHANGED_CHANNEL, CONTAINER_CHANNEL
+from boatswain.common.utils.logging import logger
 from boatswain.home.application.application_widget_ui import AppWidgetUi
 from boatswain.monitor.logging_monitor import LoggingMonitor
 from boatswain.shortcut.preferences_shortcut_config import PreferencesShortcutConfig
@@ -86,14 +87,16 @@ class AppWidget(QObject):
         self.autoSetContainerStatus()
         if isinstance(exception, DockerNotAvailableException):
             docker_utils.notifyDockerNotAvailable()
-        if isinstance(exception, APIError):
+        elif isinstance(exception, APIError):
             message = exception.response.json()
             docker_utils.notifyDockerException(message['message'])
-        if isinstance(exception, ContainerConfigurationChangedException):
+        elif isinstance(exception, ContainerConfigurationChangedException):
             app_audit = AppAudit(None, self.container)
             app_audit.start_old_conf.connect(lambda: self.controlApp(start_only=True))
             app_audit.start_new_conf.connect(lambda: self.controlApp(force=True))
             app_audit.show()
+        else:
+            logger.error(exception, exc_info=True)
         # Todo: Handle more exceptions
 
     def onMouseReleased(self, event: QMouseEvent):

@@ -16,13 +16,14 @@
 #
 
 import os
-
 import sys
+
 from PyQt5.QtCore import Qt, QCoreApplication, QSize
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication
+from boatswain_updater.models.feed import Feed
+from boatswain_updater.updater import Updater
 
-from boatswain import resources_utils
 from boatswain.common.models.base import db
 from boatswain.common.models.tables import db_tables
 from boatswain.common.services import boatswain_daemon, data_transporter_service, docker_service, system_service, \
@@ -32,20 +33,6 @@ from boatswain.common.utils.constants import APP_DATA_DIR, APP_EXIT_CHANNEL, UPD
 from boatswain.common.utils.logging import logger
 from boatswain.home.home import Home
 from boatswain.resources_utils import getExternalResource
-from boatswain_updater.models.feed import Feed
-from boatswain_updater.updater import Updater
-
-
-def deFrostPem():
-    """
-    When the application is being frozen, all resource files will be encoded into the executable file
-    And with the requests library, it required to have the cacert.pem file available and accessible as a normal file
-    thus caused the problem of invalid path: :/certifi/cacert.pem
-    This function will workaround the problem by relink back the location of REQUESTS_CA_BUNDLE into the file from
-    resource folder
-    """
-    logger.info("CA Bundle: %s" % resources_utils.getExternalResource('cacert.pem'))
-    os.environ['REQUESTS_CA_BUNDLE'] = resources_utils.getExternalResource('cacert.pem')
 
 
 def onApplicationInstalled():
@@ -71,7 +58,7 @@ def run():
     if not os.path.isdir(APP_AVATAR_DIR):
         os.makedirs(APP_AVATAR_DIR)
 
-    deFrostPem()
+    system_service.deFrostPem()
     logger.info("App data path: %s", APP_DATA_DIR)
 
     # Connect to SQLite DB

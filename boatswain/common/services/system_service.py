@@ -74,6 +74,18 @@ def initialisingPath():
     if not sys_utils.isWin():
         addition_paths = ['/opt/local/bin', '/opt/local/sbin', '/usr/local/bin']
         os.environ['PATH'] = os.environ['PATH'] + os.pathsep + os.pathsep.join(addition_paths)
+        # Todo: Add option for user to pick the location of Docker installation folder. i.e. global preferences
+
+
+def deFrostPem():
+    """
+    When the application is being frozen, all resource files will be encoded into the executable file
+    And with the requests library, it required to have the cacert.pem file available and accessible as a normal file
+    thus caused the problem of invalid path: :/certifi/cacert.pem
+    This function will workaround the problem by relink back the location of REQUESTS_CA_BUNDLE into the file from
+    resource folder
+    """
+    os.environ['REQUESTS_CA_BUNDLE'] = resources_utils.getExternalResource('cacert.pem')
 
 
 def rt(pixel):
