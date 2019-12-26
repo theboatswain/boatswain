@@ -70,6 +70,12 @@ def startTerminalWithCommand(command):
         os.system("%s -e %s &" % (default_linux_term, command))
 
 
+def initialisingPath():
+    if not sys_utils.isWin():
+        addition_paths = ['/opt/local/bin', '/opt/local/sbin', '/usr/local/bin']
+        os.environ['PATH'] = os.environ['PATH'] + os.pathsep + os.pathsep.join(addition_paths)
+
+
 def rt(pixel):
     scale = getPrimaryScreen().logicalDotsPerInch() / ref_dpi
     return round(pixel * scale)

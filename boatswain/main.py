@@ -60,6 +60,7 @@ def run():
     QCoreApplication.setApplicationName("Boatswain")
     app = QApplication(sys.argv)
     system_service.resetStyle()
+    system_service.initialisingPath()
 
     if not docker_service.isDockerRunning():
         return docker_utils.notifyDockerNotAvailable()
