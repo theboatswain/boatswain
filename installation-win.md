@@ -69,6 +69,8 @@ will become
 #find_qt()
 ```
   
+#### Build the application
+  
 #### Python versions problem  
 In section Installing Python, I have mentioned that we have to install 3 versions of Python, and use the Python 3.7 64-bit for building. The reason for it is, for example:  
   

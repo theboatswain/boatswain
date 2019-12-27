@@ -2,7 +2,7 @@
 This instruction is applied for pyqtdeploy version 2.4 and Python version 3.7
 #### Preparation
 Make sure you have the following libraries installed:
-+ Python version 3.7+
++ Python version 3.7.x
 + Command Line Developer Tools
 #### Installing dependencies  
 + Go to the project's directory  
