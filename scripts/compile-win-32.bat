@@ -1,7 +1,7 @@
 SET SCRIPT_DIR=%~dp0
 SET PYQTDEPLOY=venv\Scripts
 
-for %%a in ("%SCRIPT_DIR%") do set "PROJECT_DIR=%%~dpa"
+for %%a in ("%SCRIPT_DIR:~0,-1%") do set "PROJECT_DIR=%%~dpa"
 
 CD /D %PROJECT_DIR%
 
@@ -16,3 +16,4 @@ CD ..
 MKDIR release\win
 MOVE build-win-32\release\Boatswain.exe release\win\
 COPY resources\* release\win\
+DEL /s /q /f release\win\*.sh
