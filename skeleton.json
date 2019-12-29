@@ -16,7 +16,7 @@
         "linux|macos|win#source":   "qt-everywhere-src-5.13.0.tar.xz",
         "edition":                  "opensource",
         "macos|win#ssl":            "openssl-linked",
-
+        "linux#ssl":        "openssl-runtime",
         "configure_options":        [
                 "-opengl", "desktop", "-no-dbus", "-qt-pcre"
         ],

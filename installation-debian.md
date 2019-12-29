@@ -5,6 +5,7 @@ Make sure you have the following libraries installed:
 + Python version 3.7+
 + Package libssl-dev installed
 + Package libsqlite3-dev installed
++ Run the following command for building deps: `sudo apt-get build-dep qt5-default`
 ## Install sysroot
 `wget -i download_list.txt`
 
