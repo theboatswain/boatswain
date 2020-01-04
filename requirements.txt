@@ -4,4 +4,4 @@ PyQt5==5.13.0
 peewee==3.9.6
 git+https://github.com/theboatswain/appdirs.git#egg=appdirs
 requests
-boatswain_updater==1.0.1
+boatswain_updater==1.1.2

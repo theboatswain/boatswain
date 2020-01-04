@@ -36,6 +36,7 @@ from boatswain.resources_utils import getExternalResource
 
 
 def onApplicationInstalled():
+    # Once the application is updated, then relaunch it self
     data_transporter_service.fire(APP_EXIT_CHANNEL)
     logger.info('Relaunching %s' % sys.executable)
     os.execlp(sys.executable, *sys.argv)
@@ -43,7 +44,7 @@ def onApplicationInstalled():
 
 def run():
     QApplication.setAttribute(Qt.AA_DisableHighDpiScaling)
-    QCoreApplication.setApplicationVersion("1.0.0")
+    QCoreApplication.setApplicationVersion("0.0.0")
     QCoreApplication.setApplicationName("Boatswain")
     app = QApplication(sys.argv)
     system_service.resetStyle()
@@ -58,7 +59,7 @@ def run():
     if not os.path.isdir(APP_AVATAR_DIR):
         os.makedirs(APP_AVATAR_DIR)
 
-    system_service.deFrostPem()
+    system_service.reassignPemLocation()
     logger.info("App data path: %s", APP_DATA_DIR)
 
     # Connect to SQLite DB
@@ -81,7 +82,7 @@ def run():
     update_dialog.setIcon(pixmap)
     update_dialog.installed.connect(onApplicationInstalled)
     update_dialog.checkForUpdate(silent=True)
-    data_transporter_service.listen(UPDATES_CHANNEL, lambda x: update_dialog.checkForUpdate(silent=x))
+    data_transporter_service.listen(UPDATES_CHANNEL, update_dialog.checkForUpdate)
 
     window.show()
 

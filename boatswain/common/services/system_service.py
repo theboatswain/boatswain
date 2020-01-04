@@ -77,7 +77,7 @@ def initialisingPath():
         # Todo: Add option for user to pick the location of Docker installation folder. i.e. global preferences
 
 
-def deFrostPem():
+def reassignPemLocation():
     """
     When the application is being frozen, all resource files will be encoded into the executable file
     And with the requests library, it required to have the cacert.pem file available and accessible as a normal file
