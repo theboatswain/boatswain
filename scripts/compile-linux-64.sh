@@ -11,14 +11,14 @@ make
 
 cd ..
 
-rm -rf release/linux/unix
-mkdir -p release/linux/unix
-mv build-linux-64/Boatswain release/linux/unix/
-cp resources/* release/linux/unix/
+rm -rf release/linux
+mkdir -p release/linux/boatswain
+mv build-linux-64/Boatswain release/linux/boatswain/
+cp resources/* release/linux/boatswain/
 
 cd release/linux || exit
 
-fpm -s dir -t deb unix=/usr/local/boatswain /usr/local/boatswain/boatswain.desktop=/usr/share/applications/
-fpm -s dir -t rpm unix=/usr/local/boatswain /usr/local/boatswain/boatswain.desktop=/usr/share/applications/
+fpm -s dir -n boatswain -t deb --description "Boatswain is a cross-platform application to manage your docker containers. " boatswain=/usr/local boatswain/boatswain.desktop=/usr/share/applications/
+fpm -s dir -n boatswain -t rpm --description "Boatswain is a cross-platform application to manage your docker containers. " boatswain=/usr/local boatswain/boatswain.desktop=/usr/share/applications/
 
 cd ../..

@@ -12,3 +12,7 @@ Make sure you have the following libraries installed:
 After all dependency libraries are downloaded, run the following command to build sysroot:
 
 `pyqtdeploy-sysroot skeleton.json` 
+
+
+install fpm
+in ubuntu, install rpm
