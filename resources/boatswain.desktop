@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Boatswain
+Comment=Boatswain is a cross-platform application to manage your docker containers
+Exec=/usr/local/boatswain/Boatswain
+Icon=/usr/local/boatswain/boatswain.svg
+Terminal=false
+Type=Application
+Categories=Utility;Development;
