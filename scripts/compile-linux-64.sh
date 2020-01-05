@@ -18,7 +18,11 @@ cp resources/* release/linux/boatswain/
 
 cd release/linux || exit
 
-fpm -s dir -n boatswain -t deb --description "Boatswain is a cross-platform application to manage your docker containers. " boatswain=/usr/local boatswain/boatswain.desktop=/usr/share/applications/
-fpm -s dir -n boatswain -t rpm --description "Boatswain is a cross-platform application to manage your docker containers. " boatswain=/usr/local boatswain/boatswain.desktop=/usr/share/applications/
+fpm -s dir -n boatswain -t deb \
+          --description "Boatswain is a cross-platform application to manage your docker containers. " \
+          boatswain=/usr/local boatswain/boatswain.desktop=/usr/share/applications/
+fpm -s dir -n boatswain -t rpm \
+          --description "Boatswain is a cross-platform application to manage your docker containers. " \
+          boatswain=/usr/local boatswain/boatswain.desktop=/usr/share/applications/
 
 cd ../..

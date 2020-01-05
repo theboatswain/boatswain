@@ -17,3 +17,4 @@ MKDIR release\win
 MOVE build-win-32\release\Boatswain.exe release\win\
 COPY resources\* release\win\
 DEL /s /q /f release\win\*.sh
+DEL /s /q /f release\win\*.desktop

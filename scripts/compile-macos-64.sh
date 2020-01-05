@@ -15,3 +15,5 @@ rm -rf release/macos
 mkdir -p release/macos
 mv build-macos-64/Boatswain.app release/macos/
 cp resources/* release/macos/Boatswain.app/Contents/Resources/
+
+rm -rf release/macos/Boatswain.app/Contents/Resources/*.desktop
