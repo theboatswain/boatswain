@@ -24,12 +24,10 @@ After all dependency libraries are downloaded, run the following command to buil
 `pyqtdeploy-sysroot skeleton.json --verbose > output.log` 
 
 #### Optional packages
-##### FPM
-fpm is a tool to help us to build .deb and .rpm packages
++ FPM - fpm is a tool to help us to build .deb and .rpm packages
 Please refer to https://fpm.readthedocs.io/en/latest/installing.html for instruction
 
-##### RPM
-RPM is a library for helping us to build rpm package
++ RPM - rpm is a library for helping us to build rpm package `suto apt install rpm`
 
 #### Build the application
 ```
