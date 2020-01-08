@@ -71,6 +71,11 @@ will become
   
 #### Build the application
   
+```
+scripts\compile-win-32.bat
+```
+After finishing the script, the .exe application will be located in the _release/win_ folder
+  
 #### Python versions problem  
 In section Installing Python, I have mentioned that we have to install 3 versions of Python, and use the Python 3.7 64-bit for building. The reason for it is, for example:  
   
