@@ -35,6 +35,9 @@ from boatswain.home.home import Home
 from boatswain.resources_utils import getExternalResource
 
 
+APP_VERSION = "1.0.0"
+
+
 def onApplicationInstalled():
     # Once the application is updated, then relaunch it self
     data_transporter_service.fire(APP_EXIT_CHANNEL)
@@ -44,7 +47,7 @@ def onApplicationInstalled():
 
 def run():
     QApplication.setAttribute(Qt.AA_DisableHighDpiScaling)
-    QCoreApplication.setApplicationVersion("0.0.0")
+    QCoreApplication.setApplicationVersion(APP_VERSION)
     QCoreApplication.setApplicationName("Boatswain")
     app = QApplication(sys.argv)
     system_service.resetStyle()

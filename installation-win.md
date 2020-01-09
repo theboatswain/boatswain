@@ -19,7 +19,7 @@ Python version 3.7 (64-bit) will be used for running the build.
 #### Installing Perl  
 + Download and install from http://strawberryperl.com  
 #### Installing dependencies  
-+ Start the Developer Command Prompt for VS 2017  
++ Start the version of Developer Command Prompt for VS 2017, corresponding to your target architecture (32bit or 64bit)
 + Go to the project's directory  
 + Create an environment for your project:   
 ```  
@@ -77,6 +77,8 @@ scripts\compile-win-32.bat
 After finishing the script, the .exe application will be located in the _release/win_ folder
   
 #### Python versions problem  
+This only happen when you trying to build the 32bit version on your 64bit machine.
+
 In section Installing Python, I have mentioned that we have to install 3 versions of Python, and use the Python 3.7 64-bit for building. The reason for it is, for example:  
   
 **If you missed the version 2.7,** then when you build the sysroot, it will throw an exception of:  
