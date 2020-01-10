@@ -2,15 +2,12 @@ SET SCRIPT_DIR=%~dp0
 SET PYQTDEPLOY=venv\Scripts
 
 @echo off
-SET /p VERSION="Enter the release version: "
 
 for %%a in ("%SCRIPT_DIR:~0,-1%") do set "PROJECT_DIR=%%~dpa"
 
 CD /D %PROJECT_DIR%
 
-COPY boatswain\main.py boatswain\main.py.bak
-
-python scripts\update_version.py boatswain\main.py %VERSION%
+FOR /F "delims=" %i IN ('python scripts\get_version.py boatswain\main.py') DO set VERSION=%i
 
 %PYQTDEPLOY%\pyqtdeploy-build.exe pyqt-boatswain-win.pdy
 CD build-win-32
@@ -28,4 +25,3 @@ DEL /s /q /f release\win\%VERSION%\*.desktop
 
 python scripts\zipping.py release\win\%VERSION% x32 %VERSION%
 
-REM boatswain\main.py.bak main.py

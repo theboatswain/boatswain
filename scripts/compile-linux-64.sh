@@ -4,12 +4,7 @@ PYQT_DEPLOY_BIN=venv/bin
 
 cd "$( dirname "$DIR")" || exit
 
-echo "Enter the release version: "
-read -r VERSION
-
-cp boatswain/main.py boatswain/main.py.bak
-
-python scripts/update_version.py boatswain/main.py "${VERSION}"
+VERSION="$(python scripts/get_version.py boatswain/main.py)"
 
 $PYQT_DEPLOY_BIN/pyqtdeploy-build pyqt-boatswain-linux.pdy
 cd build-linux-64 || exit
@@ -27,14 +22,15 @@ cd release/linux/"${VERSION}" || exit
 
 fpm -s dir -n boatswain -t deb \
           --description "Boatswain is a cross-platform application to manage your docker containers. " \
+          --version "${VERSION}"
           boatswain=/usr/local boatswain/boatswain.desktop=/usr/share/applications/
 fpm -s dir -n boatswain -t rpm \
           --description "Boatswain is a cross-platform application to manage your docker containers. " \
+          --version "${VERSION}"
           boatswain=/usr/local boatswain/boatswain.desktop=/usr/share/applications/
 
 cd ../../..
 
 python scripts/zipping.py release/linux/"${VERSION}"/boatswain x64 "${VERSION}"
 
-mv boatswain/main.py.bak boatswain/main.py
 
