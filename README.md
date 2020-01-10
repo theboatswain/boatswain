@@ -36,7 +36,7 @@ Preferences shortcut is a feature to allow you to share your docker's configurat
 ## Code contributions  
 Note: by contributing code to the Boatswain project in any form, including sending a pull request via Github, a code fragment or patch via private email or public discussion groups, you agree to release your code under the terms of the GNU GPLv3 license that you can find in the [LICENSE](https://github.com/theboatswain/boatswain/blob/master/LICENSE)) file included in the Boatswain source distribution.  
   
-Please see the [CONTRIBUTING](https://github.com/theboatswain/boatswain/blob/master/CONTRIBUTING) file in this source distribution for more information.  
+Please see the [CONTRIBUTING.md](https://github.com/theboatswain/boatswain/blob/master/CONTRIBUTING.md) file in this source distribution for more information.  
   
 ## Copyright and License  
 Code released under the [GNU GPL v3 license](https://github.com/theboatswain/boatswain/blob/master/LICENSE)
