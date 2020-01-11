@@ -1,13 +1,13 @@
 # Boatswain installation for linux
 This instruction is applied for pyqtdeploy version 2.4 and Python version 3.7.
 
-Tested on Ubuntu 18.04.3, Ubuntu 19.10, Elementary 5.0
+Tested on Ubuntu 18.04.3, Ubuntu 19.10, Elementary 5.1
 #### Preparation
 Make sure you have the following libraries installed:
 + Python version 3.7+
-+ Package libssl-dev, libffi-dev, libfontconfig-dev, libsqlite3-dev, libxkbcommon-x11-dev installed
++ Package libssl-dev, libffi-dev, libfontconfig-dev, libsqlite3-dev, libgl1-mesa-dev, libxkbcommon-x11-dev installed
 ```bash
-sudo apt install libssl-dev libffi-dev libfontconfig-dev libsqlite3-dev libxkbcommon-x11-dev
+sudo apt install libssl-dev libffi-dev libfontconfig-dev libsqlite3-dev libgl1-mesa-dev libxkbcommon-x11-dev
 ```
 #### Installing dependencies  
 + Go to the project's directory  

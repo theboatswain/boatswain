@@ -22,11 +22,11 @@ cd release/linux/"${VERSION}" || exit
 
 fpm -s dir -n boatswain -t deb \
           --description "Boatswain is a cross-platform application to manage your docker containers. " \
-          --version "${VERSION}"
+          --version "${VERSION}" \
           boatswain=/usr/local boatswain/boatswain.desktop=/usr/share/applications/
 fpm -s dir -n boatswain -t rpm \
           --description "Boatswain is a cross-platform application to manage your docker containers. " \
-          --version "${VERSION}"
+          --version "${VERSION}" \
           boatswain=/usr/local boatswain/boatswain.desktop=/usr/share/applications/
 
 cd ../../..
