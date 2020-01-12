@@ -28,7 +28,12 @@ from boatswain.common.utils.logging import logger
 
 system_platform = platform.system()
 base_url = WINDOWS_BASE_URL if system_platform == "Windows" else UNIX_BASE_URL
-client = docker.DockerClient(base_url=global_preference_service.getCurrentDockerURL())
+client: docker.DockerClient
+
+
+def setupClient():
+    global client
+    client = docker.DockerClient(base_url=global_preference_service.getCurrentDockerURL())
 
 
 def searchDockerImages(keyword):

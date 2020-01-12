@@ -60,6 +60,7 @@ def run():
     # Connect to SQLite DB
     db.connect(reuse_if_open=True)
     db.create_tables(db_tables)
+    docker_service.setupClient()
 
     system_service.reassignPemLocation()
     logger.info("App data path: %s", APP_DATA_DIR)
