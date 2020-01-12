@@ -1,6 +1,6 @@
 #  This file is part of Boatswain.
 #
-#      Boatswain is free software: you can redistribute it and/or modify
+#      Boatswain<https://github.com/theboatswain> is free software: you can redistribute it and/or modify
 #      it under the terms of the GNU General Public License as published by
 #      the Free Software Foundation, either version 3 of the License, or
 #      (at your option) any later version.
@@ -21,6 +21,8 @@ from PyQt5.QtCore import QVariant
 from PyQt5.QtCore import Qt
 
 from boatswain.common.models.container import Container
+from boatswain.common.services import auditing_service
+from boatswain.common.utils.constants import STATUS_DELETED
 
 
 class ShortcutCreatorModel(QAbstractTableModel):
@@ -44,6 +46,8 @@ class ShortcutCreatorModel(QAbstractTableModel):
             return QVariant()
         elif role != Qt.DisplayRole and role != Qt.EditRole:
             return QVariant()
+        if self.header_data[index.column()] == 'enabled':
+            return QVariant()
         return QVariant(getattr(self.array_data[index.row()], self.header_data[index.column()]))
 
     def headerData(self, col, orientation, role=None):
@@ -56,8 +60,11 @@ class ShortcutCreatorModel(QAbstractTableModel):
         self.layoutChanged.emit()
 
     def removeRow(self, p_int, parent=None, *args, **kwargs):
-        if self.array_data[p_int].container is not None:
-            self.array_data[p_int].delete_instance()
+        record = self.array_data[p_int]
+        record.status = STATUS_DELETED
+        record.save()
+        auditing_service.audit_delete(self.container, record.tableName(), record.id)
+
         self.array_data.pop(p_int)
         self.layoutChanged.emit()
 

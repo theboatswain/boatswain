@@ -1,6 +1,6 @@
 #  This file is part of Boatswain.
 #
-#      Boatswain is free software: you can redistribute it and/or modify
+#      Boatswain<https://github.com/theboatswain> is free software: you can redistribute it and/or modify
 #      it under the terms of the GNU General Public License as published by
 #      the Free Software Foundation, either version 3 of the License, or
 #      (at your option) any later version.
@@ -18,37 +18,53 @@
 import platform
 
 import docker
+from docker.models.containers import Container
 from requests.exceptions import ConnectionError
 
 from boatswain.common.exceptions.docker_exceptions import DockerNotAvailableException
-from boatswain.common.models.container import Container
+from boatswain.common.services import global_preference_service
 from boatswain.common.utils.constants import WINDOWS_BASE_URL, UNIX_BASE_URL
 from boatswain.common.utils.logging import logger
 
 system_platform = platform.system()
 base_url = WINDOWS_BASE_URL if system_platform == "Windows" else UNIX_BASE_URL
-client = docker.DockerClient(base_url=base_url)
+client: docker.DockerClient
 
 
-def searchDockerhubContainers(keyword):
+def setupClient():
+    global client
+    client = docker.DockerClient(base_url=global_preference_service.getCurrentDockerURL())
+
+
+def searchDockerImages(keyword):
     ping()
     return client.images.search(keyword)
 
 
-def getContainerInfo(container_id):
+def getContainerInfo(container_id) -> Container:
     ping()
     return client.containers.get(container_id)
 
 
-def run(container: Container, ports, envs, volumes):
+def inspect(container_id):
     ping()
-    return client.containers.run(container.image_name + ":" + container.tag, detach=True, ports=ports,
-                                 environment=envs, volumes=volumes)
+    return docker.api.inspect_container(container_id)
 
 
-def stop(container: Container):
+def run(image_name, tag, ports, envs, volumes, entrypoint=None, **kwargs):
     ping()
-    return client.containers.get(container.container_id)
+    return client.containers.run(image_name + ":" + tag, detach=True, ports=ports,
+                                 environment=envs, volumes=volumes, entrypoint=entrypoint, **kwargs)
+
+
+def streamLogs(container_id: str):
+    container = getContainerInfo(container_id)
+    return container.logs(stream=True, timestamps=True)
+
+
+def stop(container_id: str):
+    ping()
+    return client.containers.get(container_id)
 
 
 def streamEvents():
@@ -71,3 +87,12 @@ def isDockerRunning():
         return False
     else:
         return True
+
+
+def deleteContainer(container_id: str, delete_volumes=True):
+    container = client.containers.get(container_id)
+    container.remove(v=delete_volumes)
+
+
+def deleteVolume(volume_id):
+    client.volumes.get(volume_id).remove()

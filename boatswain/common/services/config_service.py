@@ -1,6 +1,6 @@
 #  This file is part of Boatswain.
 #
-#      Boatswain is free software: you can redistribute it and/or modify
+#      Boatswain<https://github.com/theboatswain> is free software: you can redistribute it and/or modify
 #      it under the terms of the GNU General Public License as published by
 #      the Free Software Foundation, either version 3 of the License, or
 #      (at your option) any later version.
@@ -25,6 +25,13 @@ def getAppConf(container: Container, key: str) -> Configuration:
     return Configuration.get(Configuration.container == container, Configuration.name == key)
 
 
+def cloneAll(container_from: Container, container_to: Container):
+    for conf in Configuration.select().where(Configuration.container == container_from):
+        conf.container = container_to
+        conf.id = None
+        conf.save()
+
+
 def isAppConf(container: Container, key: str, value: str) -> bool:
     try:
         conf = getAppConf(container, key)
@@ -40,3 +47,7 @@ def setAppConf(container: Container, key: str, value: str):
         conf.save()
     except DoesNotExist:
         Configuration.create(container=container, name=key, value=value)
+
+
+def deleteAll(container: Container):
+    Configuration.delete().where(Configuration.container == container).execute()

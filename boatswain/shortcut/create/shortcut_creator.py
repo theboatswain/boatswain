@@ -1,6 +1,6 @@
 #  This file is part of Boatswain.
 #
-#      Boatswain is free software: you can redistribute it and/or modify
+#      Boatswain<https://github.com/theboatswain> is free software: you can redistribute it and/or modify
 #      it under the terms of the GNU General Public License as published by
 #      the Free Software Foundation, either version 3 of the License, or
 #      (at your option) any later version.
@@ -16,25 +16,27 @@
 #
 
 from PyQt5 import QtCore
-from PyQt5.QtCore import QPoint
+from PyQt5.QtCore import QPoint, Qt
 from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import QDialog, QWidget, QToolTip, QMessageBox, QFileDialog
+from playhouse.shortcuts import model_to_dict
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
-from boatswain.common.services import containers_service, config_service
-from boatswain.common.utils.constants import SHORTCUT_CONF_CHANGED_CHANNEL, CONTAINER_CONF_CHANGED
+from boatswain.common.services import shortcut_service, auditing_service
+from boatswain.common.services.system_service import rt
 from boatswain.shortcut.create.shortcut_creator_ui import ShortcutCreatorUi
 
 
 class ShortcutCreator:
     _translate = QtCore.QCoreApplication.translate
     template = 'PreferenceShortcut'
-    shortcut_types = ['Volume Mount', 'Port Mapping', 'Environment']
+    shortcut_types = ['Volume Mount', 'Port Mapping', 'Environment', 'Constant']
     data_types = ['String', 'Folder', 'File', 'Number']
 
     def __init__(self, container: Container, widget: QWidget, shortcut: PreferencesShortcut) -> None:
         self.dialog = QDialog(widget)
+        self.dialog.setAttribute(Qt.WA_DeleteOnClose)
         self.container = container
         self.ui = ShortcutCreatorUi(self.dialog, container)
         self.dialog.ui = self.ui
@@ -62,16 +64,29 @@ class ShortcutCreator:
         self.ui.cancel_button.clicked.connect(self.cancel)
         self.ui.cancel_button_2.clicked.connect(self.cancel)
         self.ui.default_value.button_clicked.connect(self.onFindDirClicked)
+        self.ui.description.setText(self.shortcut.description)
         if shortcut.pref_type in ['File', 'Folder']:
             self.ui.default_value.button.setVisible(True)
+        self.is_creative_move = self.shortcut.label is None
 
     def show(self):
         return self.dialog.exec_()
 
     def cancel(self):
-        button_reply = QMessageBox.question(self.dialog, 'Preference shortcut', "Are you sure?",
-                                            QMessageBox.Ok | QMessageBox.Cancel, QMessageBox.Cancel)
-        if button_reply == QMessageBox.Ok:
+        shortcut = shortcut_service.getShortcut(self.shortcut.id)
+        shortcut.label = self.ui.shortcut_label.text()
+        shortcut.default_value = self.ui.default_value.text()
+        shortcut.pref_type = self.ui.data_type.currentText()
+        shortcut.shortcut = self.ui.shortcut_type.currentText()
+        shortcut.mapping_to = self.ui.mapping_to.text()
+        shortcut.description = self.ui.description.toPlainText()
+        if shortcut_service.hasChanged(shortcut):
+            button_reply = QMessageBox.question(self.dialog, 'Preference shortcut', "You have made some changes, \n"
+                                                                                    "Do you want to discard all of it?",
+                                                QMessageBox.Ok | QMessageBox.Cancel, QMessageBox.Cancel)
+            if button_reply == QMessageBox.Ok:
+                self.dialog.close()
+        else:
             self.dialog.close()
 
     def next(self):
@@ -85,12 +100,19 @@ class ShortcutCreator:
             self.ui.mapping_to.setValidator(None)
         self.describeValues()
         self.ui.stacked_widget.setCurrentIndex(1)
-
-    def isCreateMode(self):
-        return self.shortcut.label is None
+        if self.ui.shortcut_type.currentText() == 'Constant':
+            self.ui.mapping_to.hide()
+            self.ui.mapping_to_label.hide()
+            self.ui.mapping_to_des.hide()
+            self.ui.description.setMaximumHeight(rt(120))
+        else:
+            self.ui.mapping_to.show()
+            self.ui.mapping_to_label.show()
+            self.ui.mapping_to_des.show()
+            self.ui.description.setMaximumHeight(rt(60))
 
     def finish(self):
-        if not self.ui.mapping_to.text():
+        if not self.ui.mapping_to.text() and self.ui.shortcut_type.currentText() != 'Constant':
             message = self._translate(self.template, 'The value of \'Mapping to\' can not be empty')
             QToolTip.showText(self.ui.mapping_to.mapToGlobal(QPoint()), message)
             return
@@ -98,7 +120,7 @@ class ShortcutCreator:
         mapping_to = self.ui.mapping_to.text()
 
         # Is create mode
-        if self.isCreateMode() and self.findShortcut(self.container, shortcut_type, mapping_to):
+        if self.is_creative_move and self.findShortcut(self.container, shortcut_type, mapping_to):
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Critical)
 
@@ -108,20 +130,33 @@ class ShortcutCreator:
             msg.setStandardButtons(QMessageBox.Ok)
             return msg.exec_()
 
-        if self.isCreateMode():
+        if self.is_creative_move:
             order = PreferencesShortcut.select().where(PreferencesShortcut.container == self.container).count() * 10000
             self.shortcut.order = order
 
         self.shortcut.container = self.container
-        self.shortcut.label = self.ui.shortcut_label.text()
-        self.shortcut.default_value = self.ui.default_value.text()
-        self.shortcut.pref_type = self.ui.data_type.currentText()
+        self.shortcut.label = self.ui.shortcut_label.text().strip()
+        self.shortcut.default_value = self.ui.default_value.text().strip()
+        self.shortcut.pref_type = self.ui.data_type.currentText().strip()
         self.shortcut.shortcut = self.ui.shortcut_type.currentText()
-        self.shortcut.mapping_to = self.ui.mapping_to.text()
+        self.shortcut.mapping_to = self.ui.mapping_to.text().strip()
+        self.shortcut.description = self.ui.description.toPlainText().strip()
 
-        self.shortcut.save()
-        config_service.setAppConf(self.shortcut.container, CONTAINER_CONF_CHANGED, 'true')
-        containers_service.fire(self.container, SHORTCUT_CONF_CHANGED_CHANNEL, True)
+        if shortcut_service.hasChanged(self.shortcut):
+            model = model_to_dict(self.shortcut)
+            model_original = model_to_dict(shortcut_service.getShortcut(self.shortcut.id))
+            changes = []
+            for key in model:
+                if model[key] != model_original[key] and key != 'id':
+                    # Record changes, except label because it will not affect to the container it self
+                    changes.append({'from': model_original[key], 'to': model[key], 'key': key})
+            self.shortcut.save()
+            if self.is_creative_move:
+                auditing_service.audit_create(self.container, self.shortcut.tableName(), self.shortcut.id)
+            else:
+                for change in changes:
+                    auditing_service.audit_update(self.container, self.shortcut.tableName(), self.shortcut.id,
+                                                  change['key'], change['from'], change['to'])
         self.dialog.accept()
 
     def onShortcutTypeChange(self, shortcut_type):
@@ -180,13 +215,19 @@ class ShortcutCreator:
         elif self.ui.shortcut_type.currentText() == 'Volume Mount':
             self.ui.default_value_des.setText(self._translate(
                 self.template, "The default path to the shared folder of host machine, "
-                               "which will be mount to the container folder described in the 'Mapping to' section. \n"
+                               "which will be mounted to the container folder described in the 'Mapping to' section. \n"
                                "The mount type will be read-write by default. \n"
                                "This value can be changed in the expanding window."))
             self.ui.mapping_to_des.setText(self._translate(
                 self.template, "The container folder of this preference shortcut port mapping. \n"
-                               "i.e /usr/share/nginx/html"
+                               "i.e /usr/share/nginx/html \n"
                                "This value can't be changed in the expanding window."))
+        elif self.ui.shortcut_type.currentText() == 'Constant':
+            self.ui.default_value_des.setText(self._translate(
+                self.template, "The default value that will be display in the expanding window \n"
+                               "This value will not make any effective into the current container, the only purpose of "
+                               "this property is for showing some default configuration values.\n"
+                               "This value can not be changed in the expanding window."))
 
     def retranslateUi(self):
         self.dialog.setWindowTitle(self._translate(self.template, "Preference Shortcut"))
@@ -208,6 +249,7 @@ class ShortcutCreator:
         self.ui.tab_widget.setTabText(self.ui.tab_widget.indexOf(self.ui.tab),
                                       self._translate(self.template, "Create new preference shortcut"))
         self.ui.mapping_to_label.setText(self._translate(self.template, "Mapping to:"))
+        self.ui.description_label.setText(self._translate(self.template, "Description:"))
         self.ui.default_value_label.setText(self._translate(self.template, "Default value:"))
         self.ui.back_button.setText(self._translate(self.template, "Back"))
         self.ui.cancel_button_2.setText(self._translate(self.template, "Cancel"))

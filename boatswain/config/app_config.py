@@ -1,6 +1,6 @@
 #  This file is part of Boatswain.
 #
-#      Boatswain is free software: you can redistribute it and/or modify
+#      Boatswain<https://github.com/theboatswain> is free software: you can redistribute it and/or modify
 #      it under the terms of the GNU General Public License as published by
 #      the Free Software Foundation, either version 3 of the License, or
 #      (at your option) any later version.
@@ -31,8 +31,8 @@ class AppConfig:
         self.container = container
 
         self.dialog = QDialog(parent)
+        self.dialog.setAttribute(Qt.WA_DeleteOnClose)
 
-        self.dialog = self.dialog
         self.ui = AppConfigUi(self.dialog, container)
         self.dialog.ui = self.ui
 

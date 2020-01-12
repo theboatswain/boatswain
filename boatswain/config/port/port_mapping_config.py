@@ -1,6 +1,6 @@
 #  This file is part of Boatswain.
 #
-#      Boatswain is free software: you can redistribute it and/or modify
+#      Boatswain<https://github.com/theboatswain> is free software: you can redistribute it and/or modify
 #      it under the terms of the GNU General Public License as published by
 #      the Free Software Foundation, either version 3 of the License, or
 #      (at your option) any later version.
@@ -18,10 +18,11 @@
 from PyQt5 import QtCore
 from PyQt5.QtCore import QItemSelectionModel
 from PyQt5.QtWidgets import QTableView, QAbstractItemView
+from boatswain.common.services import port_mapping_service
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.port_mapping import PortMapping
-from boatswain.common.utils.custom_ui import ComboBoxDelegate, InputNumberDelegate
+from boatswain.common.ui.custom_ui import ComboBoxDelegate, InputNumberDelegate
 from boatswain.config.port.port_mapping_config_model import PortMappingModel
 from boatswain.config.port.port_mapping_config_ui import PortMappingConfigUi
 
@@ -43,7 +44,7 @@ class PortMappingConfig:
         self.ui.new_port.clicked.connect(self.onNewPortClicked)
         self.ui.delete_port.clicked.connect(self.onDeletePortClicked)
 
-        table_data = PortMapping.select().where(PortMapping.container == container)
+        table_data = port_mapping_service.getPortMappings(self.container)
         headers = ['target_port', 'port', 'protocol', 'description']
         display_headers = ['Host Port', 'Container Port', 'Protocol', 'Description']
         self.configurePortTable(self.ui.mapping_table, headers, display_headers, list(table_data), container)
@@ -62,7 +63,6 @@ class PortMappingConfig:
     def onNewPortClicked(self):
         self.ui.mapping_table.model().addRecord(
             PortMapping(port=1000, target_port=1000, description='description', container=self.container))
-        self.ui.mapping_table.resizeRowToContents(self.ui.mapping_table.model().rowCount() - 1)
         flags = QItemSelectionModel.ClearAndSelect | QItemSelectionModel.Rows
         index = self.ui.mapping_table.model().index(self.ui.mapping_table.model().rowCount() - 1, 0)
         self.ui.mapping_table.selectionModel().select(index, flags)

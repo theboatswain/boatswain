@@ -1,6 +1,6 @@
 #  This file is part of Boatswain.
 #
-#      Boatswain is free software: you can redistribute it and/or modify
+#      Boatswain<https://github.com/theboatswain> is free software: you can redistribute it and/or modify
 #      it under the terms of the GNU General Public License as published by
 #      the Free Software Foundation, either version 3 of the License, or
 #      (at your option) any later version.
@@ -19,7 +19,8 @@ from PyQt5.QtWidgets import QTableView, QVBoxLayout, QWidget, QGridLayout, QLine
     QLabel, QComboBox, QFrame, QHBoxLayout, QPushButton
 
 from boatswain.common.models.container import Container
-from boatswain.common.utils.custom_ui import AutoResizeWidget, BQSizePolicy
+from boatswain.common.services.system_service import rt
+from boatswain.common.ui.custom_ui import AutoResizeWidget, BQSizePolicy
 
 
 class PortMappingConfigUi(AutoResizeWidget):
@@ -29,13 +30,13 @@ class PortMappingConfigUi(AutoResizeWidget):
         self.handler = handler
         self.container = container
         self.vertical_layout = QVBoxLayout(self)
-        self.vertical_layout.setContentsMargins(11, 11, 11, 11)
-        self.vertical_layout.setSpacing(6)
+        self.vertical_layout.setContentsMargins(rt(11), rt(11), rt(11), rt(11))
+        self.vertical_layout.setSpacing(rt(6))
         self.top_widget = QWidget(self)
         self.top_widget.setSizePolicy(BQSizePolicy())
         self.grid_layout = QGridLayout(self.top_widget)
-        self.grid_layout.setContentsMargins(0, 0, 0, 12)
-        self.grid_layout.setSpacing(6)
+        self.grid_layout.setContentsMargins(0, 0, 0, rt(12))
+        self.grid_layout.setSpacing(rt(6))
         self.ip_addr = QLineEdit(self.top_widget)
         self.ip_addr.setSizePolicy(BQSizePolicy(h_stretch=1, height=QSizePolicy.Fixed))
         self.ip_addr.setReadOnly(True)
@@ -58,7 +59,7 @@ class PortMappingConfigUi(AutoResizeWidget):
         self.mid_widget.setSizePolicy(BQSizePolicy())
         self.horizontal_layout = QHBoxLayout(self.mid_widget)
         self.horizontal_layout.setContentsMargins(0, 0, 0, 0)
-        self.horizontal_layout.setSpacing(6)
+        self.horizontal_layout.setSpacing(rt(6))
         self.port_label = QLabel(self.mid_widget)
         self.horizontal_layout.addWidget(self.port_label)
         self.hidden_widget = QWidget(self.mid_widget)

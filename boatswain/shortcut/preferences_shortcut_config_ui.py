@@ -1,6 +1,6 @@
 #  This file is part of Boatswain.
 #
-#      Boatswain is free software: you can redistribute it and/or modify
+#      Boatswain<https://github.com/theboatswain> is free software: you can redistribute it and/or modify
 #      it under the terms of the GNU General Public License as published by
 #      the Free Software Foundation, either version 3 of the License, or
 #      (at your option) any later version.
@@ -17,19 +17,21 @@
 
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QSize
+from PyQt5.QtWidgets import QDialog
 
 from boatswain.common.models.container import Container
 from boatswain.common.services import system_service
-from boatswain.common.utils.custom_ui import BQSizePolicy
+from boatswain.common.services.system_service import rt
+from boatswain.common.ui.custom_ui import BQSizePolicy
 
 
 class PreferencesShortcutConfigUi(object):
 
-    def __init__(self, dialog, container: Container, handler) -> None:
+    def __init__(self, dialog: QDialog, container: Container, handler) -> None:
         self.container = container
         self.handler = handler
         self.dialog = dialog
-        height = system_service.screen_height / 2.2
+        height = system_service.getRefHeight() / 2.2
         width = height * 2
         dialog.resize(width, height)
         dialog.setSizePolicy(BQSizePolicy(h_stretch=1))
@@ -37,14 +39,16 @@ class PreferencesShortcutConfigUi(object):
         dialog.setSizeGripEnabled(False)
         dialog.setModal(False)
         self.verticalLayout = QtWidgets.QVBoxLayout(dialog)
-        self.verticalLayout.setContentsMargins(11, 11, 11, 11)
-        self.verticalLayout.setSpacing(6)
+        self.verticalLayout.setContentsMargins(rt(11), rt(11), rt(11), rt(11))
+        self.verticalLayout.setSpacing(rt(6))
         self.top_widget = QtWidgets.QWidget(dialog)
         self.top_widget.setSizePolicy(BQSizePolicy())
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.top_widget)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setSpacing(1)
         self.import_shortcut = QtWidgets.QPushButton(self.top_widget)
+        self.import_shortcut.setAutoDefault(False)
+        self.import_shortcut.setDefault(False)
         self.horizontalLayout.addWidget(self.import_shortcut)
         self.export_shortcut = QtWidgets.QPushButton(self.top_widget)
         self.horizontalLayout.addWidget(self.export_shortcut)

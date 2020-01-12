@@ -1,6 +1,6 @@
 #  This file is part of Boatswain.
 #
-#      Boatswain is free software: you can redistribute it and/or modify
+#      Boatswain<https://github.com/theboatswain> is free software: you can redistribute it and/or modify
 #      it under the terms of the GNU General Public License as published by
 #      the Free Software Foundation, either version 3 of the License, or
 #      (at your option) any later version.
@@ -20,7 +20,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTabWidget, QDialog
 
 from boatswain.common.models.container import Container
 from boatswain.common.services import system_service
-from boatswain.common.utils.custom_ui import BQSizePolicy
+from boatswain.common.ui.custom_ui import BQSizePolicy
 from boatswain.config.environment.environment_config import EnvironmentConfig
 from boatswain.config.general.general_config import GeneralAppConfig
 from boatswain.config.port.port_mapping_config import PortMappingConfig
@@ -33,7 +33,7 @@ class AppConfigUi(object):
         super().__init__()
         self.container = container
 
-        height = system_service.screen_height / 2
+        height = system_service.getRefHeight() / 2
         width = height * 1.6
         dialog.resize(width, height)
         dialog.setSizePolicy(BQSizePolicy(h_stretch=1))

@@ -1,6 +1,6 @@
 #  This file is part of Boatswain.
 #
-#      Boatswain is free software: you can redistribute it and/or modify
+#      Boatswain<https://github.com/theboatswain> is free software: you can redistribute it and/or modify
 #      it under the terms of the GNU General Public License as published by
 #      the Free Software Foundation, either version 3 of the License, or
 #      (at your option) any later version.
@@ -14,9 +14,20 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
+import os
+from typing import List
+
+from peewee import DoesNotExist
+from playhouse.shortcuts import update_model_from_dict, model_to_dict
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
+from boatswain.common.utils.constants import STATUS_ADDED
+from boatswain.common.utils.logging import logger
+
+
+def getShortcut(shortcut_id: int) -> PreferencesShortcut:
+    return PreferencesShortcut.get(shortcut_id)
 
 
 def getShortcutContainerEnvs(container: Container):
@@ -25,8 +36,9 @@ def getShortcutContainerEnvs(container: Container):
     :return: Dict: {'<key>': '<value>'}
     """
     result = {}
-    shortcuts = PreferencesShortcut.select().where(
-        (PreferencesShortcut.container == container) & (PreferencesShortcut.shortcut == 'Environment'))
+    shortcuts = PreferencesShortcut.select().where((PreferencesShortcut.container == container)
+                                                   & (PreferencesShortcut.shortcut == 'Environment')
+                                                   & PreferencesShortcut.enabled)
     for item in shortcuts:
         result[item.mapping_to] = item.default_value
     return result
@@ -40,8 +52,9 @@ def getShortcutPortMapping(container: Container):
     :rtype:
     """
     result = {}
-    shortcuts = PreferencesShortcut.select().where(
-        (PreferencesShortcut.container == container) & (PreferencesShortcut.shortcut == 'Port Mapping'))
+    shortcuts = PreferencesShortcut.select().where((PreferencesShortcut.container == container)
+                                                   & (PreferencesShortcut.shortcut == 'Port Mapping')
+                                                   & PreferencesShortcut.enabled)
     for item in shortcuts:
         result[item.mapping_to + '/tcp'] = item.default_value
     return result
@@ -57,8 +70,60 @@ def getShortcutVolumeMounts(container: Container):
                     }
     """
     result = {}
-    shortcuts = PreferencesShortcut.select().where(
-        (PreferencesShortcut.container == container) & (PreferencesShortcut.shortcut == 'Volume Mount'))
+    shortcuts = PreferencesShortcut.select().where((PreferencesShortcut.container == container)
+                                                   & (PreferencesShortcut.shortcut == 'Volume Mount')
+                                                   & PreferencesShortcut.enabled)
     for item in shortcuts:
         result[item.default_value] = {'bind': item.mapping_to, 'mode': 'rw'}
     return result
+
+
+def getShortcuts(container: Container) -> List[PreferencesShortcut]:
+    return PreferencesShortcut.select().where((PreferencesShortcut.container == container)
+                                              & (PreferencesShortcut.status == STATUS_ADDED))\
+        .order_by(PreferencesShortcut.order.asc())
+
+
+def getEnabledShortcuts(container: Container) -> List[PreferencesShortcut]:
+    return PreferencesShortcut.select()\
+        .where((PreferencesShortcut.container == container) & PreferencesShortcut.enabled
+               & (PreferencesShortcut.status == STATUS_ADDED)) \
+        .order_by(PreferencesShortcut.order.asc())
+
+
+def cloneAll(from_container: Container, to_container: Container):
+    for shortcut in getShortcuts(from_container):
+        shortcut.id = None
+        shortcut.container = to_container
+        shortcut.save()
+
+
+def deleteAll(container: Container):
+    PreferencesShortcut.delete().where(PreferencesShortcut.container == container).execute()
+
+
+def importShortcuts(container: Container, shortcuts: List[dict]):
+    for shortcut_dict in shortcuts:
+        shortcut = PreferencesShortcut()
+        update_model_from_dict(shortcut, shortcut_dict)
+        shortcut.container = container
+        if shortcut.pref_type in ['File', 'Folder']:
+            if not os.path.exists(shortcut.default_value):
+                shortcut.default_value = ''
+        try:
+            PreferencesShortcut.get((PreferencesShortcut.container == container)
+                                    & (PreferencesShortcut.shortcut == shortcut.shortcut)
+                                    & (PreferencesShortcut.mapping_to == shortcut.mapping_to)
+                                    & (PreferencesShortcut.pref_type == shortcut.pref_type))
+            logger.info("Ignoring shortcut label %s cuz it is already exists" % shortcut.label)
+        except DoesNotExist:
+            shortcut.save()
+
+
+def hasChanged(shortcut: PreferencesShortcut):
+    try:
+        model_source = model_to_dict(shortcut)
+        model_dest = model_to_dict(getShortcut(shortcut.id))
+        return model_source != model_dest
+    except DoesNotExist:
+        return True

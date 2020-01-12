@@ -2,7 +2,8 @@
     "Description": "The sysroot for the Boatswain application.",
 
     "macos|win#openssl": {
-        "macos|win#source": "openssl-1.1.0j.tar.gz",
+        "macos#source": "openssl-1.1.0j.tar.gz",
+        "win#source": "openssl-1.0.2s.tar.gz",
         "win#no_asm":       true
     },
 
@@ -15,7 +16,7 @@
         "linux|macos|win#source":   "qt-everywhere-src-5.13.0.tar.xz",
         "edition":                  "opensource",
         "macos|win#ssl":            "openssl-linked",
-
+        "linux#ssl":        "openssl-runtime",
         "configure_options":        [
                 "-opengl", "desktop", "-no-dbus", "-qt-pcre"
         ],

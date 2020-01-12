@@ -1,6 +1,6 @@
 #  This file is part of Boatswain.
 #
-#      Boatswain is free software: you can redistribute it and/or modify
+#      Boatswain<https://github.com/theboatswain> is free software: you can redistribute it and/or modify
 #      it under the terms of the GNU General Public License as published by
 #      the Free Software Foundation, either version 3 of the License, or
 #      (at your option) any later version.
@@ -15,11 +15,12 @@
 #
 #
 
-from PyQt5.QtCore import QCoreApplication
-from PyQt5.QtWidgets import QWidget, QSizePolicy, QPushButton, QFrame, QVBoxLayout, QHBoxLayout, QGridLayout
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QWidget, QSizePolicy, QFrame, QVBoxLayout, QHBoxLayout, QGridLayout
 
 from boatswain.common.models.container import Container
-from boatswain.common.utils.custom_ui import BQSizePolicy
+from boatswain.common.services.system_service import rt
+from boatswain.common.ui.custom_ui import BQSizePolicy
 
 
 class AdvancedAppWidgetUi(QWidget):
@@ -29,30 +30,26 @@ class AdvancedAppWidgetUi(QWidget):
         self.container = container
         self.setSizePolicy(BQSizePolicy(height=QSizePolicy.Fixed))
         self.layout = QVBoxLayout(self)
-        self.layout.setContentsMargins(20, 0, 3, 5)
-        self.layout.setSpacing(6)
+        self.layout.setContentsMargins(rt(20), 0, rt(3), rt(5))
+        self.layout.setSpacing(rt(6))
+        self.layout.setAlignment(Qt.AlignTop)
         line = QFrame(self)
         line.setFrameShape(QFrame.HLine)
         line.setFrameShadow(QFrame.Sunken)
         self.layout.addWidget(line)
         self.widget = QWidget(self)
         self.grid_layout = QGridLayout(self.widget)
+        self.grid_layout.setAlignment(Qt.AlignTop)
         self.grid_layout.setContentsMargins(0, 0, 0, 0)
-        self.grid_layout.setSpacing(6)
+        self.grid_layout.setSpacing(rt(6))
         self.layout.addWidget(self.widget)
         self.widget_3 = QWidget(self)
         self.horizontal_layout_2 = QHBoxLayout(self.widget_3)
         self.horizontal_layout_2.setContentsMargins(0, 0, 0, 0)
-        self.horizontal_layout_2.setSpacing(6)
+        self.horizontal_layout_2.setSpacing(rt(6))
         self.widget_4 = QWidget(self.widget_3)
         self.widget_4.setSizePolicy(BQSizePolicy(h_stretch=1))
         self.horizontal_layout_2.addWidget(self.widget_4)
-        self.advanced_configuration = QPushButton(self.widget_3)
-        self.horizontal_layout_2.addWidget(self.advanced_configuration)
+        # self.advanced_configuration = QPushButton(self.widget_3)
+        # self.horizontal_layout_2.addWidget(self.advanced_configuration)
         self.layout.addWidget(self.widget_3)
-
-        self.retranslateUi()
-
-    def retranslateUi(self):
-        _translate = QCoreApplication.translate
-        self.advanced_configuration.setText(_translate("AdvancedWidget", "Advanced configuration"))

@@ -1,6 +1,6 @@
 #  This file is part of Boatswain.
 #
-#      Boatswain is free software: you can redistribute it and/or modify
+#      Boatswain<https://github.com/theboatswain> is free software: you can redistribute it and/or modify
 #      it under the terms of the GNU General Public License as published by
 #      the Free Software Foundation, either version 3 of the License, or
 #      (at your option) any later version.
@@ -14,7 +14,7 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
-from peewee import IntegerField, CharField, TextField, FloatField, ForeignKeyField
+from peewee import IntegerField, CharField, TextField, FloatField, ForeignKeyField, BooleanField
 
 from boatswain.common.models.base import BaseModel
 from boatswain.common.models.group import Group
@@ -53,6 +53,8 @@ class Container(BaseModel):
     entrypoint = CharField(default='')
 
     # for reorder the position of this container
-    order = IntegerField()
+    order = FloatField(index=True)
 
     group = ForeignKeyField(Group, backref='containers')
+
+    expanded = BooleanField(default=False)

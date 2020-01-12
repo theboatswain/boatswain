@@ -1,6 +1,6 @@
 #  This file is part of Boatswain.
 #
-#      Boatswain is free software: you can redistribute it and/or modify
+#      Boatswain<https://github.com/theboatswain> is free software: you can redistribute it and/or modify
 #      it under the terms of the GNU General Public License as published by
 #      the Free Software Foundation, either version 3 of the License, or
 #      (at your option) any later version.
@@ -18,10 +18,11 @@
 from PyQt5 import QtCore
 from PyQt5.QtCore import QItemSelectionModel
 from PyQt5.QtWidgets import QTableView, QAbstractItemView
+from boatswain.common.services import volume_mount_service
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.volume_mount import VolumeMount
-from boatswain.common.utils.custom_ui import PathInputDelegate, ComboBoxDelegate
+from boatswain.common.ui.custom_ui import PathInputDelegate, ComboBoxDelegate
 from boatswain.config.volume.volume_mount_config_model import VolumeMountModel
 from boatswain.config.volume.volume_mount_config_ui import VolumeMountConfigUi
 
@@ -39,9 +40,9 @@ class VolumeMountConfig:
         self.ui.new_mount.clicked.connect(self.onNewMountClicked)
         self.ui.delete_mount.clicked.connect(self.onDeleteMountClicked)
 
-        table_data = VolumeMount.select().where(VolumeMount.container == self.container)
-        headers = ['host_path', 'mode', 'container_path']
-        display_headers = ['Host Path', 'Mode', 'Container Path']
+        table_data = volume_mount_service.getVolumeMounts(self.container)
+        headers = ['host_path', 'mode', 'container_path', 'description']
+        display_headers = ['Host Path', 'Mode', 'Container Path', 'Description']
         self.configureVolumeTable(self.ui.mount_table, headers, display_headers, list(table_data), self.container)
         self.ui.mount_table.setItemDelegateForColumn(0, PathInputDelegate(self.ui.mount_table))
         modes = ['rw', 'ro']
@@ -55,7 +56,6 @@ class VolumeMountConfig:
     def onNewMountClicked(self):
         self.ui.mount_table.model().addRecord(
             VolumeMount(host_path='/tmp', container_path='/tmp', description='description', container=self.container))
-        self.ui.mount_table.resizeRowToContents(self.ui.mount_table.model().rowCount() - 1)
         flags = QItemSelectionModel.ClearAndSelect | QItemSelectionModel.Rows
         index = self.ui.mount_table.model().index(self.ui.mount_table.model().rowCount() - 1, 0)
         self.ui.mount_table.selectionModel().select(index, flags)

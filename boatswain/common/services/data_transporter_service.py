@@ -1,6 +1,6 @@
 #  This file is part of Boatswain.
 #
-#      Boatswain is free software: you can redistribute it and/or modify
+#      Boatswain<https://github.com/theboatswain> is free software: you can redistribute it and/or modify
 #      it under the terms of the GNU General Public License as published by
 #      the Free Software Foundation, either version 3 of the License, or
 #      (at your option) any later version.
@@ -27,7 +27,18 @@ def listen(channel: str, func):
         channels[channel] = [func]
 
 
-def fire(channel: str, data):
+def deregister(channel: str, func):
+    if channel in channels:
+        try:
+            channels[channel].remove(func)
+        except ValueError:
+            pass
+
+
+def fire(channel: str, data=None):
     if channel in channels:
         for func in channels[channel]:
-            func(data)
+            if data is None:
+                func()
+            else:
+                func(data)

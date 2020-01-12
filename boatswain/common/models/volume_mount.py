@@ -1,6 +1,6 @@
 #  This file is part of Boatswain.
 #
-#      Boatswain is free software: you can redistribute it and/or modify
+#      Boatswain<https://github.com/theboatswain> is free software: you can redistribute it and/or modify
 #      it under the terms of the GNU General Public License as published by
 #      the Free Software Foundation, either version 3 of the License, or
 #      (at your option) any later version.
@@ -18,6 +18,7 @@ from peewee import IntegerField, ForeignKeyField, CharField
 
 from boatswain.common.models.base import BaseModel
 from boatswain.common.models.container import Container
+from boatswain.common.utils.constants import STATUS_ADDED
 
 
 class VolumeMount(BaseModel):
@@ -29,3 +30,4 @@ class VolumeMount(BaseModel):
     container_path = CharField()
     mode = CharField(default='rw')
     description = CharField(default='')
+    status = IntegerField(index=True, default=STATUS_ADDED)
