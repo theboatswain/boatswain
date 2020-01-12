@@ -1,13 +1,11 @@
 SET SCRIPT_DIR=%~dp0
 SET PYQTDEPLOY=venv\Scripts
 
-@echo off
-
 for %%a in ("%SCRIPT_DIR:~0,-1%") do set "PROJECT_DIR=%%~dpa"
 
 CD /D %PROJECT_DIR%
 
-FOR /F "delims=" %i IN ('python scripts\get_version.py boatswain\main.py') DO set VERSION=%i
+FOR /F "delims=" %%i IN ('python scripts\get_version.py boatswain\main.py') DO set VERSION=%%i
 
 %PYQTDEPLOY%\pyqtdeploy-build.exe pyqt-boatswain-win.pdy
 CD build-win-32
