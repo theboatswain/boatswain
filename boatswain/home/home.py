@@ -14,12 +14,12 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
-import sys
 from typing import Dict
 
 from PyQt5.QtCore import QCoreApplication, QPoint
 from PyQt5.QtGui import QResizeEvent
 from PyQt5.QtWidgets import QMainWindow, QInputDialog, QMenu, QAction, QMessageBox
+from boatswain_updater.utils import sys_utils
 from playhouse.shortcuts import update_model_from_dict, model_to_dict
 
 from boatswain.about.about import AboutDialog
@@ -38,7 +38,6 @@ from boatswain.home.group.group_widget import GroupWidget
 from boatswain.home.group.group_widget_ui import GroupWidgetUi
 from boatswain.home.home_ui import HomeUi
 from boatswain.search.search_app import SearchAppDialog
-from boatswain_updater.utils import sys_utils
 
 
 class Home:

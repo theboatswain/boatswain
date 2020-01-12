@@ -75,7 +75,7 @@ def streamEvents():
 def ping():
     try:
         client.ping()
-    except ConnectionError as e:
+    except ConnectionError:
         raise DockerNotAvailableException()
 
 

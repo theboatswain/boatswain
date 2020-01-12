@@ -1,8 +1,6 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
-from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import QDialogButtonBox
 
-from boatswain.common.services import system_service
 from boatswain.common.services.system_service import rt, applyFontRatio
 from boatswain.common.ui.custom_ui import BQSizePolicy
 
