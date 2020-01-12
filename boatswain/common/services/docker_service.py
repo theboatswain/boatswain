@@ -22,13 +22,13 @@ from docker.models.containers import Container
 from requests.exceptions import ConnectionError
 
 from boatswain.common.exceptions.docker_exceptions import DockerNotAvailableException
+from boatswain.common.services import global_preference_service
 from boatswain.common.utils.constants import WINDOWS_BASE_URL, UNIX_BASE_URL
 from boatswain.common.utils.logging import logger
 
 system_platform = platform.system()
 base_url = WINDOWS_BASE_URL if system_platform == "Windows" else UNIX_BASE_URL
-client = docker.DockerClient(base_url=base_url)
-api_client = docker.api
+client = docker.DockerClient(base_url=global_preference_service.getCurrentDockerURL())
 
 
 def searchDockerImages(keyword):
@@ -43,7 +43,7 @@ def getContainerInfo(container_id) -> Container:
 
 def inspect(container_id):
     ping()
-    return api_client.inspect_container(container_id)
+    return docker.api.inspect_container(container_id)
 
 
 def run(image_name, tag, ports, envs, volumes, entrypoint=None, **kwargs):

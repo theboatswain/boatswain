@@ -14,7 +14,7 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
-
+import sys
 from typing import Dict
 
 from PyQt5.QtCore import QCoreApplication, QPoint
@@ -27,10 +27,11 @@ from boatswain.common.exceptions.workspace import WorkspaceAlreadyExistsExceptio
 from boatswain.common.models.container import Container
 from boatswain.common.models.group import Group
 from boatswain.common.services import data_transporter_service, global_preference_service, workspace_service, \
-    group_service, containers_service
+    group_service, containers_service, docker_service, boatswain_daemon
 from boatswain.common.services.system_service import rt
 from boatswain.common.utils import message_utils
-from boatswain.common.utils.constants import CONTAINER_CHANNEL, ADD_APP_CHANNEL, UPDATES_CHANNEL
+from boatswain.common.utils.constants import CONTAINER_CHANNEL, ADD_APP_CHANNEL, UPDATES_CHANNEL, APP_EXIT_CHANNEL
+from boatswain.connection.connection_management import ConnectionManagement
 from boatswain.home.application.application_widget import AppWidget
 from boatswain.home.application.application_widget_ui import AppWidgetUi
 from boatswain.home.group.group_widget import GroupWidget
@@ -52,21 +53,34 @@ class Home:
         self.ui.resize(global_preference_service.getHomeWindowSize())
         self.ui.setMinimumSize(global_preference_service.getMinimumHomeWindowSize())
         self.ui.add_app.clicked.connect(self.addAppClicked)
+        data_transporter_service.listen(CONTAINER_CHANNEL, self.addAppFromContainer)
+        data_transporter_service.listen(ADD_APP_CHANNEL, self.addAppClicked)
         self.apps: Dict[int, AppWidgetUi] = {}
         self.groups: Dict[int, GroupWidgetUi] = {}
+        self.ui.workspaces.on_option_selected.connect(self.onWorkspaceChanged)
+        self.ui.resizeEvent = self.resizeEvent
+        self.ui.search_app.textChanged.connect(self.search)
+        self.ui.custom_menu.clicked.connect(self.onMenuClicked)
+
+        # Create daemon to listen to docker events
+        self.daemon = boatswain_daemon.BoatswainDaemon(self.ui)
 
         if not sys_utils.isMac():
             self.ui.menu_bar.hide()
 
-        self.loadWorkspaces()
+        if not docker_service.isDockerRunning():
+            connection = ConnectionManagement()
+            connection.conf_updated.connect(self.initialise)
+            connection.show()
+        else:
+            self.initialise()
 
-        self.ui.workspaces.on_option_selected.connect(self.onWorkspaceChanged)
-        data_transporter_service.listen(CONTAINER_CHANNEL, self.addAppFromContainer)
-        data_transporter_service.listen(ADD_APP_CHANNEL, self.addAppClicked)
-        self.ui.resizeEvent = self.resizeEvent
-        self.ui.search_app.textChanged.connect(self.search)
-        self.ui.custom_menu.clicked.connect(self.onMenuClicked)
+    def initialise(self):
+        self.loadWorkspaces()
         self.loadGroups()
+
+        self.daemon.start()
+        data_transporter_service.listen(APP_EXIT_CHANNEL, lambda: self.daemon.events.close())
 
     def loadGroups(self):
         groups = group_service.getGroups()

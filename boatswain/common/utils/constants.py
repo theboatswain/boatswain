@@ -50,6 +50,7 @@ UNIX_BASE_URL = 'unix://var/run/docker.sock'
 # Global conf
 HOME_WIDTH = 'home_width'
 HOME_HEIGHT = 'home_height'
+PROTOCOL_KEY = 'docker_protocol'
 DEFAULT_SEARCH_UPDATE_DATE = 'default_search_update_date'
 
 

@@ -16,11 +16,12 @@
 #
 
 from PyQt5.QtCore import QSize
+from boatswain_updater.utils import sys_utils
 from peewee import DoesNotExist
 
 from boatswain.common.models.preference import Preference
 from boatswain.common.services import system_service
-from boatswain.common.utils.constants import HOME_WIDTH, HOME_HEIGHT
+from boatswain.common.utils.constants import HOME_WIDTH, HOME_HEIGHT, PROTOCOL_KEY
 
 
 def getPreference(key) -> Preference:
@@ -34,6 +35,16 @@ def setPreference(key, value):
     except DoesNotExist:
         preference = Preference(name=key, value=value)
     preference.save()
+
+
+def getCurrentDockerURL():
+    try:
+        return getPreference(PROTOCOL_KEY).value
+    except DoesNotExist:
+        if sys_utils.isWin():
+            return 'tcp://127.0.0.1:2375'
+        else:
+            return 'unix://var/run/docker.sock'
 
 
 def setHomeWindowSize(size: QSize):

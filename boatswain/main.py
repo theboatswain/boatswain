@@ -26,14 +26,12 @@ from boatswain_updater.updater import Updater
 
 from boatswain.common.models.base import db
 from boatswain.common.models.tables import db_tables
-from boatswain.common.services import boatswain_daemon, data_transporter_service, docker_service, system_service, \
-    containers_service
-from boatswain.common.utils import docker_utils
+from boatswain.common.services import data_transporter_service, system_service, \
+    containers_service, docker_service
 from boatswain.common.utils.constants import APP_DATA_DIR, APP_EXIT_CHANNEL, UPDATES_CHANNEL, APP_AVATAR_DIR
 from boatswain.common.utils.logging import logger
 from boatswain.home.home import Home
 from boatswain.resources_utils import getExternalResource
-
 
 APP_VERSION = "1.0.0"
 
@@ -53,31 +51,24 @@ def run():
     system_service.resetStyle()
     system_service.initialisingPath()
 
-    if not docker_service.isDockerRunning():
-        return docker_utils.notifyDockerNotAvailable()
-
     # Make sure app data dir always exists
     if not os.path.isdir(APP_DATA_DIR):
         os.makedirs(APP_DATA_DIR)
     if not os.path.isdir(APP_AVATAR_DIR):
         os.makedirs(APP_AVATAR_DIR)
 
+    # Connect to SQLite DB
+    db.connect(reuse_if_open=True)
+    db.create_tables(db_tables)
+
     system_service.reassignPemLocation()
     logger.info("App data path: %s", APP_DATA_DIR)
-
-    # Connect to SQLite DB
-    db.connect()
-    db.create_tables(db_tables)
 
     # Load home window
     window = Home()
 
     # Close db before exit
     data_transporter_service.listen(APP_EXIT_CHANNEL, lambda: db.close())
-
-    # Create daemon to listen to docker events
-    daemon = boatswain_daemon.BoatswainDaemon(window.ui)
-    daemon.start()
 
     feed = Feed('theboatswain/boatswain')
     pixmap = QIcon(getExternalResource('boatswain.svg')).pixmap(QSize(64, 64))
@@ -87,13 +78,17 @@ def run():
     update_dialog.checkForUpdate(silent=True)
     data_transporter_service.listen(UPDATES_CHANNEL, update_dialog.checkForUpdate)
 
-    window.show()
-
-    # Prefetch default containers for search
+    if docker_service.isDockerRunning():
+        window.show()
+    else:
+        # At this point, if the docker service is still not running, that mean, the Connection Management dialog
+        # has been closed or canceled. So, now, we just need to shut the application down.
+        # Prefetch default containers for search
+        data_transporter_service.fire(APP_EXIT_CHANNEL)
+        sys.exit(0)
     containers_service.prefetchDefaultContainersInBackground()
 
     # Stop daemon before exit
-    data_transporter_service.listen(APP_EXIT_CHANNEL, lambda: daemon.events.close())
     sys.exit(app.exec_())
 
 
