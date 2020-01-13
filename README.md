@@ -6,7 +6,7 @@ Boatswain is an open source, multiple platforms application that managing your d
   
 ## Build status:  
   
-[![Build Status](https://travis-ci.com/theboatswain/boatswain_updater.svg?branch=master)](https://travis-ci.com/theboatswain/boatswain_updater)  
+[![Build Status](https://travis-ci.com/theboatswain/boatswain.svg?branch=master)](https://travis-ci.com/theboatswain/boatswain)  
   
 ## Introduction  
   
