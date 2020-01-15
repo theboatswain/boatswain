@@ -113,7 +113,7 @@ class PathViewWidget(QWidget):
             return
         self.path = path
         self.labels.clear()
-        parts = utils.split_all(path)
+        parts = utils.splitAll(path)
         for index, part in enumerate(parts):
             if part == '/':
                 continue

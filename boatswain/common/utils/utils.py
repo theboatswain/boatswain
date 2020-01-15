@@ -24,6 +24,8 @@ from PyQt5.QtCore import QFile
 from boatswain_updater.utils import sys_utils
 from docker.types import CancellableStream
 
+total_mem = None
+
 
 class EmptyStream(CancellableStream):
 
@@ -42,7 +44,7 @@ class EmptyStream(CancellableStream):
         pass
 
 
-def split_all(path):
+def splitAll(path):
     all_parts = []
     while 1:
         parts = os.path.split(path)
@@ -66,13 +68,22 @@ def disconnectAllSignals(widget):
 
 
 def getPhysicalMemory():
+    global total_mem
+    if total_mem:
+        return total_mem / (1024. ** 2)
     if sys_utils.isWin():
         res = subprocess.run(['wmic', 'ComputerSystem', 'get', 'TotalPhysicalMemory'], stdout=subprocess.PIPE)
         output = res.stdout.decode('utf-8')
-        return int(output.replace('TotalPhysicalMemory', '').strip()) / (1024. ** 2)
-    else:
+        total = int(output.replace('TotalPhysicalMemory', '').strip())
+    elif sys_utils.isLinux():
         mem_bytes = os.sysconf('SC_PAGE_SIZE') * os.sysconf('SC_PHYS_PAGES')  # e.g. 4015976448
-        return mem_bytes / (1024. ** 2)
+        total = mem_bytes
+    else:
+        res = subprocess.run(['sysctl', '-n', 'hw.memsize'], stdout=subprocess.PIPE)
+        output = res.stdout.decode('utf-8')
+        total = int(output.strip())
+    total_mem = total
+    return total / (1024. ** 2)
 
 
 def isFrost():
