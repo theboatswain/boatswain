@@ -33,7 +33,7 @@ from boatswain.common.utils.logging import logger
 from boatswain.home.home import Home
 from boatswain.resources_utils import getExternalResource
 
-APP_VERSION = "1.0.0"
+APP_VERSION = "1.1.0"
 
 
 def onApplicationInstalled():
