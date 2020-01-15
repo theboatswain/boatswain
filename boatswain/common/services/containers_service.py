@@ -23,6 +23,7 @@ import time
 from typing import List
 
 import requests
+from PyQt5.QtWidgets import QApplication
 from docker.errors import NotFound
 from peewee import DoesNotExist
 
@@ -176,7 +177,7 @@ def startContainer(container: Container, start_only=False, force=False):
         return container
 
     if isContainerExists(container):
-        # At this time, the container should be reset, so, clean it up
+        # At this point, the container should be reset, so, clean it up
         docker_service.deleteContainer(container.container_id)
 
     envs = {}
@@ -199,7 +200,12 @@ def startContainer(container: Container, start_only=False, force=False):
     volumes = {**volumes, **shortcut_service.getShortcutVolumeMounts(container)}
 
     entrypoint = container.entrypoint if container.entrypoint else None
-    kwargs = {}
+    kwargs = {
+        'labels': {
+            'original': 'boatswain',
+            'original_version': QApplication.applicationVersion()
+        }
+    }
     if container.memory_limit:
         kwargs['mem_limit'] = "%dm" % container.memory_limit
     if container.cpu_limit:
