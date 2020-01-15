@@ -15,21 +15,13 @@
 #
 #
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QDialog
-
-from boatswain.preferences.global_preferences_ui import GlobalPreferencesUi
+from boatswain.preferences.general.general_preferences_ui import GeneralPreferencesUi
 
 
-class GlobalPreferences:
+class GeneralPreferences:
 
     def __init__(self, parent) -> None:
-        super().__init__()
-        self.dialog = QDialog(parent)
-        self.dialog.setAttribute(Qt.WA_DeleteOnClose)
-
-        self.ui = GlobalPreferencesUi(self.dialog)
-        self.dialog.ui = self.ui
-
-    def show(self):
-        self.dialog.exec_()
+        self.ui = GeneralPreferencesUi(parent, self)
+        # Todo: Terminals selection UI
+        # Todo: Connection configuration UI
+        # Todo: Start with OS

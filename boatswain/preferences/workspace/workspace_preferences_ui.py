@@ -15,21 +15,17 @@
 #
 #
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QVBoxLayout
 
-from boatswain.preferences.global_preferences_ui import GlobalPreferencesUi
+from boatswain.common.services.system_service import rt
+from boatswain.common.ui.custom_ui import AutoResizeWidget
 
 
-class GlobalPreferences:
+class WorkspacePreferencesUi(AutoResizeWidget):
 
-    def __init__(self, parent) -> None:
-        super().__init__()
-        self.dialog = QDialog(parent)
-        self.dialog.setAttribute(Qt.WA_DeleteOnClose)
-
-        self.ui = GlobalPreferencesUi(self.dialog)
-        self.dialog.ui = self.ui
-
-    def show(self):
-        self.dialog.exec_()
+    def __init__(self, parent, handler) -> None:
+        super().__init__(parent)
+        self.handler = handler
+        self.vertical_layout_2 = QVBoxLayout(self)
+        self.vertical_layout_2.setContentsMargins(rt(20), rt(11), rt(20), rt(11))
+        self.vertical_layout_2.setSpacing(rt(6))

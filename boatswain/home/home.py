@@ -37,6 +37,7 @@ from boatswain.home.application.application_widget_ui import AppWidgetUi
 from boatswain.home.group.group_widget import GroupWidget
 from boatswain.home.group.group_widget_ui import GroupWidgetUi
 from boatswain.home.home_ui import HomeUi
+from boatswain.preferences.global_preferences import GlobalPreferences
 from boatswain.search.search_app import SearchAppDialog
 
 
@@ -284,6 +285,10 @@ class Home:
         about = AboutDialog(None)
         about.show()
 
+    def showPreferences(self):
+        preference = GlobalPreferences(None)
+        preference.show()
+
     def onMenuClicked(self):
         menu_help = QMenu(self.ui)
         about = QAction(self.ui)
@@ -298,6 +303,7 @@ class Home:
         menu_help.addAction(check_for_update)
         menu_help.addSeparator()
         preferences = QAction("Preferences…", self.ui)
+        preferences.triggered.connect(self.showPreferences)
         menu_help.addAction(preferences)
         point: QPoint = self.ui.mapToGlobal(self.ui.custom_menu.pos())
         point.setY(point.y() + self.ui.custom_menu.height() + rt(5))
