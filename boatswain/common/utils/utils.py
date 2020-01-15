@@ -67,6 +67,20 @@ def disconnectAllSignals(widget):
         return
 
 
+def getOsName():
+    out = ''
+    if sys_utils.isMac():
+        out += 'MacOS'
+    elif sys_utils.isWin():
+        out += 'Windows'
+    else:
+        out += 'Linux'
+    if sys_utils.getArchitecture() == 'x64':
+        out += ' 64-bit'
+    else:
+        out += ' 32-bit'
+    return out
+
 def getPhysicalMemory():
     global total_mem
     if total_mem:

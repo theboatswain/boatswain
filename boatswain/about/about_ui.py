@@ -17,11 +17,12 @@
 
 from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtCore import QSize, Qt
-from PyQt5.QtWidgets import QFrame, QSizePolicy
+from PyQt5.QtWidgets import QFrame, QSizePolicy, QApplication
 
 from boatswain.common.ui.custom_ui import BQSizePolicy
 
 from boatswain.common.services import system_service
+from boatswain.common.utils import utils
 
 
 class AboutUi(object):
@@ -111,6 +112,6 @@ class AboutUi(object):
     def retranslateUi(self, dialog):
         _translate = QtCore.QCoreApplication.translate
         dialog.setWindowTitle(_translate("dialog", "About"))
-        self.boatswain.setText(_translate("dialog", "Boatswain v1.0.0"))
-        self.build.setText(_translate("dialog", "Build 2021 (absjffs)"))
+        self.boatswain.setText(_translate("dialog", "Boatswain v" + QApplication.applicationVersion()))
+        self.build.setText(_translate("dialog", "Version for ") + utils.getOsName())
         self.license.setText(_translate("dialog", "License"))
