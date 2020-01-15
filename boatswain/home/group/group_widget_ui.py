@@ -41,7 +41,7 @@ class GroupWidgetUi(QWidget):
         self.top_widget = QWidget(self)
         self.top_widget.setSizePolicy(BQSizePolicy(height=QSizePolicy.Fixed))
         top_layout = QHBoxLayout(self.top_widget)
-        top_layout.setContentsMargins(rt(11), rt(5), 0, rt(5))
+        top_layout.setContentsMargins(rt(11), rt(5), rt(11), rt(5))
         top_layout.setSpacing(rt(6))
 
         self.icon = QLabel(self)
@@ -56,6 +56,10 @@ class GroupWidgetUi(QWidget):
         self.container_name.setReadOnly(True)
         self.container_name.setText(self.group.name)
         top_layout.addWidget(self.container_name)
+        self.workspace = QLabel(self)
+        self.workspace.setText(group.workspace.name)
+        self.workspace.setStyleSheet('color: #999999')
+        top_layout.addWidget(self.workspace, alignment=Qt.AlignRight)
 
         self.main_layout.addWidget(self.top_widget)
         self.line = QFrame(self)
