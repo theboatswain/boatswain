@@ -14,7 +14,6 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
-import sys
 from typing import Dict
 
 from PyQt5.QtCore import QPoint
