@@ -1,6 +1,6 @@
 
   
-<img src="https://raw.githubusercontent.com/theboatswain/boatswain/DevMaster/images/boatswain.png" width="500" />    
+<img src="https://raw.githubusercontent.com/theboatswain/boatswain/master/images/boatswain.png" width="500" />    
   
 Boatswain is an open source, multiple platforms application that managing your docker containers in an easiest manner. The ultimate goal of this project is to help you to minimise the number of applications that you would need to install separately into your machine, instead, grouping all of them into one single place. And, in the same time, providing you a modern, easy to use User Interface, which allowing you to focus on the things that important to you.  
   
