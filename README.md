@@ -11,7 +11,7 @@ Boatswain is an open source, multiple platforms application that managing your d
 ## Introduction  
   
 From the main UI of Boatswain, you can easily add or remove your docker containers, configure your port mapping, volume mapping, setting up your environment variables, overwrite your container's entrypoint, etc. You can also create and map a config shortcut to the main UI for easier configuration, or may be just for conventional visualisation.   
-<img align="right" src="https://raw.githubusercontent.com/theboatswain/boatswain/DevMaster/images/main-app-cross.png" width="280" />    
+<img align="right" src="https://raw.githubusercontent.com/theboatswain/boatswain/master/images/main-app-cross.png" width="280" />    
   
 Boatswain also allows you to group your containers together (i.e web stack, log stack, etc), or managing multiple workspaces (i.e home workspace or project X), switching between workspaces, checking container logs with our built-in log viewer, opening container's terminal, filtering your containers, etc. You can also expand your container/group when you need to change or check some informations, or collapse it once it's done.   
 
