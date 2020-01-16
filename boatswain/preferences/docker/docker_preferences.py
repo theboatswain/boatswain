@@ -14,15 +14,13 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
+from boatswain.preferences.docker.docker_preferences_ui import DockerPreferencesUi
 
-from boatswain.preferences.general.general_preferences_ui import GeneralPreferencesUi
 
-
-class GeneralPreferences:
+class DockerPreferences:
 
     def __init__(self, parent) -> None:
-        self.ui = GeneralPreferencesUi(parent, self)
-        # Todo: Terminals selection UI
-        # Todo: Start with OS
-        # Todo: Automatic check for updates
-        # Todo: Language
+        self.ui = DockerPreferencesUi(parent, self)
+        # Todo: Connection configuration UI
+        # Todo: Delete volume with Container UI
+        # Todo: Global labels

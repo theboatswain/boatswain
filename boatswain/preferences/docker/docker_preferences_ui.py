@@ -15,14 +15,17 @@
 #
 #
 
-from boatswain.preferences.general.general_preferences_ui import GeneralPreferencesUi
+from PyQt5.QtWidgets import QVBoxLayout
+
+from boatswain.common.services.system_service import rt
+from boatswain.common.ui.custom_ui import AutoResizeWidget
 
 
-class GeneralPreferences:
+class DockerPreferencesUi(AutoResizeWidget):
 
-    def __init__(self, parent) -> None:
-        self.ui = GeneralPreferencesUi(parent, self)
-        # Todo: Terminals selection UI
-        # Todo: Start with OS
-        # Todo: Automatic check for updates
-        # Todo: Language
+    def __init__(self, parent, handler) -> None:
+        super().__init__(parent)
+        self.handler = handler
+        self.vertical_layout_2 = QVBoxLayout(self)
+        self.vertical_layout_2.setContentsMargins(rt(20), rt(11), rt(20), rt(11))
+        self.vertical_layout_2.setSpacing(rt(6))

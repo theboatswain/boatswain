@@ -20,6 +20,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTabWidget, QDialog
 
 from boatswain.common.services import system_service
 from boatswain.common.ui.custom_ui import BQSizePolicy
+from boatswain.preferences.docker.docker_preferences import DockerPreferences
 from boatswain.preferences.general.general_preferences import GeneralPreferences
 
 
@@ -48,6 +49,9 @@ class GlobalPreferencesUi(QObject):
         self.tab_widget.setDocumentMode(False)
         self.general = GeneralPreferences(self.central_widget)
         self.tab_widget.addTab(self.general.ui, self.tr("General"))
+
+        self.docker = DockerPreferences(self.central_widget)
+        self.tab_widget.addTab(self.docker.ui, self.tr("Docker"))
 
         self.workspace = GeneralPreferences(self.central_widget)
         self.tab_widget.addTab(self.workspace.ui, self.tr("Workspaces"))
