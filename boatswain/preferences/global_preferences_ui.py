@@ -22,6 +22,7 @@ from boatswain.common.services import system_service
 from boatswain.common.ui.custom_ui import BQSizePolicy
 from boatswain.preferences.docker.docker_preferences import DockerPreferences
 from boatswain.preferences.general.general_preferences import GeneralPreferences
+from boatswain.preferences.startup.startup_preferences import StartupPreferences
 
 
 class GlobalPreferencesUi(QObject):
@@ -55,6 +56,9 @@ class GlobalPreferencesUi(QObject):
 
         self.workspace = GeneralPreferences(self.central_widget)
         self.tab_widget.addTab(self.workspace.ui, self.tr("Workspaces"))
+
+        self.startup = StartupPreferences(self.central_widget)
+        self.tab_widget.addTab(self.startup.ui, self.tr("Startup"))
         self.vertical_layout.addWidget(self.tab_widget)
 
         main_layout.addWidget(self.central_widget)
