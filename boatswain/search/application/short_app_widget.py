@@ -76,7 +76,7 @@ class ShortAppWidget:
     def showInfo(self, container_info):
         try:
             if len(container_info['description']) > 0:
-                self.ui.description.setText(self._translate("widget", container_info['description']))
+                self.ui.description.setText(container_info['description'])
             self.ui.stars.setText(tr("☆ " + str(container_info['star_count'])))
 
             if not container_info['is_official']:

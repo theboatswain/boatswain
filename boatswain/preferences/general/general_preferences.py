@@ -25,4 +25,6 @@ class GeneralPreferences:
         # Todo: Terminals selection UI
         # Todo: Start with OS
         # Todo: Automatic check for updates
+        # Todo: Automatic fetch preferences shortcut
+        # Todo: User set background image
         # Todo: Language
