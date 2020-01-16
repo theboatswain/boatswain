@@ -17,12 +17,16 @@
 
 import os
 import subprocess
+import sys
 from contextlib import closing
 
 from PyQt5.QtCore import QFile, QCoreApplication
 
 from boatswain_updater.utils import sys_utils
 from docker.types import CancellableStream
+
+from boatswain.common.services import data_transporter_service
+from boatswain.common.utils.constants import APP_EXIT_CHANNEL
 
 total_mem = None
 _tr = QCoreApplication.translate
@@ -105,6 +109,11 @@ def getPhysicalMemory():
         total = int(output.strip())
     total_mem = total
     return total / (1024. ** 2)
+
+
+def exitApp():
+    data_transporter_service.fire(APP_EXIT_CHANNEL)
+    sys.exit(0)
 
 
 def isFrost():

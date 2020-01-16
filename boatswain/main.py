@@ -28,6 +28,7 @@ from boatswain.common.models.base import db
 from boatswain.common.models.tables import db_tables
 from boatswain.common.services import data_transporter_service, system_service, \
     containers_service, docker_service
+from boatswain.common.utils import utils
 from boatswain.common.utils.constants import APP_DATA_DIR, APP_EXIT_CHANNEL, UPDATES_CHANNEL, APP_AVATAR_DIR
 from boatswain.common.utils.logging import logger
 from boatswain.home.home import Home
@@ -86,8 +87,7 @@ def run():
         # At this point, if the docker service is still not running, that mean, the Connection Management dialog
         # has been closed or canceled. So, now, we just need to shut the application down.
         # Prefetch default containers for search
-        data_transporter_service.fire(APP_EXIT_CHANNEL)
-        sys.exit(0)
+        utils.exitApp()
     containers_service.prefetchDefaultContainersInBackground()
 
     # Stop daemon before exit

@@ -14,6 +14,7 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
+import sys
 from typing import Dict
 
 from PyQt5.QtCore import QPoint
@@ -29,7 +30,7 @@ from boatswain.common.models.group import Group
 from boatswain.common.services import data_transporter_service, global_preference_service, workspace_service, \
     group_service, containers_service, docker_service, boatswain_daemon
 from boatswain.common.services.system_service import rt
-from boatswain.common.utils import message_utils
+from boatswain.common.utils import message_utils, utils
 from boatswain.common.utils.constants import CONTAINER_CHANNEL, ADD_APP_CHANNEL, UPDATES_CHANNEL, APP_EXIT_CHANNEL
 from boatswain.common.utils.utils import tr
 from boatswain.connection.connection_management import ConnectionManagement
@@ -297,6 +298,7 @@ class Home:
         menu_help.addSeparator()
 
         new_group = QAction(tr("New group…"), self.ui)
+        new_group.triggered.connect(lambda: self.addGroupWidget(group_service.createGroup(tr('New Group'))))
         menu_help.addAction(new_group)
 
         menu_help.addSeparator()
@@ -308,6 +310,7 @@ class Home:
         menu_help.addSeparator()
 
         quit_app = QAction(tr("Exit"), self.ui)
+        quit_app.triggered.connect(utils.exitApp)
         menu_help.addAction(quit_app)
         point: QPoint = self.ui.mapToGlobal(self.ui.custom_menu.pos())
         point.setY(point.y() + self.ui.custom_menu.height() + rt(5))
