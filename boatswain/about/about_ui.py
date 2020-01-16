@@ -23,6 +23,7 @@ from boatswain.common.ui.custom_ui import BQSizePolicy
 
 from boatswain.common.services import system_service
 from boatswain.common.utils import utils
+from boatswain.common.utils.utils import tr
 
 
 class AboutUi(object):
@@ -110,8 +111,7 @@ class AboutUi(object):
         self.retranslateUi(dialog)
 
     def retranslateUi(self, dialog):
-        _translate = QtCore.QCoreApplication.translate
-        dialog.setWindowTitle(_translate("dialog", "About"))
-        self.boatswain.setText(_translate("dialog", "Boatswain v" + QApplication.applicationVersion()))
-        self.build.setText(_translate("dialog", "Version for ") + utils.getOsName())
-        self.license.setText(_translate("dialog", "License"))
+        dialog.setWindowTitle(tr("About"))
+        self.boatswain.setText(tr("Boatswain v") + QApplication.applicationVersion())
+        self.build.setText(tr("Version for ") + utils.getOsName())
+        self.license.setText(tr("License"))

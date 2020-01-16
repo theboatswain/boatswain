@@ -16,20 +16,18 @@
 #
 
 import requests
-from PyQt5.QtCore import QCoreApplication, Qt, QRect, QPoint
+from PyQt5.QtCore import Qt, QRect, QPoint
 from PyQt5.QtGui import QPixmap, QImage
 
 from boatswain.common.services import data_transporter_service, containers_service
 from boatswain.common.services.system_service import rt
 from boatswain.common.services.worker_service import Worker, threadpool
 from boatswain.common.utils.constants import CONTAINER_CHANNEL
+from boatswain.common.utils.utils import tr
 from boatswain.search.application.short_app_widget_ui import ShortAppWidgetUi
 
 
 class ShortAppWidget:
-
-    _translate = QCoreApplication.translate
-    template = 'ShortAppWidget'
 
     def __init__(self, parent_widget, container_info, group) -> None:
         self.repo = container_info['from']
@@ -37,12 +35,12 @@ class ShortAppWidget:
         self.disable_button = False
         self.group = group
 
-        self.ui.from_repo.setText(self._translate(self.template, "#Dockerhub"))
-        self.ui.install.setText(self._translate(self.template, "Install"))
-        self.ui.name.setText(self._translate(self.template, container_info['name']))
+        self.ui.from_repo.setText(tr("#Dockerhub"))
+        self.ui.install.setText(tr("Install"))
+        self.ui.name.setText(tr(container_info['name']))
 
         if containers_service.isAppInstalled(container_info['name']):
-            self.ui.install.setText(self._translate("widget", "Installed"))
+            self.ui.install.setText(tr("Installed"))
             self.ui.install.setStyleSheet('border: 1px solid gray; padding: 1px 6px; color: gray')
             self.disable_button = True
 
@@ -79,11 +77,11 @@ class ShortAppWidget:
         try:
             if len(container_info['description']) > 0:
                 self.ui.description.setText(self._translate("widget", container_info['description']))
-            self.ui.stars.setText(self._translate(self.template, "☆ " + str(container_info['star_count'])))
+            self.ui.stars.setText(tr("☆ " + str(container_info['star_count'])))
 
             if not container_info['is_official']:
                 self.ui.is_official.hide()
-            self.ui.is_official.setText("⚜ Official")
+            self.ui.is_official.setText(tr("⚜ Official"))
         except RuntimeError:
             pass
 
@@ -91,7 +89,7 @@ class ShortAppWidget:
         if self.disable_button:
             return
         self.disable_button = True
-        self.ui.install.setText(self._translate(self.template, "Installing"))
+        self.ui.install.setText(tr("Installing"))
         worker = Worker(containers_service.installContainer, self.ui.name.text(), self.repo,
                         self.ui.description.text(), "latest", None, None, self.group)
         worker.signals.result.connect(self.onAppInstalled)
@@ -100,7 +98,7 @@ class ShortAppWidget:
     def onAppInstalled(self, container):
         data_transporter_service.fire(CONTAINER_CHANNEL, container)
         try:
-            self.ui.install.setText(self._translate(self.template, "Installed"))
+            self.ui.install.setText(tr("Installed"))
         except RuntimeError:
             # When user close the add app dialog before app is installed
             pass

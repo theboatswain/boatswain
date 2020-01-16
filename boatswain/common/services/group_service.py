@@ -20,6 +20,7 @@ from peewee import DoesNotExist
 from boatswain.common.models.group import Group
 from boatswain.common.models.workspace import Workspace
 from boatswain.common.services import workspace_service
+from boatswain.common.utils.utils import tr
 
 
 def getDefaultGroup():
@@ -31,7 +32,7 @@ def getDefaultGroupFromWorkspace(workspace):
     try:
         return Group.get(Group.is_default & (Group.workspace == workspace))
     except DoesNotExist:
-        return createGroupFromWorkspace('Default', workspace, is_default=True)
+        return createGroupFromWorkspace(tr('Default'), workspace, is_default=True)
 
 
 def getGroups():

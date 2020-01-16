@@ -20,26 +20,25 @@ import math
 import os
 from typing import List
 
-from PyQt5.QtCore import Qt, QCoreApplication
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QResizeEvent
 from PyQt5.QtWidgets import QDialog
+from boatswain_updater.utils import pyqt_utils
 
 from boatswain.common.models.group import Group
 from boatswain.common.services import containers_service
 from boatswain.common.services.system_service import rt
 from boatswain.common.utils.constants import SEARCH_APP_WIDTH, DEFAULT_SEARCH_APP_FILE
+from boatswain.common.utils.utils import tr
 from boatswain.resources_utils import getResource
 from boatswain.search.application.short_app_widget import ShortAppWidget
 from boatswain.search.search_app_ui import SearchAppDialogUi
-from boatswain_updater.utils import pyqt_utils
 
 
 class SearchAppDialog(object):
 
-    _translate = QCoreApplication.translate
-    template = 'SearchAppDialog'
     items_per_row = 3
-    repositories = ['All repos']
+    repositories = [tr('All repos')]
     apps: List[ShortAppWidget] = []
 
     def __init__(self, title, parent, group: Group) -> None:
@@ -53,9 +52,9 @@ class SearchAppDialog(object):
         self.group = group
 
         for repo in self.repositories:
-            self.ui.repo_select.addItem(self._translate(self.template, repo))
+            self.ui.repo_select.addItem(tr(repo))
 
-        self.ui.key_search.setPlaceholderText(self._translate(self.template, "Search apps"))
+        self.ui.key_search.setPlaceholderText(tr("Search apps"))
         self.ui.key_search.returnPressed.connect(self.searchApp)
 
         # Loading default search images

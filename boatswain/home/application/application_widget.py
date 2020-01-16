@@ -30,6 +30,7 @@ from boatswain.common.services.worker_service import Worker, threadpool
 from boatswain.common.utils import docker_utils
 from boatswain.common.utils.constants import ADD_APP_CHANNEL, SHORTCUT_CONF_CHANGED_CHANNEL, CONTAINER_CHANNEL
 from boatswain.common.utils.logging import logger
+from boatswain.common.utils.utils import tr
 from boatswain.home.application.application_widget_ui import AppWidgetUi
 from boatswain.monitor.logging_monitor import LoggingMonitor
 from boatswain.shortcut.preferences_shortcut_config import PreferencesShortcutConfig
@@ -49,7 +50,7 @@ class AppWidget(QObject):
 
         self.autoSetContainerStatus()
         self.ui.status.clicked.connect(self.controlApp)
-        self.ui.name.setText(self.tr(self.container.name))
+        self.ui.name.setText(tr(self.container.name))
 
         self.ui.widget.mouseReleaseEvent = self.onMouseReleased
         self.ui.widget.mousePressEvent = self.mousePressEvent
@@ -69,11 +70,11 @@ class AppWidget(QObject):
 
     def controlApp(self, start_only=False, force=False):
         if not containers_service.isContainerRunning(self.container):
-            self.ui.status.setText('Starting')
+            self.ui.status.setText(tr('Starting'))
             worker = Worker(containers_service.startContainer, self.container, start_only, force)
             worker.signals.result.connect(self.onAppStarted)
         else:
-            self.ui.status.setText('Stopping')
+            self.ui.status.setText(tr('Stopping'))
             worker = Worker(containers_service.stopContainer, self.container)
         worker.signals.error.connect(self.onFailure)
         threadpool.start(worker)
@@ -119,31 +120,31 @@ class AppWidget(QObject):
 
     def contextMenuEvent(self, event):
         menu = QMenu(self.ui)
-        add_action = menu.addAction(self.tr('Add...'))
+        add_action = menu.addAction(tr('Add...'))
         add_action.triggered.connect(lambda: data_transporter_service.fire(ADD_APP_CHANNEL))
         menu.addSeparator()
-        terminal = menu.addAction(self.tr('Connect to terminal'))
+        terminal = menu.addAction(tr('Connect to terminal'))
         terminal.triggered.connect(lambda: containers_service.connectToContainer(self.container))
-        monitor = menu.addAction(self.tr('Monitor log'))
+        monitor = menu.addAction(tr('Monitor log'))
         monitor.triggered.connect(self.monitorLog)
         menu.addSeparator()
-        conf = menu.addAction(self.tr('Configuration'))
+        conf = menu.addAction(tr('Configuration'))
         conf.triggered.connect(self.ui.advanced_app.onAdvancedConfigurationClicked)
-        pref_shortcut = menu.addAction(self.tr('Preferences shortcut'))
+        pref_shortcut = menu.addAction(tr('Preferences shortcut'))
         pref_shortcut.triggered.connect(self.onPreferenceShortcutClicked)
         menu.addSeparator()
-        clone_to = QMenu(self.tr('Clone to...'), self.ui)
-        clone_to.addAction(self.tr('Unspecified workspace'))
+        clone_to = QMenu(tr('Clone to...'), self.ui)
+        clone_to.addAction(tr('Unspecified workspace'))
         for workspace in workspace_service.getWorkspaces():
             clone_to.addAction(workspace.name)
         clone_to.triggered.connect(self.cloneContainer)
         menu.addMenu(clone_to)
         menu.addSeparator()
-        restart = menu.addAction(self.tr('Restart'))
+        restart = menu.addAction(tr('Restart'))
         restart.triggered.connect(self.restartContainer)
-        reset = menu.addAction(self.tr('Reset'))
+        reset = menu.addAction(tr('Reset'))
         reset.triggered.connect(self.resetContainer)
-        delete = menu.addAction(self.tr('Delete'))
+        delete = menu.addAction(tr('Delete'))
         delete.triggered.connect(lambda: self.delete_app.emit(self.container))
         menu.exec_(self.ui.mapToGlobal(event.pos()))
 
@@ -153,11 +154,11 @@ class AppWidget(QObject):
 
     def restartContainer(self):
         if containers_service.isContainerRunning(self.container):
-            self.ui.status.setText('Stopping')
+            self.ui.status.setText(tr('Stopping'))
             worker = Worker(containers_service.stopContainer, self.container)
             worker.signals.result.connect(self.restartContainer)
         else:
-            self.ui.status.setText('Starting')
+            self.ui.status.setText(tr('Starting'))
             containers_service.startContainer(self.container)
             worker = Worker(containers_service.startContainer, self.container)
             worker.signals.result.connect(self.onAppStarted)
@@ -167,7 +168,7 @@ class AppWidget(QObject):
 
     def cloneContainer(self, action):
         clone_to_workspace = action.text()
-        if clone_to_workspace == 'Unspecified workspace':
+        if clone_to_workspace == tr('Unspecified workspace'):
             workspace = workspace_service.getDefaultWorkspace()
         else:
             workspace = workspace_service.getWorkspace(clone_to_workspace)
@@ -176,17 +177,17 @@ class AppWidget(QObject):
         threadpool.start(worker)
 
     def autoSetContainerStatus(self):
-        status = "Stop" if containers_service.isContainerRunning(self.container) else "Start"
-        self.ui.status.setText(self.tr(status))
-        if status == "Stop":
+        status = tr("Stop") if containers_service.isContainerRunning(self.container) else tr("Start")
+        self.ui.status.setText(tr(status))
+        if status == tr("Stop"):
             self.ui.pic.updateStatus(True)
         else:
             self.ui.pic.updateStatus(False)
 
     def resetContainer(self):
-        message = self.tr("Are you sure you want to reset this container? All configurations "
-                          "you made for it will be lost!")
-        button_reply = QMessageBox.question(self.ui, 'Reset container', message,
+        message = tr("Are you sure you want to reset this container? All configurations "
+                     "you made for it will be lost!")
+        button_reply = QMessageBox.question(self.ui, tr('Reset container'), message,
                                             QMessageBox.Ok | QMessageBox.Cancel, QMessageBox.Cancel)
         if button_reply == QMessageBox.Ok:
             containers_service.deleteConfigurations(self.container)

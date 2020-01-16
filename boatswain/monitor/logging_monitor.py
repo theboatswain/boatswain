@@ -24,6 +24,7 @@ from boatswain.common.models.container import Container
 from boatswain.common.services import containers_service
 from boatswain.common.services.system_service import applyFontRatio, rt
 from boatswain.common.services.worker_service import Worker, threadpool
+from boatswain.common.utils.utils import tr
 from boatswain.monitor.logging_monitor_model import LoggingMonitorModel
 from boatswain.monitor.logging_monitor_ui import LoggingMonitorUi
 
@@ -34,7 +35,7 @@ class LoggingMonitor(QObject):
     def __init__(self, container: Container) -> None:
         super().__init__()
         self.dialog = QDialog()
-        self.dialog.setWindowTitle(container.name + self.tr("'s logs"))
+        self.dialog.setWindowTitle(container.name + tr("'s logs"))
         self.dialog.setAttribute(Qt.WA_DeleteOnClose)
         self.dialog.closeEvent = self.onCloseDialog
         self.ui = LoggingMonitorUi(self.dialog)
@@ -42,7 +43,7 @@ class LoggingMonitor(QObject):
         self.container = container
         self.ui.now.clicked.connect(self.onNowActivate)
 
-        headers = ['Date', 'Time', 'Message']
+        headers = [tr('Date'), tr('Time'), tr('Message')]
         self.table_model = LoggingMonitorModel([], headers, headers, self.dialog)
         self.proxy_model = QSortFilterProxyModel(self.dialog)
         self.proxy_model.setSourceModel(self.table_model)
@@ -80,8 +81,8 @@ class LoggingMonitor(QObject):
                     continue
                 position = self.table_model.rowCount()
                 parent = self.table_model.index(position, 0)
-                self.table_model.insertRows(position, 1, rows=[{'Date': date, 'Time': time, 'Message': message}],
-                                            parent=parent)
+                self.table_model.insertRows(position, 1, rows=[
+                    {tr('Date'): date, tr('Time'): time, tr('Message'): message}], parent=parent)
                 self.ui.log_list_table.resizeRowToContents(position)
 
     def onCloseDialog(self, event):
@@ -108,7 +109,7 @@ class LoggingMonitor(QObject):
             if index.column() == 0:
                 actual_index = self.proxy_model.mapToSource(index)
                 data = self.table_model.array_data[actual_index.row()]
-                self.ui.log_details_label.setHtml(data['Message'])
+                self.ui.log_details_label.setHtml(data[tr('Message')])
                 break
 
     def find(self, column=2):

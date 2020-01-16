@@ -58,6 +58,7 @@ def run():
         os.makedirs(APP_AVATAR_DIR)
 
     # Connect to SQLite DB
+    # migration()
     db.connect(reuse_if_open=True)
     db.create_tables(db_tables)
     docker_service.setupClient()

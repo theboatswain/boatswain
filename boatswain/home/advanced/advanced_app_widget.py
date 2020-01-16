@@ -15,7 +15,7 @@
 #
 #
 
-from PyQt5.QtCore import QPropertyAnimation, QCoreApplication
+from PyQt5.QtCore import QPropertyAnimation
 from PyQt5.QtGui import QResizeEvent
 from PyQt5.QtWidgets import QLabel, QComboBox, QSizePolicy, QWidget, QLineEdit, QPushButton, QFileDialog
 
@@ -26,13 +26,12 @@ from boatswain.common.services.system_service import rt
 from boatswain.common.ui.custom_ui import BQSizePolicy
 from boatswain.common.ui.path_view import PathViewWidget
 from boatswain.common.utils.constants import SHORTCUT_CONF_CHANGED_CHANNEL
+from boatswain.common.utils.utils import tr
 from boatswain.config.app_config import AppConfig
 from boatswain.home.advanced.advanced_app_widget_ui import AdvancedAppWidgetUi
 
 
 class AdvancedAppWidget:
-    _translate = QCoreApplication.translate
-    template = 'AdvancedAppWidget'
     animation: QPropertyAnimation
     tags: QComboBox
 
@@ -88,10 +87,10 @@ class AdvancedAppWidget:
 
     def findFileOrFolder(self, shotcut: PreferencesShortcut, input_box: PathViewWidget):
         if shotcut.pref_type == 'File':
-            fname = QFileDialog.getOpenFileName(self.ui, 'Open file')
+            fname = QFileDialog.getOpenFileName(self.ui, tr('Open file'))
             path = fname[0] if fname[0] else ''
         else:
-            file = str(QFileDialog.getExistingDirectory(self.ui, "Select Directory"))
+            file = str(QFileDialog.getExistingDirectory(self.ui, tr("Select Directory")))
             path = file if file else ''
         if path:
             input_box.setPath(path, shotcut.pref_type.lower())
@@ -100,7 +99,7 @@ class AdvancedAppWidget:
 
     def drawShortcut(self, shortcut: PreferencesShortcut, row):
         label = QLabel(self.ui.widget)
-        label.setText(self._translate(self.template, shortcut.label) + ':')
+        label.setText(tr(shortcut.label) + ':')
         label.setToolTip(shortcut.description)
         self.ui.grid_layout.addWidget(label, row, 0, 1, 1)
         if shortcut.pref_type in ['File', 'Folder']:
@@ -140,7 +139,7 @@ class AdvancedAppWidget:
             if tag.name == self.container.tag:
                 self.tags.setCurrentIndex(index)
         self.tags.currentTextChanged.connect(self.onImageTagChange)
-        label.setText(self._translate(self.template, "Image tag:"))
+        label.setText(tr("Image tag:"))
 
     def drawShortcuts(self):
         shortcuts = shortcut_service.getEnabledShortcuts(self.container)

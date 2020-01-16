@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QDialogButtonBox
 
 from boatswain.common.services.system_service import rt, applyFontRatio
 from boatswain.common.ui.custom_ui import BQSizePolicy
+from boatswain.common.utils.utils import tr
 
 
 class ConnectionManagementUi(object):
@@ -47,8 +48,7 @@ class ConnectionManagementUi(object):
         self.button_box.rejected.connect(dialog.reject)
 
     def retranslateUi(self, dialog):
-        _translate = QtCore.QCoreApplication.translate
-        dialog.setWindowTitle(_translate("Dialog", "Connection Management Dialog"))
-        self.button_box.button(QDialogButtonBox.Ok).setText("Test connection...")
-        self.label.setText(_translate("Dialog", "Docker connection configuration"))
-        self.protocol.setText("Docker URI:")
+        dialog.setWindowTitle(tr("Connection Management Dialog"))
+        self.button_box.button(QDialogButtonBox.Ok).setText(tr("Test connection..."))
+        self.label.setText(tr("Docker connection configuration"))
+        self.protocol.setText(tr("Docker URI:"))

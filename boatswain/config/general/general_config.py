@@ -14,19 +14,18 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
-from PyQt5.QtCore import QCoreApplication, QThread
+from PyQt5.QtCore import QThread
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.tag import Tag
 from boatswain.common.services import containers_service, auditing_service
 from boatswain.common.services.worker_service import Worker, threadpool
 from boatswain.common.utils import utils
+from boatswain.common.utils.utils import tr
 from boatswain.config.general.general_config_ui import GeneralAppConfigUi
 
 
 class GeneralAppConfig:
-    _tr = QCoreApplication.translate
-    template = 'GeneralAppConfig'
 
     def __init__(self, parent, container: Container) -> None:
         self.container = container
@@ -56,23 +55,22 @@ class GeneralAppConfig:
         self.ui.entrypoint.setText(container.entrypoint)
 
     def retranslateUi(self):
-        self.ui.container_name.setText(self._tr(self.template, self.container.name))
-        self.ui.repo_source.setText(self._tr(self.template, "Repo source:     " + self.container.repo.title()))
-        self.ui.sync.setText(self._tr(self.template, "Sync"))
-        self.ui.img_tag_label.setText(self._tr(self.template, "Image tag:"))
-        self.ui.limit_cpu_label.setText(self._tr(self.template, "CPU limit:"))
-        self.ui.entrypoint_label.setText(self._tr(self.template, "Entrypoint"))
-        self.ui.entrypoint.setPlaceholderText(
-            self._tr(self.template, "Override the default entrypoint of the container"))
-        self.ui.limit_memory_label.setText(self._tr(self.template, "Memory limit:   "))
-        self.ui.start_with_boatswain.setText(self._tr(self.template, " Start with Boatswain"))
-        self.ui.stop_with_boatswain.setText(self._tr(self.template, " Stop when Boatswain exits"))
-        self.ui.container_id.setText(self._tr(self.template, "Container ID:     " + self.container.container_id))
+        self.ui.container_name.setText(self.container.name)
+        self.ui.repo_source.setText(tr("Repo source:     " + self.container.repo.title()))
+        self.ui.sync.setText(tr("Sync"))
+        self.ui.img_tag_label.setText(tr("Image tag:"))
+        self.ui.limit_cpu_label.setText(tr("CPU limit:"))
+        self.ui.entrypoint_label.setText(tr("Entrypoint"))
+        self.ui.entrypoint.setPlaceholderText(tr("Override the default entrypoint of the container"))
+        self.ui.limit_memory_label.setText(tr("Memory limit:   "))
+        self.ui.start_with_boatswain.setText(tr(" Start with Boatswain"))
+        self.ui.stop_with_boatswain.setText(tr(" Stop when Boatswain exits"))
+        self.ui.container_id.setText(tr("Container ID:     " + self.container.container_id))
 
     def onSyncClicked(self):
-        self.ui.sync.setText(self._tr(self.template, "Syncing"))
+        self.ui.sync.setText(tr("Syncing"))
         worker = Worker(containers_service.updateContainerTags, self.container)
-        worker.signals.result.connect(lambda: self.ui.sync.setText(self._tr(self.template, "Sync")))
+        worker.signals.result.connect(lambda: self.ui.sync.setText(tr("Sync")))
         worker.signals.finished.connect(self.loadTags)
         threadpool.start(worker)
 
@@ -126,10 +124,10 @@ class GeneralAppConfig:
         if self.ui.limit_cpu.value() > 0:
             self.ui.current_n_cpus.setText(str(self.ui.limit_cpu.value() / 100.0) + " CPUs")
         else:
-            self.ui.current_n_cpus.setText(self._tr(self.template, "Unlimited"))
+            self.ui.current_n_cpus.setText(tr("Unlimited"))
 
     def onMemoryChanging(self):
         if self.ui.limit_memory.value() > 0:
             self.ui.current_n_memory.setText(str(self.ui.limit_memory.value()) + " MB")
         else:
-            self.ui.current_n_memory.setText(self._tr(self.template, "Unlimited"))
+            self.ui.current_n_memory.setText(tr("Unlimited"))

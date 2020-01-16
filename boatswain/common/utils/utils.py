@@ -19,12 +19,14 @@ import os
 import subprocess
 from contextlib import closing
 
-from PyQt5.QtCore import QFile
+from PyQt5.QtCore import QFile, QCoreApplication
 
 from boatswain_updater.utils import sys_utils
 from docker.types import CancellableStream
 
 total_mem = None
+_tr = QCoreApplication.translate
+tpl = 'Boatswain'
 
 
 class EmptyStream(CancellableStream):
@@ -42,6 +44,10 @@ class EmptyStream(CancellableStream):
 
     def close(self):
         pass
+
+
+def tr(text):
+    return _tr(tpl, text)
 
 
 def splitAll(path):
@@ -80,6 +86,7 @@ def getOsName():
     else:
         out += ' 32-bit'
     return out
+
 
 def getPhysicalMemory():
     global total_mem

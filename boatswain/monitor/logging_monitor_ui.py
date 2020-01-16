@@ -22,6 +22,7 @@ from PyQt5.QtWidgets import QDialog
 from boatswain.common.services import system_service
 from boatswain.common.services.system_service import rt
 from boatswain.common.ui.custom_ui import BQSizePolicy
+from boatswain.common.utils.utils import tr
 from boatswain.monitor.logging_table_ui import UniformRowHeights
 
 
@@ -101,7 +102,7 @@ class LoggingMonitorUi(QObject):
         self.retranslateUi()
 
     def retranslateUi(self):
-        self.now.setText(self.tr("Now"))
-        self.clear.setText(self.tr("Clear"))
-        self.reload.setText(self.tr("Reload"))
-        self.info.setText(self.tr("Info"))
+        self.now.setText(tr("Now"))
+        self.clear.setText(tr("Clear"))
+        self.reload.setText(tr("Reload"))
+        self.info.setText(tr("Info"))

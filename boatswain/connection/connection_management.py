@@ -5,6 +5,7 @@ from docker import APIClient
 from boatswain.common.exceptions.docker_exceptions import DockerNotAvailableException
 from boatswain.common.services import global_preference_service, docker_service
 from boatswain.common.utils.constants import PROTOCOL_KEY
+from boatswain.common.utils.utils import tr
 from boatswain.connection.connection_management_ui import ConnectionManagementUi
 
 
@@ -32,13 +33,13 @@ class ConnectionManagement(QObject):
         docker_service.client.api = APIClient(base_url=self.ui.url.text())
         try:
             docker_service.ping()
-            self.ui.message.setText(self.tr("Connection successful!!!"))
-            self.ui.button_box.button(QDialogButtonBox.Ok).setText(self.tr("Save"))
+            self.ui.message.setText(tr("Connection successful!!!"))
+            self.ui.button_box.button(QDialogButtonBox.Ok).setText(tr("Save"))
             self.status = True
         except DockerNotAvailableException:
-            mess = self.tr("We are unable to connect to the Docker upstream!!!")
+            mess = tr("We are unable to connect to the Docker upstream!!!")
             if self.time > 1:
-                mess += " (time %d)" % self.time
+                mess += tr(" (time %d)") % self.time
             self.ui.message.setText(mess)
             self.time += 1
             self.status = False

@@ -16,7 +16,7 @@
 #
 from typing import Dict
 
-from PyQt5.QtCore import QCoreApplication, QPoint
+from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QResizeEvent
 from PyQt5.QtWidgets import QMainWindow, QInputDialog, QMenu, QAction, QMessageBox
 from boatswain_updater.utils import sys_utils
@@ -31,6 +31,7 @@ from boatswain.common.services import data_transporter_service, global_preferenc
 from boatswain.common.services.system_service import rt
 from boatswain.common.utils import message_utils
 from boatswain.common.utils.constants import CONTAINER_CHANNEL, ADD_APP_CHANNEL, UPDATES_CHANNEL, APP_EXIT_CHANNEL
+from boatswain.common.utils.utils import tr
 from boatswain.connection.connection_management import ConnectionManagement
 from boatswain.home.application.application_widget import AppWidget
 from boatswain.home.application.application_widget_ui import AppWidgetUi
@@ -43,9 +44,6 @@ from boatswain.search.search_app import SearchAppDialog
 
 class Home:
     """ Home screen """
-
-    _translate = QCoreApplication.translate
-    tpl = 'Boatswain'
 
     def __init__(self):
         super(Home, self).__init__()
@@ -90,25 +88,22 @@ class Home:
             self.addAppFromContainer(container)
 
     def addAppClicked(self, group=None):
-        dialog = SearchAppDialog(self._tr("Add app"), None, group)
+        dialog = SearchAppDialog(tr("Add app"), None, group)
         dialog.show()
-
-    def _tr(self, message):
-        return self._translate(self.tpl, message)
 
     def loadWorkspaces(self):
         self.ui.workspaces.clear()
-        self.ui.workspaces.addItem(self._tr('All'), self._tr('All workspaces'), separate_after=True)
+        self.ui.workspaces.addItem('All', tr('All workspaces'), separate_after=True)
         for workspace in workspace_service.getWorkspaces():
             self.ui.workspaces.addItem(workspace.name)
         self.ui.workspaces.setCurrentOption(workspace_service.getCurrentActivatedWorkspace().name)
-        self.ui.workspaces.addItem(self._tr('New'), self._tr('Create a new workspace...'), separate_before=True,
+        self.ui.workspaces.addItem(tr('New'), tr('Create a new workspace...'), separate_before=True,
                                    handler=self.newWorkspaceClicked)
 
     def newWorkspaceClicked(self):
         dlg = QInputDialog(self.ui)
         dlg.setInputMode(QInputDialog.TextInput)
-        dlg.setLabelText(self._tr("Workspace name:"))
+        dlg.setLabelText(tr("Workspace name:"))
         dlg.resize(rt(300), rt(100))
         ok = dlg.exec_()
         name = dlg.textValue()
@@ -118,8 +113,8 @@ class Home:
                 self.onWorkspaceChanged(workspace_name=workspace.name)
                 self.loadWorkspaces()
             except WorkspaceAlreadyExistsException:
-                message_utils.error(self._tr('Workspace already exists'),
-                                    self._tr('Please choose a different workspace\'s name'))
+                message_utils.error(tr('Workspace already exists'),
+                                    tr('Please choose a different name for your workspace'))
 
     def addGroupWidget(self, group: Group):
         group_widget = GroupWidget(group, self.ui.app_list)
@@ -131,10 +126,11 @@ class Home:
 
     def addAppFromContainer(self, container: Container):
         current_workspace = self.ui.workspaces.getCurrentOption()
+        current_workspace = workspace_service.getWorkspace(current_workspace)
         if container.group.id not in self.groups:
             self.addGroupWidget(container.group)
-        if current_workspace != 'All':
-            if container.group.workspace.name != current_workspace:
+        if not current_workspace.is_default:
+            if container.group.workspace.id != current_workspace.id:
                 self.groups[container.group.id].hide()
         widget = AppWidget(self.groups[container.group.id].app_list, container)
         widget.move_app.connect(self.moveAppWidget)
@@ -201,7 +197,7 @@ class Home:
         widget_to_be_moved = self.apps[container.id]
         # Update the in-memory object of container
         update_model_from_dict(widget_to_be_moved.container, model_to_dict(container))
-        group = group_service.createGroup(self._tr('New Folder'))
+        group = group_service.createGroup(tr('New Group'))
         self.addGroupWidget(group)
         widget_to_be_moved.container.group = group
         widget_to_be_moved.container.save()
@@ -220,13 +216,13 @@ class Home:
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Critical)
 
-            msg.setText(self._tr("Unable to delete group"))
-            msg.setInformativeText(self._tr("You can't delete default group!!!"))
+            msg.setText(tr("Unable to delete group"))
+            msg.setInformativeText(tr("You can't delete default group!!!"))
             msg.setStandardButtons(QMessageBox.Ok)
             msg.exec_()
             return
-        message = self._tr("Are you sure you want to delete this folder? All apps inside will be deleted also!")
-        button_reply = QMessageBox.question(self.ui, 'Delete folder', message,
+        message = tr("Are you sure you want to delete this folder? All apps inside will be deleted also!")
+        button_reply = QMessageBox.question(self.ui, tr('Delete folder'), message,
                                             QMessageBox.Ok | QMessageBox.Cancel, QMessageBox.Cancel)
         if button_reply != QMessageBox.Ok:
             return
@@ -240,9 +236,9 @@ class Home:
         group_service.deleteGroup(group)
 
     def deleteApp(self, container):
-        message = self._tr("Are you sure you want to delete this container? All configurations "
-                           "you made for it will be deleted also!")
-        button_reply = QMessageBox.question(self.ui, 'Delete container', message,
+        message = tr("Are you sure you want to delete this container? All configurations "
+                     "you made for it will be deleted also!")
+        button_reply = QMessageBox.question(self.ui, tr('Delete container'), message,
                                             QMessageBox.Ok | QMessageBox.Cancel, QMessageBox.Cancel)
         if button_reply != QMessageBox.Ok:
             return
@@ -252,12 +248,11 @@ class Home:
 
     def onWorkspaceChanged(self, workspace_name: str):
         workspace_service.activeWorkspace(workspace_name)
-        self.search(workspace=workspace_name)
+        self.search()
 
-    def search(self, data=None, workspace=None):
-        filter_by = self.ui.workspaces.getCurrentOption()
-        if workspace is not None:
-            filter_by = workspace
+    def search(self, data=None):
+        workspace = self.ui.workspaces.getCurrentOption()
+        workspace = workspace_service.getWorkspace(workspace)
         keyword = self.ui.search_app.text()
 
         for group in self.groups:
@@ -266,16 +261,14 @@ class Home:
         for app in self.apps:
             self.apps[app].show()
 
-        if filter_by != 'All':
-            for group in self.groups:
-                if self.groups[group].group.workspace.name != filter_by:
-                    self.groups[group].hide()
-
-        if not keyword:
-            return
         for app in self.apps:
             if keyword not in self.apps[app].container.name and keyword not in self.apps[app].container.image_name:
                 self.apps[app].hide()
+
+        if not workspace.is_default:
+            for group in self.groups:
+                if self.groups[group].group.workspace.id != workspace.id:
+                    self.groups[group].hide()
 
     def resizeEvent(self, event: QResizeEvent):
         global_preference_service.setHomeWindowSize(event.size())
@@ -293,26 +286,28 @@ class Home:
         menu_help = QMenu(self.ui)
         about = QAction(self.ui)
         about.setMenuRole(QAction.AboutRole)
-        about.setText(self._tr("About"))
+        about.setText(tr("About"))
         about.triggered.connect(self.showAbout)
         menu_help.addAction(about)
         check_for_update = QAction(self.ui)
-        check_for_update.setText(self._tr("Check for updates"))
+        check_for_update.setText(tr("Check for updates"))
         check_for_update.setMenuRole(QAction.ApplicationSpecificRole)
         check_for_update.triggered.connect(lambda: data_transporter_service.fire(UPDATES_CHANNEL, False))
         menu_help.addAction(check_for_update)
         menu_help.addSeparator()
 
-        new_group = QAction(self._tr("New group…"), self.ui)
+        new_group = QAction(tr("New group…"), self.ui)
         menu_help.addAction(new_group)
 
         menu_help.addSeparator()
 
-        preferences = QAction(self._tr("Preferences…"), self.ui)
+        preferences = QAction(tr("Preferences…"), self.ui)
         preferences.triggered.connect(self.showPreferences)
         menu_help.addAction(preferences)
 
-        quit_app = QAction(self._tr("Exit"), self.ui)
+        menu_help.addSeparator()
+
+        quit_app = QAction(tr("Exit"), self.ui)
         menu_help.addAction(quit_app)
         point: QPoint = self.ui.mapToGlobal(self.ui.custom_menu.pos())
         point.setY(point.y() + self.ui.custom_menu.height() + rt(5))

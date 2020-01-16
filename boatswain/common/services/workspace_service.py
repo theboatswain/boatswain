@@ -14,7 +14,6 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
-
 from peewee import DoesNotExist
 
 from boatswain.common.exceptions.workspace import WorkspaceAlreadyExistsException
@@ -25,9 +24,9 @@ from boatswain.common.utils.constants import CURRENT_ACTIVATED_WORKSPACE
 
 def getDefaultWorkspace():
     try:
-        return Workspace.get(Workspace.name == 'All')
+        return Workspace.get(Workspace.is_default)
     except DoesNotExist:
-        workspace = Workspace(name='All')
+        workspace = Workspace(name='All', is_default=True)
         workspace.save()
         return workspace
 
@@ -47,10 +46,10 @@ def activeWorkspace(workspace):
 
 
 def getWorkspaces():
-    return Workspace.select().where(Workspace.name != 'All')
+    return Workspace.select().where(Workspace.is_default == False)
 
 
-def getWorkspace(name):
+def getWorkspace(name) -> Workspace:
     return Workspace.get(Workspace.name == name)
 
 

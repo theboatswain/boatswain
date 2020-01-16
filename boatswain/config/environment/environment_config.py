@@ -17,7 +17,6 @@
 
 import os
 
-from PyQt5 import QtCore
 from PyQt5.QtCore import QItemSelectionModel, QModelIndex
 from PyQt5.QtWidgets import QTableView, QAbstractItemView
 
@@ -25,14 +24,12 @@ from boatswain.common.models.container import Container
 from boatswain.common.models.environment import Environment
 from boatswain.common.services import environment_service
 from boatswain.common.ui.custom_ui import PathInputDelegate
+from boatswain.common.utils.utils import tr
 from boatswain.config.environment.environment_config_model import EnvironmentConfigModel
 from boatswain.config.environment.environment_config_ui import EnvironmentConfigUi
 
 
 class EnvironmentConfig:
-    _translate = QtCore.QCoreApplication.translate
-
-    template = 'EnvironmentConfig'
 
     def __init__(self, parent, container: Container) -> None:
         self.container = container
@@ -54,11 +51,10 @@ class EnvironmentConfig:
         self.ui.delete_env.clicked.connect(self.onDeleteEnvClicked)
 
     def retranslateUi(self):
-        self.ui.user_env_label.setText(self._translate(self.template, "User environment variables:"))
-        self.ui.new_env.setText(self._translate(self.template, "Add"))
-        self.ui.delete_env.setText(self._translate(self.template, "Delete"))
-        self.ui.include_sys_env.setText(
-            self._translate(self.template, "System environments (double click to copy)"))
+        self.ui.user_env_label.setText(tr("User environment variables:"))
+        self.ui.new_env.setText(tr("Add"))
+        self.ui.delete_env.setText(tr("Delete"))
+        self.ui.include_sys_env.setText(tr("System environments (double click to copy)"))
 
     def onDoubleClickItem(self, index: QModelIndex):
         data = self.ui.sys_env_table.model().array_data[index.row()]

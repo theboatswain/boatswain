@@ -15,7 +15,7 @@
 #
 #
 
-from PyQt5.QtCore import QCoreApplication, QSize, Qt
+from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDialog
 
@@ -26,9 +26,6 @@ from boatswain.resources_utils import getExternalResource
 
 
 class AboutDialog(object):
-
-    _translate = QCoreApplication.translate
-    template = 'About'
 
     def __init__(self, parent) -> None:
         super().__init__()

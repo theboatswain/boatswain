@@ -24,6 +24,7 @@ from boatswain.common.models.container import Container
 from boatswain.common.models.group import Group
 from boatswain.common.services import containers_service, group_service, data_transporter_service
 from boatswain.common.utils.constants import ADD_APP_CHANNEL
+from boatswain.common.utils.utils import tr
 from boatswain.home.group.group_widget_ui import GroupWidgetUi
 
 
@@ -167,12 +168,12 @@ class GroupWidget(QObject):
 
     def contextMenuEvent(self, event):
         menu = QMenu(self.ui)
-        add = menu.addAction(self.tr('Add app into this folder...'))
+        add = menu.addAction(tr('Add app into this folder...'))
         add.triggered.connect(lambda: data_transporter_service.fire(ADD_APP_CHANNEL, self.group))
         menu.addSeparator()
-        rename = menu.addAction(self.tr('Rename'))
+        rename = menu.addAction(tr('Rename'))
         rename.triggered.connect(self.onRenameTriggered)
-        delete = menu.addAction(self.tr('Delete'))
+        delete = menu.addAction(tr('Delete'))
         delete.triggered.connect(lambda: self.delete_group.emit(self.group))
         menu.exec_(self.ui.mapToGlobal(event.pos()))
 

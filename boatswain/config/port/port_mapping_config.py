@@ -15,21 +15,19 @@
 #
 #
 
-from PyQt5 import QtCore
 from PyQt5.QtCore import QItemSelectionModel
 from PyQt5.QtWidgets import QTableView, QAbstractItemView
-from boatswain.common.services import port_mapping_service
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.port_mapping import PortMapping
+from boatswain.common.services import port_mapping_service
 from boatswain.common.ui.custom_ui import ComboBoxDelegate, InputNumberDelegate
+from boatswain.common.utils.utils import tr
 from boatswain.config.port.port_mapping_config_model import PortMappingModel
 from boatswain.config.port.port_mapping_config_ui import PortMappingConfigUi
 
 
 class PortMappingConfig:
-    _translate = QtCore.QCoreApplication.translate
-    template = 'PortMappingConfig'
 
     networks = ['Default network']
 
@@ -38,7 +36,7 @@ class PortMappingConfig:
         self.container = container
 
         for network in self.networks:
-            self.ui.network.addItem(self._translate(self.template, network))
+            self.ui.network.addItem(tr(network))
         self.retranslateUi()
 
         self.ui.new_port.clicked.connect(self.onNewPortClicked)
@@ -54,11 +52,11 @@ class PortMappingConfig:
         self.ui.mapping_table.setItemDelegateForColumn(0, InputNumberDelegate(self.ui.mapping_table))
 
     def retranslateUi(self):
-        self.ui.ip_addr_label.setText(self._translate(self.template, "IP Address:"))
-        self.ui.network_label.setText(self._translate(self.template, "Network:"))
-        self.ui.port_label.setText(self._translate("PortMapping", "Port mapping:"))
-        self.ui.new_port.setText(self._translate("PortMapping", "Add"))
-        self.ui.delete_port.setText(self._translate("PortMapping", "Delete"))
+        self.ui.ip_addr_label.setText(tr("IP Address:"))
+        self.ui.network_label.setText(tr("Network:"))
+        self.ui.port_label.setText(tr("Port mapping:"))
+        self.ui.new_port.setText(tr("Add"))
+        self.ui.delete_port.setText(tr("Delete"))
 
     def onNewPortClicked(self):
         self.ui.mapping_table.model().addRecord(

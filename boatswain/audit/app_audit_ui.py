@@ -1,10 +1,11 @@
-from PyQt5 import QtCore, QtWidgets
+from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog, QScrollArea, QFrame, QWidget, QSizePolicy, QVBoxLayout
 
 from boatswain.common.models.container import Container
 from boatswain.common.services.system_service import rt
 from boatswain.common.ui.custom_ui import BQSizePolicy
+from boatswain.common.utils.utils import tr
 
 
 class AppAuditUi(object):
@@ -73,13 +74,10 @@ class AppAuditUi(object):
         self.retranslateUi()
 
     def retranslateUi(self):
-        _translate = QtCore.QCoreApplication.translate
-        self.label.setText(_translate("MainWindow", "There are some changed configurations that required the container "
-                                                    "to be reset. Please consider using Volume Mapping to preserve "
-                                                    "your data."))
-        self.cancel.setText(_translate("MainWindow", "Cancel"))
-        self.old_conf.setToolTip(_translate("MainWindow", "Launch the application with the old configurations"))
-        self.old_conf.setText(_translate("MainWindow", "Use the old configuations"))
-        self.merge.setToolTip(_translate("MainWindow", "Merge the old with the new configurations and "
-                                                       "launch the application"))
-        self.merge.setText(_translate("MainWindow", "Merge"))
+        self.label.setText(tr("There are some changed configurations that required the container "
+                              "to be reset. Please consider using Volume Mapping to preserve your data."))
+        self.cancel.setText(tr("Cancel"))
+        self.old_conf.setToolTip(tr("Launch the application with the old configurations"))
+        self.old_conf.setText(tr("Use the old configuations"))
+        self.merge.setToolTip(tr("Merge the old with the new configurations and launch the application"))
+        self.merge.setText(tr("Merge"))

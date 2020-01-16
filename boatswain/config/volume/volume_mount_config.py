@@ -15,21 +15,19 @@
 #
 #
 
-from PyQt5 import QtCore
 from PyQt5.QtCore import QItemSelectionModel
 from PyQt5.QtWidgets import QTableView, QAbstractItemView
-from boatswain.common.services import volume_mount_service
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.volume_mount import VolumeMount
+from boatswain.common.services import volume_mount_service
 from boatswain.common.ui.custom_ui import PathInputDelegate, ComboBoxDelegate
+from boatswain.common.utils.utils import tr
 from boatswain.config.volume.volume_mount_config_model import VolumeMountModel
 from boatswain.config.volume.volume_mount_config_ui import VolumeMountConfigUi
 
 
 class VolumeMountConfig:
-    _translate = QtCore.QCoreApplication.translate
-    template = 'VolumeMountConfig'
 
     def __init__(self, parent, container: Container) -> None:
 
@@ -49,9 +47,9 @@ class VolumeMountConfig:
         self.ui.mount_table.setItemDelegateForColumn(1, ComboBoxDelegate(self.ui.mount_table, modes))
 
     def retranslateUi(self):
-        self.ui.volume_label.setText(self._translate(self.template, "Volume mounts:"))
-        self.ui.new_mount.setText(self._translate(self.template, "Add"))
-        self.ui.delete_mount.setText(self._translate(self.template, "Delete"))
+        self.ui.volume_label.setText(tr("Volume mounts:"))
+        self.ui.new_mount.setText(tr("Add"))
+        self.ui.delete_mount.setText(tr("Delete"))
 
     def onNewMountClicked(self):
         self.ui.mount_table.model().addRecord(

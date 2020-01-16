@@ -15,17 +15,15 @@
 #
 #
 
-from PyQt5.QtCore import QCoreApplication, Qt
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog
 
 from boatswain.common.models.container import Container
+from boatswain.common.utils.utils import tr
 from boatswain.config.app_config_ui import AppConfigUi
 
 
 class AppConfig:
-
-    _translate = QCoreApplication.translate
-    template = 'AppConfig'
 
     def __init__(self, parent, container: Container) -> None:
         self.container = container
@@ -40,18 +38,14 @@ class AppConfig:
         self.ui.tab_widget.setCurrentIndex(0)
         self.ui.tab_widget.currentChanged.connect(self.onTabChange)
 
-        self.dialog.setWindowTitle("%s - configuration" % self.container.name)
+        self.dialog.setWindowTitle(tr("%s - configuration") % self.container.name)
         self.dialog.setAttribute(Qt.WA_DeleteOnClose)
 
     def retranslateUi(self):
-        general_tab_name = self._translate(self.template, "General")
-        self.ui.tab_widget.setTabText(self.ui.tab_widget.indexOf(self.ui.general.ui), general_tab_name)
-        port_tab_name = self._translate(self.template, "Port mapping")
-        self.ui.tab_widget.setTabText(self.ui.tab_widget.indexOf(self.ui.port.ui), port_tab_name)
-        volume_tab_name = self._translate(self.template, "Volume mount")
-        self.ui.tab_widget.setTabText(self.ui.tab_widget.indexOf(self.ui.volume.ui), volume_tab_name)
-        environment_tab_name = self._translate(self.template, "Environment")
-        self.ui.tab_widget.setTabText(self.ui.tab_widget.indexOf(self.ui.environment.ui), environment_tab_name)
+        self.ui.tab_widget.setTabText(self.ui.tab_widget.indexOf(self.ui.general.ui), tr("General"))
+        self.ui.tab_widget.setTabText(self.ui.tab_widget.indexOf(self.ui.port.ui), tr("Port mapping"))
+        self.ui.tab_widget.setTabText(self.ui.tab_widget.indexOf(self.ui.volume.ui), tr("Volume mount"))
+        self.ui.tab_widget.setTabText(self.ui.tab_widget.indexOf(self.ui.environment.ui), tr("Environment"))
 
     def onTabChange(self, index):
         widget = self.ui.tab_widget.widget(index)

@@ -15,7 +15,7 @@
 #
 #
 
-from PyQt5.QtCore import QCoreApplication, Qt
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QSizePolicy, QLineEdit, QPushButton, \
     QMainWindow, QFrame, QScrollArea, QMenuBar, QMenu, QStatusBar
@@ -25,6 +25,7 @@ from boatswain.common.services.system_service import rt, applyFontRatio
 from boatswain.common.ui.custom_ui import BQSizePolicy
 from boatswain.common.ui.select_ui import SelectUi
 from boatswain.common.utils.constants import APP_EXIT_CHANNEL
+from boatswain.common.utils.utils import tr
 
 
 class HomeUi(QMainWindow):
@@ -107,10 +108,9 @@ class HomeUi(QMainWindow):
         self.scroll_area.setWidget(self.app_list)
 
     def retranslateUi(self, boatswain):
-        _translate = QCoreApplication.translate
-        boatswain.setWindowTitle(_translate("Boatswain", "Boatswain"))
-        self.search_app.setPlaceholderText(_translate("Boatswain", "Filter apps"))
-        self.add_app.setText(_translate("Boatswain", "Add"))
+        boatswain.setWindowTitle("Boatswain")
+        self.search_app.setPlaceholderText(tr("Filter apps"))
+        self.add_app.setText(tr("Add"))
 
     def closeEvent(self, event):
         data_transporter_service.fire(APP_EXIT_CHANNEL)
