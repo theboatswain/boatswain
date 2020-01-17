@@ -46,7 +46,7 @@ def activeWorkspace(workspace_id: int):
 
 
 def getWorkspaces():
-    return Workspace.select().where(Workspace.is_default == False)
+    return Workspace.select().where(Workspace.is_default == False).order_by(Workspace.name.asc())
 
 
 def getWorkspace(name) -> Workspace:
