@@ -37,11 +37,13 @@ class EnvironmentConfig:
 
         table_data = environment_service.getEnvironments(self.container)
         headers = ['name', 'value', 'description']
-        self.configureEnvTable(self.ui.user_table, headers, list(table_data), self.container)
+        display_headers = [tr('Name'), tr('Value'), tr('Description')]
+        self.configureEnvTable(self.ui.user_table, headers, display_headers, list(table_data), self.container)
         self.ui.user_table.setItemDelegateForColumn(1, PathInputDelegate(self.ui.user_table))
 
         sys_headers = ['name', 'value']
-        self.configureEnvTable(self.ui.sys_env_table, sys_headers, self.getAllSysEnv(), self.container)
+        display_headers = [tr('Name'), tr('Value')]
+        self.configureEnvTable(self.ui.sys_env_table, sys_headers, display_headers, self.getAllSysEnv(), self.container)
         self.ui.sys_env_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.ui.sys_env_table.doubleClicked.connect(self.onDoubleClickItem)
 
@@ -85,9 +87,9 @@ class EnvironmentConfig:
                 envs.append(Environment(name=item, value=os.environ[item], container=self.container))
         return envs
 
-    def configureEnvTable(self, tv: QTableView, header, data, container: Container):
+    def configureEnvTable(self, tv: QTableView, header, display_header, data, container: Container):
         # set the table model
-        table_model = EnvironmentConfigModel(data, header, container, self.ui)
+        table_model = EnvironmentConfigModel(data, header, display_header, container, self.ui)
         tv.setModel(table_model)
 
         # hide grid

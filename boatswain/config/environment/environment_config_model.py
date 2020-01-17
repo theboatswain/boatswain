@@ -27,10 +27,11 @@ from boatswain.common.utils.constants import STATUS_DELETED
 
 
 class EnvironmentConfigModel(QAbstractTableModel):
-    def __init__(self, data_in, header_data, container: Container, parent=None):
+    def __init__(self, data_in, header_data, display_header, container: Container, parent=None):
         QAbstractTableModel.__init__(self, parent)
         self.array_data = data_in
         self.header_data = header_data
+        self.display_header = display_header
         self.container = container
 
     def rowCount(self, parent=None, *args, **kwargs):
@@ -62,7 +63,7 @@ class EnvironmentConfigModel(QAbstractTableModel):
 
     def headerData(self, col, orientation, role=None):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
-            return QVariant(self.header_data[col].title())
+            return QVariant(self.display_header[col].title())
         return QVariant()
 
     def sort(self, col, order=None):

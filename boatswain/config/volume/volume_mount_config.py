@@ -40,7 +40,7 @@ class VolumeMountConfig:
 
         table_data = volume_mount_service.getVolumeMounts(self.container)
         headers = ['host_path', 'mode', 'container_path', 'description']
-        display_headers = ['Host Path', 'Mode', 'Container Path', 'Description']
+        display_headers = [tr('Host Path'), tr('Mode'), tr('Container Path'), tr('Description')]
         self.configureVolumeTable(self.ui.mount_table, headers, display_headers, list(table_data), self.container)
         self.ui.mount_table.setItemDelegateForColumn(0, PathInputDelegate(self.ui.mount_table))
         modes = ['rw', 'ro']
@@ -52,8 +52,8 @@ class VolumeMountConfig:
         self.ui.delete_mount.setText(tr("Delete"))
 
     def onNewMountClicked(self):
-        self.ui.mount_table.model().addRecord(
-            VolumeMount(host_path='/tmp', container_path='/tmp', description='description', container=self.container))
+        self.ui.mount_table.model().addRecord(VolumeMount(host_path='/tmp', container_path='/tmp',
+                                                          description=tr('description'), container=self.container))
         flags = QItemSelectionModel.ClearAndSelect | QItemSelectionModel.Rows
         index = self.ui.mount_table.model().index(self.ui.mount_table.model().rowCount() - 1, 0)
         self.ui.mount_table.selectionModel().select(index, flags)

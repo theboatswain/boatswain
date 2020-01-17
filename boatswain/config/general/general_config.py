@@ -56,7 +56,7 @@ class GeneralAppConfig:
 
     def retranslateUi(self):
         self.ui.container_name.setText(self.container.name)
-        self.ui.repo_source.setText(tr("Repo source:     " + self.container.repo.title()))
+        self.ui.repo_source.setText(tr("Repo source:     %s") % self.container.repo.title())
         self.ui.sync.setText(tr("Sync"))
         self.ui.img_tag_label.setText(tr("Image tag:"))
         self.ui.limit_cpu_label.setText(tr("CPU limit:"))
@@ -65,7 +65,7 @@ class GeneralAppConfig:
         self.ui.limit_memory_label.setText(tr("Memory limit:   "))
         self.ui.start_with_boatswain.setText(tr(" Start with Boatswain"))
         self.ui.stop_with_boatswain.setText(tr(" Stop when Boatswain exits"))
-        self.ui.container_id.setText(tr("Container ID:     " + self.container.container_id))
+        self.ui.container_id.setText(tr("Container ID:     %s") % self.container.container_id)
 
     def onSyncClicked(self):
         self.ui.sync.setText(tr("Syncing"))
@@ -122,7 +122,7 @@ class GeneralAppConfig:
 
     def onCpuChanging(self):
         if self.ui.limit_cpu.value() > 0:
-            self.ui.current_n_cpus.setText(str(self.ui.limit_cpu.value() / 100.0) + " CPUs")
+            self.ui.current_n_cpus.setText(str(self.ui.limit_cpu.value() / 100.0) + tr(" CPUs"))
         else:
             self.ui.current_n_cpus.setText(tr("Unlimited"))
 

@@ -29,7 +29,7 @@ from boatswain.config.port.port_mapping_config_ui import PortMappingConfigUi
 
 class PortMappingConfig:
 
-    networks = ['Default network']
+    networks = [tr('Default network')]
 
     def __init__(self, parent, container: Container) -> None:
         self.ui = PortMappingConfigUi(parent, container, self)
@@ -44,7 +44,7 @@ class PortMappingConfig:
 
         table_data = port_mapping_service.getPortMappings(self.container)
         headers = ['target_port', 'port', 'protocol', 'description']
-        display_headers = ['Host Port', 'Container Port', 'Protocol', 'Description']
+        display_headers = [tr('Host Port'), tr('Container Port'), tr('Protocol'), tr('Description')]
         self.configurePortTable(self.ui.mapping_table, headers, display_headers, list(table_data), container)
         protocols = ['tcp', 'udp']
         self.ui.mapping_table.setItemDelegateForColumn(2, ComboBoxDelegate(self.ui.mapping_table, protocols))
@@ -60,7 +60,7 @@ class PortMappingConfig:
 
     def onNewPortClicked(self):
         self.ui.mapping_table.model().addRecord(
-            PortMapping(port=1000, target_port=1000, description='description', container=self.container))
+            PortMapping(port=1000, target_port=1000, description=tr('description'), container=self.container))
         flags = QItemSelectionModel.ClearAndSelect | QItemSelectionModel.Rows
         index = self.ui.mapping_table.model().index(self.ui.mapping_table.model().rowCount() - 1, 0)
         self.ui.mapping_table.selectionModel().select(index, flags)
