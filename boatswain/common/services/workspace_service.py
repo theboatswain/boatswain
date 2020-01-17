@@ -34,15 +34,15 @@ def getDefaultWorkspace():
 def getCurrentActivatedWorkspace():
     try:
         preference = global_preference_service.getPreference(CURRENT_ACTIVATED_WORKSPACE)
-        workspace = Workspace.get(Workspace.name == preference.value)
-    except DoesNotExist:
+        workspace = Workspace.get(Workspace.id == int(preference.value))
+    except (DoesNotExist, ValueError):
         workspace = getDefaultWorkspace()
-        activeWorkspace(workspace.name)
+        activeWorkspace(workspace.id)
     return workspace
 
 
-def activeWorkspace(workspace):
-    global_preference_service.setPreference(CURRENT_ACTIVATED_WORKSPACE, workspace)
+def activeWorkspace(workspace_id: int):
+    global_preference_service.setPreference(CURRENT_ACTIVATED_WORKSPACE, workspace_id)
 
 
 def getWorkspaces():
@@ -51,6 +51,10 @@ def getWorkspaces():
 
 def getWorkspace(name) -> Workspace:
     return Workspace.get(Workspace.name == name)
+
+
+def getWorkspaceById(ws_id):
+    return Workspace.get(Workspace.id == ws_id)
 
 
 def createWorkspace(name):

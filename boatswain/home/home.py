@@ -93,10 +93,11 @@ class Home:
 
     def loadWorkspaces(self):
         self.ui.workspaces.clear()
-        self.ui.workspaces.addItem('All', tr('All workspaces'), separate_after=True)
+        default = workspace_service.getDefaultWorkspace()
+        self.ui.workspaces.addItem(default.id, tr(default.name), tr('All workspaces'), separate_after=True)
         for workspace in workspace_service.getWorkspaces():
-            self.ui.workspaces.addItem(workspace.name)
-        self.ui.workspaces.setCurrentOption(workspace_service.getCurrentActivatedWorkspace().name)
+            self.ui.workspaces.addItem(workspace.id, workspace.name)
+        self.ui.workspaces.setCurrentOption(workspace_service.getCurrentActivatedWorkspace().id)
         self.ui.workspaces.addItem(tr('New'), tr('Create a new workspace...'), separate_before=True,
                                    handler=self.newWorkspaceClicked)
 
@@ -110,7 +111,7 @@ class Home:
         if ok:
             try:
                 workspace = workspace_service.createWorkspace(name)
-                self.onWorkspaceChanged(workspace_name=workspace.name)
+                self.onWorkspaceChanged(workspace_id=workspace.id)
                 self.loadWorkspaces()
             except WorkspaceAlreadyExistsException:
                 message_utils.error(tr('Workspace already exists'),
@@ -126,7 +127,7 @@ class Home:
 
     def addAppFromContainer(self, container: Container):
         current_workspace = self.ui.workspaces.getCurrentOption()
-        current_workspace = workspace_service.getWorkspace(current_workspace)
+        current_workspace = workspace_service.getWorkspaceById(int(current_workspace))
         if container.group.id not in self.groups:
             self.addGroupWidget(container.group)
         if not current_workspace.is_default:
@@ -246,13 +247,13 @@ class Home:
         self.apps[container.id].deleteLater()
         del self.apps[container.id]
 
-    def onWorkspaceChanged(self, workspace_name: str):
-        workspace_service.activeWorkspace(workspace_name)
+    def onWorkspaceChanged(self, workspace_id: str):
+        workspace_service.activeWorkspace(int(workspace_id))
         self.search()
 
     def search(self, data=None):
         workspace = self.ui.workspaces.getCurrentOption()
-        workspace = workspace_service.getWorkspace(workspace)
+        workspace = workspace_service.getWorkspaceById(int(workspace))
         keyword = self.ui.search_app.text()
 
         for group in self.groups:

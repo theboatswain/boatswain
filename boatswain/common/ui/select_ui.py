@@ -17,7 +17,7 @@
 
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QMouseEvent
-from PyQt5.QtWidgets import QWidget, QPushButton, QMenu
+from PyQt5.QtWidgets import QWidget, QPushButton, QMenu, QAction
 
 from boatswain.common.services.system_service import rt
 
@@ -34,41 +34,44 @@ class SelectUi(QPushButton):
         self.setStyleSheet("border: 1px solid #999999; padding: %s; border-radius: 2px" % padding)
         self.mouseReleaseEvent = self.onSelectClicked
 
-    def addItem(self, option: str, label: str = None, separate_before: bool = False, separate_after: bool = False,
-                handler=None):
+    def addItem(self, key: str, small_label: str = None, label: str = None, separate_before: bool = False,
+                separate_after: bool = False, handler=None):
+        if small_label is None:
+            small_label = key
         if label is None:
-            label = option
-        self.options[option] = {'label': label, 'separate_after': separate_after, 'key': option,
-                                'separate_before': separate_before, 'handler': handler}
+            label = small_label
+        self.options[key] = {'label': label, 'separate_after': separate_after, 'key': key, 'small_label': small_label,
+                             'separate_before': separate_before, 'handler': handler}
         if len(self.options) == 1:
-            self.setCurrentOption(option)
+            self.setCurrentOption(key)
 
     def setCurrentOption(self, option):
         self.current_option = option
-        self.setText(option + ' ▿')
+        self.setText(self.options[option]['small_label'] + ' ▿')
 
     def onSelectClicked(self, event: QMouseEvent):
         menu = QMenu(self.parentWidget())
-        for item in self.options:
-            if self.options[item]['separate_before']:
+        for key in self.options:
+            if self.options[key]['separate_before']:
                 menu.addSeparator()
-            menu.addAction(self.options[item]['label'])
-            if self.options[item]['separate_after']:
+            action = menu.addAction(self.options[key]['label'])
+            action.setData(key)
+            if self.options[key]['separate_after']:
                 menu.addSeparator()
 
         menu.triggered.connect(self.onSelection)
         menu.exec_(self.mapToGlobal(event.pos()))
 
-    def onSelection(self, action):
+    def onSelection(self, action: QAction):
         option = {}
         for opt in self.options:
-            if self.options[opt]['label'] == action.text():
+            if opt == action.data():
                 option = self.options[opt]
         if option['handler'] is not None:
             option['handler']()
         else:
             self.setCurrentOption(option['key'])
-            self.on_option_selected.emit(option['key'])
+            self.on_option_selected.emit(str(option['key']))
 
     def getCurrentOption(self):
         return self.current_option
