@@ -33,6 +33,8 @@ def audit_update(container: Container, table: str, record_id: int, field: str, v
                 return
     except DoesNotExist:
         pass
+    if str(val_from) == str(val_to):
+        return
     new_audit = AuditUpdate(container=container, table=table, record_id=record_id, field=field, value_from=val_from,
                             value_to=val_to, time=time.time())
     new_audit.save()
