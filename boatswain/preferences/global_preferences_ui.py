@@ -33,7 +33,7 @@ class GlobalPreferencesUi(QObject):
         super().__init__()
 
         height = system_service.getRefHeight() / 2
-        width = height * 1.6
+        width = height * 1.8
         dialog.resize(width, height)
         dialog.setSizePolicy(BQSizePolicy(h_stretch=1))
         dialog.setMinimumSize(QSize(width, height))

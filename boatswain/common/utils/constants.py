@@ -55,6 +55,7 @@ HOME_WIDTH = 'home_width'
 HOME_HEIGHT = 'home_height'
 PROTOCOL_KEY = 'docker_protocol'
 DEFAULT_SEARCH_UPDATE_DATE = 'default_search_update_date'
+DEFAULT_TERMINAL = 'default_terminal'
 
 
 # Other conf

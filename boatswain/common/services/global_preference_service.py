@@ -28,6 +28,14 @@ def getPreference(key) -> Preference:
     return Preference.get(Preference.name == key)
 
 
+def getPreferenceValue(key, default=None) -> str:
+    try:
+        preference = getPreference(key)
+        return preference.value
+    except DoesNotExist:
+        return default
+
+
 def setPreference(key, value):
     try:
         preference = getPreference(key)

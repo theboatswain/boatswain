@@ -31,6 +31,44 @@ from boatswain.common.utils.constants import APP_EXIT_CHANNEL
 total_mem = None
 _tr = QCoreApplication.translate
 tpl = 'Boatswain'
+possible_terminals = [
+    {
+        'name': 'Terminal',
+        'path': '/System/Applications/Utilities/Terminal.app'
+    },
+    {
+        'name': 'Terminal',
+        'path': '/Applications/Utilities/Terminal.app'
+    },
+    {
+        'name': 'iTerm',
+        'path': '/Applications/iTerm.app'
+    },
+    {
+        'name': 'Windows Command Prompt',
+        'path': 'C:\\Windows\\System32\\cmd.exe'
+    },
+    {
+        'name': 'X Terminal Emulator',
+        'path': '/usr/bin/x-terminal-emulator'
+    },
+    {
+        'name': 'XFCE Terminal',
+        'path': '/usr/bin/xfce4-terminal'
+    },
+    {
+        'name': 'LX Terminal',
+        'path': '/usr/bin/lxterminal'
+    },
+    {
+        'name': 'Gnome Terminal',
+        'path': '/usr/bin/gnome-terminal'
+    },
+    {
+        'name': 'Konsole',
+        'path': '/usr/bin/konsole'
+    }
+]
 
 
 class EmptyStream(CancellableStream):
@@ -52,6 +90,14 @@ class EmptyStream(CancellableStream):
 
 def tr(text):
     return _tr(tpl, text)
+
+
+def getListAvailableTerminals():
+    results = []
+    for item in possible_terminals:
+        if os.path.exists(item['path']):
+            results.append(item)
+    return results
 
 
 def splitAll(path):
