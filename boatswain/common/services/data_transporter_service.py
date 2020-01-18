@@ -35,10 +35,7 @@ def deregister(channel: str, func):
             pass
 
 
-def fire(channel: str, data=None):
+def fire(channel: str, *args, **kwargs):
     if channel in channels:
         for func in channels[channel]:
-            if data is None:
-                func()
-            else:
-                func(data)
+            func(*args, **kwargs)
