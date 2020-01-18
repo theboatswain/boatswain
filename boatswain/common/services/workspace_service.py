@@ -20,7 +20,7 @@ from peewee import DoesNotExist
 
 from boatswain.common.exceptions.workspace import WorkspaceAlreadyExistsException, WorkspaceIsNotEmptiedException
 from boatswain.common.models.workspace import Workspace
-from boatswain.common.services import global_preference_service, group_service, containers_service
+from boatswain.common.services import global_preference_service, group_service
 from boatswain.common.utils.constants import CURRENT_ACTIVATED_WORKSPACE
 
 
