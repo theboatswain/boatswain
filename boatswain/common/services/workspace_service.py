@@ -14,15 +14,17 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
+from typing import List
+
 from peewee import DoesNotExist
 
-from boatswain.common.exceptions.workspace import WorkspaceAlreadyExistsException
+from boatswain.common.exceptions.workspace import WorkspaceAlreadyExistsException, WorkspaceIsNotEmptiedException
 from boatswain.common.models.workspace import Workspace
-from boatswain.common.services import global_preference_service
+from boatswain.common.services import global_preference_service, group_service, containers_service
 from boatswain.common.utils.constants import CURRENT_ACTIVATED_WORKSPACE
 
 
-def getDefaultWorkspace():
+def getDefaultWorkspace() -> Workspace:
     try:
         return Workspace.get(Workspace.is_default)
     except DoesNotExist:
@@ -31,7 +33,7 @@ def getDefaultWorkspace():
         return workspace
 
 
-def getCurrentActivatedWorkspace():
+def getCurrentActivatedWorkspace() -> Workspace:
     try:
         preference = global_preference_service.getPreference(CURRENT_ACTIVATED_WORKSPACE)
         workspace = Workspace.get(Workspace.id == int(preference.value))
@@ -45,19 +47,37 @@ def activeWorkspace(workspace_id: int):
     global_preference_service.setPreference(CURRENT_ACTIVATED_WORKSPACE, workspace_id)
 
 
-def getWorkspaces():
+def getWorkspaces() -> List[Workspace]:
+    """
+    Return list of workspaces, NOT including default one
+    @return: array
+    """
     return Workspace.select().where(Workspace.is_default == False).order_by(Workspace.name.asc())
 
 
-def getWorkspace(name) -> Workspace:
+def getWorkspace(name: str) -> Workspace:
     return Workspace.get(Workspace.name == name)
 
 
-def getWorkspaceById(ws_id):
+def isWorkspaceNameAvailable(name: str) -> bool:
+    """
+    Check if the given workspace name is available
+    return True if it is, otherwise, False
+    @param name: str
+    @return: boolean
+    """
+    try:
+        Workspace.get(Workspace.name == name)
+        return False
+    except DoesNotExist:
+        return True
+
+
+def getWorkspaceById(ws_id: int) -> Workspace:
     return Workspace.get(Workspace.id == ws_id)
 
 
-def createWorkspace(name):
+def createWorkspace(name: int) -> Workspace:
     try:
         Workspace.get(Workspace.name == name)
         raise WorkspaceAlreadyExistsException()
@@ -65,3 +85,16 @@ def createWorkspace(name):
         workspace = Workspace(name=name)
         workspace.save()
         return workspace
+
+
+def deleteWorkspace(workspace_id: int):
+    """
+    Delete a workspace and all of its groups and containers
+    @param workspace_id: workspace id
+    """
+    workspace = Workspace.get(Workspace.id == workspace_id)
+    groups = group_service.getGroupsFromWorkspace(workspace)
+    if len(groups) == 0:
+        workspace.delete_instance()
+    else:
+        raise WorkspaceIsNotEmptiedException()

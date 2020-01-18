@@ -18,6 +18,7 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog
 
+from boatswain.common.utils.utils import tr
 from boatswain.preferences.global_preferences_ui import GlobalPreferencesUi
 
 
@@ -31,5 +32,15 @@ class GlobalPreferences:
         self.ui = GlobalPreferencesUi(self.dialog)
         self.dialog.ui = self.ui
 
+        self.ui.tab_widget.currentChanged.connect(self.onTabChange)
+
+        self.dialog.setWindowTitle(tr("Preferences"))
+        self.dialog.setAttribute(Qt.WA_DeleteOnClose)
+
     def show(self):
         self.dialog.exec_()
+
+    def onTabChange(self, index):
+        widget = self.ui.tab_widget.widget(index)
+        self.dialog.setMinimumSize(widget.preferableSize())
+        self.dialog.resize(widget.preferableSize())

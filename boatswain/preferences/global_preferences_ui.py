@@ -24,6 +24,7 @@ from boatswain.common.utils.utils import tr
 from boatswain.preferences.docker.docker_preferences import DockerPreferences
 from boatswain.preferences.general.general_preferences import GeneralPreferences
 from boatswain.preferences.startup.startup_preferences import StartupPreferences
+from boatswain.preferences.workspace.workspace_preferences import WorkspacePreferences
 
 
 class GlobalPreferencesUi(QObject):
@@ -55,7 +56,7 @@ class GlobalPreferencesUi(QObject):
         self.docker = DockerPreferences(self.central_widget)
         self.tab_widget.addTab(self.docker.ui, tr("Docker"))
 
-        self.workspace = GeneralPreferences(self.central_widget)
+        self.workspace = WorkspacePreferences(self.central_widget)
         self.tab_widget.addTab(self.workspace.ui, tr("Workspaces"))
 
         self.startup = StartupPreferences(self.central_widget)

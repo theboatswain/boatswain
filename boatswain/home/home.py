@@ -30,7 +30,8 @@ from boatswain.common.services import data_transporter_service, global_preferenc
     group_service, containers_service, docker_service, boatswain_daemon
 from boatswain.common.services.system_service import rt
 from boatswain.common.utils import message_utils, utils
-from boatswain.common.utils.constants import CONTAINER_CHANNEL, ADD_APP_CHANNEL, UPDATES_CHANNEL, APP_EXIT_CHANNEL
+from boatswain.common.utils.constants import CONTAINER_CHANNEL, ADD_APP_CHANNEL, UPDATES_CHANNEL, APP_EXIT_CHANNEL, \
+    WORKSPACE_CHANGED_CHANNEL, DELETE_GROUP_CHANNEL, PERFORMING_SEARCH_CHANNEL
 from boatswain.common.utils.utils import tr
 from boatswain.connection.connection_management import ConnectionManagement
 from boatswain.home.application.application_widget import AppWidget
@@ -53,6 +54,9 @@ class Home:
         self.ui.add_app.clicked.connect(self.addAppClicked)
         data_transporter_service.listen(CONTAINER_CHANNEL, self.addAppFromContainer)
         data_transporter_service.listen(ADD_APP_CHANNEL, self.addAppClicked)
+        data_transporter_service.listen(WORKSPACE_CHANGED_CHANNEL, self.loadWorkspaces)
+        data_transporter_service.listen(DELETE_GROUP_CHANNEL, self.deleteGroup)
+        data_transporter_service.listen(PERFORMING_SEARCH_CHANNEL, self.search)
         self.apps: Dict[int, AppWidgetUi] = {}
         self.groups: Dict[int, GroupWidgetUi] = {}
         self.ui.workspaces.on_option_selected.connect(self.onWorkspaceChanged)
@@ -212,21 +216,13 @@ class Home:
         widget.parentWidget().layout().removeWidget(widget)
         group_widget.app_list_layout.addWidget(widget)
 
-    def deleteGroup(self, group: Group):
-        if group.is_default:
-            msg = QMessageBox()
-            msg.setIcon(QMessageBox.Critical)
-
-            msg.setText(tr("Unable to delete group"))
-            msg.setInformativeText(tr("You can't delete default group!!!"))
-            msg.setStandardButtons(QMessageBox.Ok)
-            msg.exec_()
-            return
-        message = tr("Are you sure you want to delete this folder? All apps inside will be deleted also!")
-        button_reply = QMessageBox.question(self.ui, tr('Delete folder'), message,
-                                            QMessageBox.Ok | QMessageBox.Cancel, QMessageBox.Cancel)
-        if button_reply != QMessageBox.Ok:
-            return
+    def deleteGroup(self, group: Group, approved=False):
+        if not approved:
+            message = tr("Are you sure you want to delete this group? All apps inside will be deleted also!")
+            button_reply = QMessageBox.question(self.ui, tr('Delete group'), message,
+                                                QMessageBox.Ok | QMessageBox.Cancel, QMessageBox.Cancel)
+            if button_reply != QMessageBox.Ok:
+                return
         for i in reversed(range(self.groups[group.id].app_list_layout.count())):
             container = self.groups[group.id].app_list_layout.itemAt(i).widget().container
             containers_service.deleteContainer(container)
@@ -249,11 +245,14 @@ class Home:
 
     def onWorkspaceChanged(self, workspace_id: str):
         workspace_service.activeWorkspace(int(workspace_id))
-        self.search()
+        # Incase we create a new workspace, the new one will not be selected by the time we calling this function
+        # So, we pass it as parameter to the search function
+        self.search(workspace_id=workspace_id)
 
-    def search(self, data=None):
-        workspace = self.ui.workspaces.getCurrentOption()
-        workspace = workspace_service.getWorkspaceById(int(workspace))
+    def search(self, data=None, workspace_id=None):
+        if workspace_id is None:
+            workspace_id = self.ui.workspaces.getCurrentOption()
+        workspace = workspace_service.getWorkspaceById(workspace_id)
         keyword = self.ui.search_app.text()
 
         for group in self.groups:

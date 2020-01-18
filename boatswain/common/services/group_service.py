@@ -35,6 +35,10 @@ def getDefaultGroupFromWorkspace(workspace):
         return createGroupFromWorkspace(tr('Default'), workspace, is_default=True)
 
 
+def getGroupsFromWorkspace(workspace: Workspace):
+    return Group.select().where(Group.workspace == workspace)
+
+
 def getGroups():
     return Group.select().order_by(Group.order.asc())
 

@@ -18,3 +18,7 @@
 
 class WorkspaceAlreadyExistsException(Exception):
     pass
+
+
+class WorkspaceIsNotEmptiedException(Exception):
+    pass

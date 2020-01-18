@@ -29,6 +29,7 @@ from peewee import DoesNotExist
 
 from boatswain.common.exceptions.exceptions import ContainerConfigurationChangedException
 from boatswain.common.models.container import Container
+from boatswain.common.models.group import Group
 from boatswain.common.models.workspace import Workspace
 from boatswain.common.search.dockerhub_searcher import DockerHubSearcher
 from boatswain.common.search.search_images import SearchImages
@@ -66,6 +67,10 @@ def getContainer(container_id: int) -> Container:
 
 def getAllContainer() -> List[Container]:
     return Container.select().order_by(Container.order.asc())
+
+
+def getContainersFromGroup(group: Group):
+    return Container.select().where(Container.group == group)
 
 
 def getNextOrder(container: Container):
