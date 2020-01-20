@@ -24,8 +24,21 @@ from boatswain.common.services import system_service
 from boatswain.common.utils.constants import HOME_WIDTH, HOME_HEIGHT, PROTOCOL_KEY
 
 
+in_memory_variables = {}
+
+
 def getPreference(key) -> Preference:
     return Preference.get(Preference.name == key)
+
+
+def getInMemoryPreferences(key):
+    if key in in_memory_variables:
+        return in_memory_variables[key]
+    return None
+
+
+def setInMemoryPreferences(key, value):
+    in_memory_variables[key] = value
 
 
 def getPreferenceValue(key, default=None) -> str:

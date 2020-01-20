@@ -1,18 +1,21 @@
 /*
     Name: Dark
     Author: glmanhtu
+    @selection_color = #E8873A
+    @background_color = #323232
+    @font_color = white
 */
 
 QWidget.home {
-    background-color: #3b3c3d;
+    background-color: @background_color;
 }
 
 QWidget.home * {
-    color: white;
+    color: @font_color;
 }
 
 QWidget.app-widget * {
-    color: white;
+    color: @font_color;
 }
 
 QFrame[frameShape="4"] {
@@ -35,6 +38,9 @@ QMenu::item {
 }
 
 QMenu::item::selected {
-    background-color: rgb(232, 135, 58);
+    background-color: @selection_color;
 }
 
+QLineEdit {
+    color: @font_color;
+}

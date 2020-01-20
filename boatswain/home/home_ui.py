@@ -19,7 +19,7 @@ import os
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont, QPixmap, QPalette, QBrush, QColor
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QSizePolicy, QLineEdit, QPushButton, \
-    QMainWindow, QFrame, QScrollArea, QMenuBar, QMenu, QStatusBar
+    QMainWindow, QFrame, QScrollArea, QMenuBar, QMenu, QStatusBar, QHBoxLayout
 
 from boatswain.common.services import data_transporter_service
 from boatswain.common.services.system_service import rt, applyFontRatio
@@ -43,38 +43,40 @@ class HomeUi(QMainWindow):
         widget = QWidget(central_widget)
         widget.setSizePolicy(BQSizePolicy(h_stretch=1))
         widget.setAutoFillBackground(False)
-        top_layout = QGridLayout(widget)
+        top_layout = QHBoxLayout(widget)
         top_layout.setContentsMargins(rt(11), 0, rt(4), rt(6))
         top_layout.setSpacing(rt(6))
 
         self.add_app = QPushButton(widget)
-        padding = "%dpx %dpx" % (rt(1), rt(12))
-        self.add_app.setStyleSheet("border: 1px solid #999999; padding: %s; border-radius: 2px" % padding)
+        self.add_app.setFlat(True)
+        self.add_app.setProperty('class', 'border-button')
+        self.add_app.setStyleSheet("padding: %dpx %dpx" % (rt(1), rt(12)))
         self.add_app.setSizePolicy(BQSizePolicy(width=QSizePolicy.Fixed, height=QSizePolicy.Fixed))
         self.add_app.setFocusPolicy(Qt.ClickFocus)
-        top_layout.addWidget(self.add_app, 0, 0, 1, 1)
+        top_layout.addWidget(self.add_app)
 
         self.workspaces = SelectUi(widget)
         self.workspaces.setSizePolicy(BQSizePolicy(h_stretch=1, width=QSizePolicy.Fixed, height=QSizePolicy.Fixed))
         self.workspaces.setFocusPolicy(Qt.ClickFocus)
-        top_layout.addWidget(self.workspaces, 0, 2, 1, 1)
+        top_layout.addWidget(self.workspaces)
         self.search_app = QLineEdit(widget)
         self.search_app.setAttribute(Qt.WA_MacShowFocusRect, 0)
         self.search_app.setSizePolicy(BQSizePolicy(h_stretch=2, height=QSizePolicy.Fixed))
         self.search_app.setFocusPolicy(Qt.ClickFocus)
-        self.search_app.setStyleSheet("padding: 1 1 1 5; background-color: transparent; border: 1px solid #999999;")
-        top_layout.addWidget(self.search_app, 0, 3, 1, 1)
+        self.search_app.setStyleSheet("padding: 0 0 0 5; background-color: transparent; border: 1px solid #999999;")
+        top_layout.addWidget(self.search_app)
         self.custom_menu = QPushButton(widget)
         self.custom_menu.setText("⋮")
+        self.custom_menu.setFlat(True)
         self.custom_menu.setStyleSheet("border: none; padding: 1px 2px;")
         font = QFont()
         font.setPointSize(applyFontRatio(16))
         self.custom_menu.setFont(font)
-        top_layout.addWidget(self.custom_menu, 0, 4, 1, 1)
+        top_layout.addWidget(self.custom_menu)
 
         hidden_widget = QWidget(widget)
         hidden_widget.setSizePolicy(BQSizePolicy())
-        top_layout.addWidget(hidden_widget, 0, 1, 1, 1)
+        top_layout.addWidget(hidden_widget)
 
         main_layout.addWidget(widget)
 

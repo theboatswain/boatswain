@@ -1,18 +1,21 @@
 /*
     Name: Light
     Author: glmanhtu
+    @selection_color = red
+    @background_color = #f6f6f6
+    @font_color = black
 */
 
 QWidget.home {
-    background-color: #f6f6f6;
+    background-color: @background_color;
 }
 
 QWidget.home * {
-    color: black;
+    color: @font_color;
 }
 
 QWidget.app-widget * {
-    color: black;
+    color: @font_color;
 }
 
 QFrame[frameShape="4"] {
@@ -27,14 +30,18 @@ QWidget.border-button {
 }
 
 QMenu {
-    background-color: #f6f6f6;
+    background-color: @background_color;
     border-radius: 5px;
 }
 
 QMenu::item {
-    color: black;
+    color: @font_color;
 }
 
 QMenu::item::selected {
-    background-color: red;
+    background-color: @selection_color;
+}
+
+QLineEdit {
+    color: @font_color;
 }

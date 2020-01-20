@@ -14,24 +14,29 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
-
+from PyQt5 import QtGui
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtGui import QMouseEvent
+from PyQt5.QtGui import QMouseEvent, QPainter, QPen, QBrush, QColor, QIcon
 from PyQt5.QtWidgets import QWidget, QPushButton, QMenu, QAction
 
+from boatswain.common.services import global_preference_service
 from boatswain.common.services.system_service import rt
 
 
 class SelectUi(QPushButton):
     current_option: str
     on_option_selected = pyqtSignal(str)
+    currentTextChanged = pyqtSignal(str)
+    currentIndexChanged = pyqtSignal(int)
 
     def __init__(self, parent: QWidget):
         super().__init__(parent)
         self.options = {}
+        self.index = []
         self.setFlat(True)
         padding = "%dpx %dpx %dpx %dpx" % (rt(1), rt(7), rt(1), rt(10))
-        self.setStyleSheet("border: 1px solid #999999; padding: %s; border-radius: 2px" % padding)
+        self.setProperty('class', 'border-button')
+        self.setStyleSheet("padding: %s; Text-align:left" % padding)
         self.mouseReleaseEvent = self.onSelectClicked
 
     def addItem(self, key: str, small_label: str = None, label: str = None, separate_before: bool = False,
@@ -42,15 +47,24 @@ class SelectUi(QPushButton):
             label = small_label
         self.options[key] = {'label': label, 'separate_after': separate_after, 'key': key, 'small_label': small_label,
                              'separate_before': separate_before, 'handler': handler}
+        self.index.append(self.options[key])
+        self.options[key]['index'] = len(self.index) - 1
         if len(self.options) == 1:
             self.setCurrentOption(key)
 
     def setCurrentOption(self, option):
         self.current_option = option
-        self.setText(self.options[option]['small_label'] + ' ▿')
+        self.setText(self.options[option]['small_label'] + '    ')
+
+    def setCurrentIndex(self, index):
+        option = self.index[index]
+        self.setCurrentOption(option['key'])
+
+    def setCurrentText(self, text):
+        self.setCurrentOption(text)
 
     def onSelectClicked(self, event: QMouseEvent):
-        menu = QMenu(self.parentWidget())
+        menu = QMenu(None)
         for key in self.options:
             if self.options[key]['separate_before']:
                 menu.addSeparator()
@@ -72,6 +86,8 @@ class SelectUi(QPushButton):
         else:
             self.setCurrentOption(option['key'])
             self.on_option_selected.emit(str(option['key']))
+            self.currentTextChanged.emit(str(option['key']))
+            self.currentIndexChanged.emit(option['index'])
 
     def getCurrentOption(self):
         return self.current_option
@@ -82,3 +98,15 @@ class SelectUi(QPushButton):
             to_be_deleted.append(opt)
         for opt in to_be_deleted:
             self.options.pop(opt, None)
+
+    def paintEvent(self, event: QtGui.QPaintEvent):
+        QPushButton.paintEvent(self, event)
+
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.HighQualityAntialiasing)
+        color = global_preference_service.getInMemoryPreferences("@selection_color")
+        painter.setPen(QPen(QBrush(QColor(color)), 1))
+        painter.setBrush(QBrush(QColor(color)))
+        painter.drawLine(self.width() - rt(17), rt(8), self.width() - rt(12), rt(13))
+        painter.drawLine(self.width() - rt(12), rt(13), self.width() - rt(7), rt(8))

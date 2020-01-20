@@ -68,6 +68,10 @@ def run():
     system_service.reassignPemLocation()
     logger.info("App data path: %s", APP_DATA_DIR)
 
+    data_transporter_service.listen(THEME_UPDATING_CHANNEL, app.setStyleSheet)
+    theme_path = style_service.getCurrentActivatedThemePath()
+    style_service.activateTheme(theme_path)
+
     # Load home window
     window = Home()
 
@@ -81,9 +85,6 @@ def run():
     update_dialog.installed.connect(onApplicationInstalled)
     update_dialog.checkForUpdate(silent=True)
     data_transporter_service.listen(UPDATES_CHANNEL, update_dialog.checkForUpdate)
-    style = style_service.getCurrentActivatedStyle()
-    app.setStyleSheet(style)
-    data_transporter_service.listen(THEME_UPDATING_CHANNEL, app.setStyleSheet)
 
     if docker_service.isDockerRunning():
         window.show()

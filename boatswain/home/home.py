@@ -58,8 +58,8 @@ class Home:
         data_transporter_service.listen(WORKSPACE_CHANGED_CHANNEL, self.loadWorkspaces)
         data_transporter_service.listen(DELETE_GROUP_CHANNEL, self.deleteGroup)
         data_transporter_service.listen(PERFORMING_SEARCH_CHANNEL, self.search)
-        data_transporter_service.listen(WINDOW_COLOR_CHANNEL, self.ui.setBackgroundColor)
-        data_transporter_service.listen(WINDOW_BG_CHANNEL, self.ui.setBackgroundImage)
+        # data_transporter_service.listen(WINDOW_COLOR_CHANNEL, self.ui.setBackgroundColor)
+        # data_transporter_service.listen(WINDOW_BG_CHANNEL, self.ui.setBackgroundImage)
         self.apps: Dict[int, AppWidgetUi] = {}
         self.groups: Dict[int, GroupWidgetUi] = {}
         self.ui.workspaces.on_option_selected.connect(self.onWorkspaceChanged)
@@ -67,13 +67,13 @@ class Home:
         self.ui.search_app.textChanged.connect(self.search)
         self.ui.custom_menu.clicked.connect(self.onMenuClicked)
 
-        bg_img = global_preference_service.getPreferenceValue(DEFAULT_WINDOW_IMG)
-        if bg_img:
-            self.ui.setBackgroundImage(bg_img)
-        else:
-            color_str = global_preference_service.getPreferenceValue(DEFAULT_WINDOW_COLOR)
-            if color_str:
-                self.ui.setBackgroundColor(QColor(color_str))
+        # bg_img = global_preference_service.getPreferenceValue(DEFAULT_WINDOW_IMG)
+        # if bg_img:
+        #     self.ui.setBackgroundImage(bg_img)
+        # else:
+        #     color_str = global_preference_service.getPreferenceValue(DEFAULT_WINDOW_COLOR)
+        #     if color_str:
+        #         self.ui.setBackgroundColor(QColor(color_str))
 
         # Create daemon to listen to docker events
         self.daemon = boatswain_daemon.BoatswainDaemon(self.ui)

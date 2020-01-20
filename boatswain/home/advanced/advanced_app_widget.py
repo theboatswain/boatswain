@@ -25,6 +25,7 @@ from boatswain.common.services import containers_service, shortcut_service, tags
 from boatswain.common.services.system_service import rt
 from boatswain.common.ui.custom_ui import BQSizePolicy
 from boatswain.common.ui.path_view import PathViewWidget
+from boatswain.common.ui.select_ui import SelectUi
 from boatswain.common.utils.constants import SHORTCUT_CONF_CHANGED_CHANNEL
 from boatswain.common.utils.utils import tr
 from boatswain.config.app_config import AppConfig
@@ -33,7 +34,7 @@ from boatswain.home.advanced.advanced_app_widget_ui import AdvancedAppWidgetUi
 
 class AdvancedAppWidget:
     animation: QPropertyAnimation
-    tags: QComboBox
+    tags: SelectUi
 
     def __init__(self, parent, container: Container) -> None:
         self.container = container
@@ -128,7 +129,7 @@ class AdvancedAppWidget:
     def drawTagShortcut(self, row):
         label = QLabel(self.ui.widget)
         self.ui.grid_layout.addWidget(label, row, 0, 1, 1)
-        self.tags = QComboBox(self.ui.widget)
+        self.tags = SelectUi(self.ui.widget)
         self.tags.setSizePolicy(BQSizePolicy(h_stretch=4, height=QSizePolicy.Fixed, width=QSizePolicy.Fixed))
         self.ui.grid_layout.addWidget(self.tags, row, 1, 1, 2)
         hidden_widget = QWidget(self.ui.widget)

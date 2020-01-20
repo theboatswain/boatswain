@@ -42,7 +42,7 @@ class AdvancedAppWidgetUi(QWidget):
         self.grid_layout = QGridLayout(self.widget)
         self.grid_layout.setAlignment(Qt.AlignTop)
         self.grid_layout.setContentsMargins(0, 0, 0, 0)
-        self.grid_layout.setSpacing(rt(6))
+        self.grid_layout.setSpacing(rt(8))
         self.layout.addWidget(self.widget)
         self.widget_3 = QWidget(self)
         self.horizontal_layout_2 = QHBoxLayout(self.widget_3)
