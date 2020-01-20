@@ -167,7 +167,7 @@ class GroupWidget(QObject):
         self.cleanDraggingEffects()
 
     def contextMenuEvent(self, event):
-        menu = QMenu(self.ui)
+        menu = QMenu(None)
         add = menu.addAction(tr('Add app into this folder...'))
         add.triggered.connect(lambda: data_transporter_service.fire(ADD_APP_CHANNEL, self.group))
         menu.addSeparator()

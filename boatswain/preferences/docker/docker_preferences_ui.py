@@ -14,14 +14,20 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
-
+from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import QVBoxLayout
 
+from boatswain.common.services import system_service
 from boatswain.common.services.system_service import rt
 from boatswain.common.ui.custom_ui import AutoResizeWidget
 
 
 class DockerPreferencesUi(AutoResizeWidget):
+
+    def preferableSize(self) -> QSize:
+        height = system_service.getRefHeight() / 2
+        width = height * 1.8
+        return QSize(width, height)
 
     def __init__(self, parent, handler) -> None:
         super().__init__(parent)

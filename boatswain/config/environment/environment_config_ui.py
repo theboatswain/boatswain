@@ -19,6 +19,7 @@ from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTableView
 
 from boatswain.common.models.container import Container
+from boatswain.common.services import system_service
 from boatswain.common.services.system_service import rt
 from boatswain.common.ui.custom_ui import BQSizePolicy, AutoResizeWidget
 
@@ -62,5 +63,6 @@ class EnvironmentConfigUi(AutoResizeWidget):
         self.vertical_layout.addWidget(self.sys_env_table)
 
     def preferableSize(self) -> QSize:
-        size = super().preferableSize()
-        return QSize(size.width(), size.height() * 1.2)
+        height = system_service.getRefHeight() / 2
+        width = height * 1.6
+        return QSize(width, height * 1.2)

@@ -1,0 +1,40 @@
+/*
+    Name: Dark
+    Author: glmanhtu
+*/
+
+QWidget.home {
+    background-color: #3b3c3d;
+}
+
+QWidget.home * {
+    color: white;
+}
+
+QWidget.app-widget * {
+    color: white;
+}
+
+QFrame[frameShape="4"] {
+    color: #dedfdf;
+    border-width: 1px;
+}
+
+QWidget.border-button {
+    border: 1px solid #999999;
+    border-radius: 2px;
+}
+
+QMenu {
+    background-color: #3b3c3d;
+    border-radius: 10px;
+}
+
+QMenu::item {
+    color: white;
+}
+
+QMenu::item::selected {
+    background-color: rgb(232, 135, 58);
+}
+

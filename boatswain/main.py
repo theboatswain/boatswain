@@ -27,9 +27,10 @@ from boatswain_updater.updater import Updater
 from boatswain.common.models.base import db
 from boatswain.common.models.tables import db_tables
 from boatswain.common.services import data_transporter_service, system_service, \
-    containers_service, docker_service
+    containers_service, docker_service, style_service
 from boatswain.common.utils import utils
-from boatswain.common.utils.constants import APP_DATA_DIR, APP_EXIT_CHANNEL, UPDATES_CHANNEL, APP_AVATAR_DIR
+from boatswain.common.utils.constants import APP_DATA_DIR, APP_EXIT_CHANNEL, UPDATES_CHANNEL, APP_AVATAR_DIR, \
+    THEME_UPDATING_CHANNEL
 from boatswain.common.utils.logging import logger
 from boatswain.home.home import Home
 from boatswain.resources_utils import getExternalResource
@@ -80,6 +81,9 @@ def run():
     update_dialog.installed.connect(onApplicationInstalled)
     update_dialog.checkForUpdate(silent=True)
     data_transporter_service.listen(UPDATES_CHANNEL, update_dialog.checkForUpdate)
+    style = style_service.getCurrentActivatedStyle()
+    app.setStyleSheet(style)
+    data_transporter_service.listen(THEME_UPDATING_CHANNEL, app.setStyleSheet)
 
     if docker_service.isDockerRunning():
         window.show()

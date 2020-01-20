@@ -15,17 +15,23 @@
 #
 #
 
-from PyQt5.QtCore import QCoreApplication, Qt
+from PyQt5.QtCore import QCoreApplication, Qt, QSize
 from PyQt5.QtWidgets import QLabel, QGridLayout, QPushButton, QComboBox, QLineEdit, QCheckBox, QWidget, QVBoxLayout, \
     QHBoxLayout, QFrame, QSlider
 
 from boatswain.common.models.container import Container
+from boatswain.common.services import system_service
 from boatswain.common.services.system_service import rt
 from boatswain.common.ui.custom_ui import BQSizePolicy, AutoResizeWidget
 from boatswain.common.utils.app_avatar import AppAvatar
 
 
 class GeneralAppConfigUi(AutoResizeWidget):
+
+    def preferableSize(self) -> QSize:
+        height = system_service.getRefHeight() / 2
+        width = height * 1.6
+        return QSize(width, height)
 
     def __init__(self, parent, container: Container, handler) -> None:
         super().__init__(parent)
@@ -41,7 +47,7 @@ class GeneralAppConfigUi(AutoResizeWidget):
         self.horizontal_layout_2.setSpacing(rt(6))
 
         self._translate = QCoreApplication.translate
-        self.pic = AppAvatar(container, parent=self, radius=rt(20))
+        self.pic = AppAvatar(container.avatar, container.image_name, parent=self, radius=rt(20))
 
         self.horizontal_layout_2.addWidget(self.pic)
         self.container_name = QLineEdit(self.widget)
@@ -129,3 +135,4 @@ class GeneralAppConfigUi(AutoResizeWidget):
         self.vertical_layout_2.addWidget(self.widget_2)
 
         self.container_id.setTextInteractionFlags(Qt.TextSelectableByMouse)
+

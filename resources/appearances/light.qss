@@ -1,0 +1,40 @@
+/*
+    Name: Light
+    Author: glmanhtu
+*/
+
+QWidget.home {
+    background-color: #f6f6f6;
+}
+
+QWidget.home * {
+    color: black;
+}
+
+QWidget.app-widget * {
+    color: black;
+}
+
+QFrame[frameShape="4"] {
+    color: #888888;
+    max-height: 1px;
+    min-height: 1px;
+}
+
+QWidget.border-button {
+    border: 1px solid #999999;
+    border-radius: 2px;
+}
+
+QMenu {
+    background-color: #f6f6f6;
+    border-radius: 5px;
+}
+
+QMenu::item {
+    color: black;
+}
+
+QMenu::item::selected {
+    background-color: red;
+}

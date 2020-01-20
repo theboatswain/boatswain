@@ -17,6 +17,7 @@
 from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import QVBoxLayout, QWidget, QHBoxLayout, QLabel, QPushButton, QTableView
 
+from boatswain.common.services import system_service
 from boatswain.common.services.system_service import rt
 from boatswain.common.ui.custom_ui import AutoResizeWidget, BQSizePolicy
 
@@ -24,8 +25,9 @@ from boatswain.common.ui.custom_ui import AutoResizeWidget, BQSizePolicy
 class WorkspacePreferencesUi(AutoResizeWidget):
 
     def preferableSize(self) -> QSize:
-        size = super().preferableSize()
-        return QSize(size.width(), size.height() * 0.8)
+        height = system_service.getRefHeight() / 2
+        width = height * 1.8
+        return QSize(width, height * 0.8)
 
     def __init__(self, parent, handler) -> None:
         super().__init__(parent)

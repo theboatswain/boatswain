@@ -14,7 +14,7 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
-
+import json
 import os
 
 from boatswain_updater.models.app_to_update import AppToUpdate
@@ -28,6 +28,18 @@ current_dir = os.path.dirname(__file__)
 def getResource(file):
     path = os.path.join(current_dir, file)
     return path
+
+
+def getExternalResourceAsJson(file):
+    file_path = getExternalResource(file)
+    with open(file_path) as json_file:
+        return json.load(json_file)
+
+
+def getExternalResourceAsString(file):
+    file_path = getExternalResource(file)
+    with open(file_path) as f:
+        return f.read()
 
 
 def getExternalResource(file):

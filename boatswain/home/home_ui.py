@@ -17,7 +17,7 @@
 import os
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont, QPixmap, QPalette, QBrush
+from PyQt5.QtGui import QFont, QPixmap, QPalette, QBrush, QColor
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QSizePolicy, QLineEdit, QPushButton, \
     QMainWindow, QFrame, QScrollArea, QMenuBar, QMenu, QStatusBar
 
@@ -62,7 +62,7 @@ class HomeUi(QMainWindow):
         self.search_app.setAttribute(Qt.WA_MacShowFocusRect, 0)
         self.search_app.setSizePolicy(BQSizePolicy(h_stretch=2, height=QSizePolicy.Fixed))
         self.search_app.setFocusPolicy(Qt.ClickFocus)
-        self.search_app.setStyleSheet("padding: 1 1 1 5;")
+        self.search_app.setStyleSheet("padding: 1 1 1 5; background-color: transparent; border: 1px solid #999999;")
         top_layout.addWidget(self.search_app, 0, 3, 1, 1)
         self.custom_menu = QPushButton(widget)
         self.custom_menu.setText("⋮")
@@ -79,11 +79,13 @@ class HomeUi(QMainWindow):
         main_layout.addWidget(widget)
 
         line = QFrame(self)
+        line.setLineWidth(0)
         line.setFrameShape(QFrame.HLine)
-        line.setFrameShadow(QFrame.Sunken)
+        line.setFrameShadow(QFrame.Plain)
         main_layout.addWidget(line)
 
         self.scroll_area = QScrollArea(central_widget)
+        self.scroll_area.setStyleSheet('background-color: transparent')
         self.scroll_area.setSizePolicy(BQSizePolicy(v_stretch=2))
         self.scroll_area.setFrameShape(QFrame.NoFrame)
         self.scroll_area.setFrameShadow(QFrame.Plain)
@@ -107,6 +109,7 @@ class HomeUi(QMainWindow):
         self.app_list_layout.setContentsMargins(0, rt(1), 0, 0)
         self.app_list.setLayout(self.app_list_layout)
         self.scroll_area.setWidget(self.app_list)
+        self.setProperty('class', 'home')
 
     def retranslateUi(self, boatswain):
         boatswain.setWindowTitle("Boatswain")
@@ -121,6 +124,12 @@ class HomeUi(QMainWindow):
             palette.setBrush(QPalette.Background, QBrush(pixmap))
             self.setPalette(palette)
             self.update()
+
+    def setBackgroundColor(self, color: QColor):
+        palette = self.palette()
+        palette.setBrush(QPalette.Background, QBrush(color))
+        self.setPalette(palette)
+        self.update()
 
     def closeEvent(self, event):
         data_transporter_service.fire(APP_EXIT_CHANNEL)

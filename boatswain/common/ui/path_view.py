@@ -90,6 +90,10 @@ class PathViewWidget(QWidget):
         self.scroll_area.setWidgetResizable(True)
         self.scroll_area.setContentsMargins(0, 0, 0, 0)
 
+        self.scroll_area.setStyleSheet('''QScrollArea { background: transparent; }
+        QScrollArea > QWidget > QWidget { background: transparent; }
+        QScrollArea > QWidget > QScrollBar { background: palette(base); }''')
+
         self.folder_list = QWidget(self)
         self.folder_list.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
         self.horizontal_layout = QtWidgets.QHBoxLayout(self.folder_list)

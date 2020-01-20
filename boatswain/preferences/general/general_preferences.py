@@ -14,6 +14,7 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
+
 from boatswain.common.services import global_preference_service
 from boatswain.common.utils import utils
 from boatswain.common.utils.constants import DEFAULT_TERMINAL
@@ -34,7 +35,7 @@ class GeneralPreferences:
 
         self.ui.terminal.currentTextChanged.connect(self.onTerminalChanged)
         self.ui.language.addItem(tr("English"))
-        # Todo: Terminals selection UI
+        # Todo: Terminal open new tab if possible
         # Todo: Start with OS
         # Todo: Automatic check for updates
         # Todo: Automatic fetch preferences shortcut

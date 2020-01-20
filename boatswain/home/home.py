@@ -17,7 +17,7 @@
 from typing import Dict
 
 from PyQt5.QtCore import QPoint
-from PyQt5.QtGui import QResizeEvent
+from PyQt5.QtGui import QResizeEvent, QColor
 from PyQt5.QtWidgets import QMainWindow, QInputDialog, QMenu, QAction, QMessageBox
 from boatswain_updater.utils import sys_utils
 from playhouse.shortcuts import update_model_from_dict, model_to_dict
@@ -27,11 +27,12 @@ from boatswain.common.exceptions.workspace import WorkspaceAlreadyExistsExceptio
 from boatswain.common.models.container import Container
 from boatswain.common.models.group import Group
 from boatswain.common.services import data_transporter_service, global_preference_service, workspace_service, \
-    group_service, containers_service, docker_service, boatswain_daemon
+    group_service, containers_service, docker_service, boatswain_daemon, style_service
 from boatswain.common.services.system_service import rt
 from boatswain.common.utils import message_utils, utils
 from boatswain.common.utils.constants import CONTAINER_CHANNEL, ADD_APP_CHANNEL, UPDATES_CHANNEL, APP_EXIT_CHANNEL, \
-    WORKSPACE_CHANGED_CHANNEL, DELETE_GROUP_CHANNEL, PERFORMING_SEARCH_CHANNEL
+    WORKSPACE_CHANGED_CHANNEL, DELETE_GROUP_CHANNEL, PERFORMING_SEARCH_CHANNEL, WINDOW_COLOR_CHANNEL, \
+    DEFAULT_WINDOW_COLOR, WINDOW_BG_CHANNEL, DEFAULT_WINDOW_IMG
 from boatswain.common.utils.utils import tr
 from boatswain.connection.connection_management import ConnectionManagement
 from boatswain.home.application.application_widget import AppWidget
@@ -57,12 +58,22 @@ class Home:
         data_transporter_service.listen(WORKSPACE_CHANGED_CHANNEL, self.loadWorkspaces)
         data_transporter_service.listen(DELETE_GROUP_CHANNEL, self.deleteGroup)
         data_transporter_service.listen(PERFORMING_SEARCH_CHANNEL, self.search)
+        data_transporter_service.listen(WINDOW_COLOR_CHANNEL, self.ui.setBackgroundColor)
+        data_transporter_service.listen(WINDOW_BG_CHANNEL, self.ui.setBackgroundImage)
         self.apps: Dict[int, AppWidgetUi] = {}
         self.groups: Dict[int, GroupWidgetUi] = {}
         self.ui.workspaces.on_option_selected.connect(self.onWorkspaceChanged)
         self.ui.resizeEvent = self.resizeEvent
         self.ui.search_app.textChanged.connect(self.search)
         self.ui.custom_menu.clicked.connect(self.onMenuClicked)
+
+        bg_img = global_preference_service.getPreferenceValue(DEFAULT_WINDOW_IMG)
+        if bg_img:
+            self.ui.setBackgroundImage(bg_img)
+        else:
+            color_str = global_preference_service.getPreferenceValue(DEFAULT_WINDOW_COLOR)
+            if color_str:
+                self.ui.setBackgroundColor(QColor(color_str))
 
         # Create daemon to listen to docker events
         self.daemon = boatswain_daemon.BoatswainDaemon(self.ui)
@@ -106,7 +117,7 @@ class Home:
                                    handler=self.newWorkspaceClicked)
 
     def newWorkspaceClicked(self):
-        dlg = QInputDialog(self.ui)
+        dlg = QInputDialog(None)
         dlg.setInputMode(QInputDialog.TextInput)
         dlg.setLabelText(tr("Workspace name:"))
         dlg.resize(rt(300), rt(100))

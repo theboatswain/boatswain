@@ -29,7 +29,7 @@ class SearchAppDialogUi(object):
     def __init__(self, dialog) -> None:
         super().__init__()
         height = system_service.getRefHeight() / 1.8
-        width = height * 2
+        width = height * 1.8
         dialog.resize(width, height)
         dialog.setSizePolicy(BQSizePolicy(h_stretch=1))
         dialog.setMinimumSize(QSize(width, height))

@@ -27,14 +27,13 @@ from boatswain.common.utils import text_utils
 class AppAvatar(QWidget):
     """ Class to customise app's avatar """
 
-    def __init__(self, container: Container, radius=25, parent=None):
+    def __init__(self, logo_path, image_name, radius=25, parent=None, font_size=20):
         super().__init__(parent)
         self.setSizePolicy(QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed))
         self.setFixedSize(radius * 2, radius * 2)
         self.avatar_layout = QVBoxLayout(self)
         self.avatar_layout.setContentsMargins(0, 0, 0, 0)
         self.avatar_layout.setSpacing(0)
-        logo_path = container.avatar
         if logo_path:
             self.icon = QLabel(self)
             pixmap = QIcon(logo_path).pixmap(QSize(rt(32), rt(32)))
@@ -48,12 +47,12 @@ class AppAvatar(QWidget):
             self.name = QLabel(self)
             self.name.setAlignment(Qt.AlignCenter)
             font = QFont()
-            font.setPointSize(applyFontRatio(20))
+            font.setPointSize(font_size)
             self.name.setFont(font)
             self.avatar_layout.addWidget(self.name, Qt.AlignCenter)
             _translate = QCoreApplication.translate
-            img_name = container.image_name
-            name_part = container.image_name.split('/')
+            img_name = image_name
+            name_part = image_name.split('/')
             if len(name_part) > 1:
                 img_name = name_part[1]
             self.name.setText(_translate("widget", text_utils.getSimpleName(img_name)))

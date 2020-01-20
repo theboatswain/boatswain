@@ -63,8 +63,9 @@ class GroupWidgetUi(QWidget):
 
         self.main_layout.addWidget(self.top_widget)
         self.line = QFrame(self)
+        self.line.setLineWidth(0)
         self.line.setFrameShape(QFrame.HLine)
-        self.line.setFrameShadow(QFrame.Sunken)
+        self.line.setFrameShadow(QFrame.Plain)
         self.main_layout.addWidget(self.line)
 
         self.app_list = QWidget(self)
@@ -77,3 +78,5 @@ class GroupWidgetUi(QWidget):
         self.app_list.setLayout(self.app_list_layout)
 
         self.main_layout.addWidget(self.app_list)
+
+        self.setProperty('class', 'group-widget')

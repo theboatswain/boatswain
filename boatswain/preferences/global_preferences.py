@@ -37,6 +37,8 @@ class GlobalPreferences:
         self.dialog.setWindowTitle(tr("Preferences"))
         self.dialog.setAttribute(Qt.WA_DeleteOnClose)
 
+        self.onTabChange(0)
+
     def show(self):
         self.dialog.exec_()
 

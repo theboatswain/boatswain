@@ -42,7 +42,7 @@ class AppWidgetUi(QWidget):
         self.vertical_layout.addWidget(self.widget)
         self.horizontal_layout = QHBoxLayout(self.widget)
         self.horizontal_layout.setContentsMargins(rt(20), rt(1), rt(10), rt(3))
-        self.pic = AppAvatar(container, parent=self.widget, radius=rt(20))
+        self.pic = AppAvatar(container.avatar, container.image_name, parent=self.widget, radius=rt(20))
         self.horizontal_layout.addWidget(self.pic)
         self.name = QLabel(self.widget)
         self.name.setSizePolicy(BQSizePolicy(h_stretch=2))
@@ -50,8 +50,8 @@ class AppWidgetUi(QWidget):
 
         self.status = QPushButton(self.widget)
         self.status.setFlat(True)
-        padding = "%dpx %dpx" % (1, rt(10))
-        self.status.setStyleSheet("border: 1px solid #999999; padding: %s; border-radius: 2px" % padding)
+        self.status.setProperty('class', 'border-button')
+        self.status.setStyleSheet("padding: %dpx %dpx;" % (1, rt(10)))
         self.horizontal_layout.addWidget(self.status)
 
         self.advanced_app = AdvancedAppWidget(self.widget, container)
@@ -60,6 +60,9 @@ class AppWidgetUi(QWidget):
         self.container = container
 
         self.line = QFrame(self)
+        self.line.setLineWidth(0)
         self.line.setFrameShape(QFrame.HLine)
-        self.line.setFrameShadow(QFrame.Sunken)
+        self.line.setFrameShadow(QFrame.Plain)
         self.vertical_layout.addWidget(self.line)
+
+        self.setProperty('class', 'app-widget')

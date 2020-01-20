@@ -1,0 +1,23 @@
+/*
+    Name: Auto
+    Author: glmanhtu
+*/
+
+QWidget.home {
+    background-color: qlineargradient( x1:0 y1:0, x2:1 y2:0, stop:0 #f6f6f6, stop:1 #3b3c3d);
+}
+
+QWidget.app-widget * {
+    color: black;
+}
+
+QFrame[frameShape="4"] {
+    color: white;
+    max-height: 1px;
+    min-height: 1px;
+}
+
+QWidget.border-button {
+    border: 1px solid #999999;
+    border-radius: 2px;
+}

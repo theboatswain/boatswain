@@ -119,7 +119,7 @@ class AppWidget(QObject):
             self.autoSetContainerStatus()
 
     def contextMenuEvent(self, event):
-        menu = QMenu(self.ui)
+        menu = QMenu(None)
         add_action = menu.addAction(tr('Add...'))
         add_action.triggered.connect(lambda: data_transporter_service.fire(ADD_APP_CHANNEL))
         menu.addSeparator()
@@ -133,7 +133,7 @@ class AppWidget(QObject):
         pref_shortcut = menu.addAction(tr('Preferences shortcut'))
         pref_shortcut.triggered.connect(self.onPreferenceShortcutClicked)
         menu.addSeparator()
-        clone_to = QMenu(tr('Clone to...'), self.ui)
+        clone_to = QMenu(tr('Clone to...'), None)
         clone_to.addAction(tr('Unspecified workspace'))
         for workspace in workspace_service.getWorkspaces():
             clone_to.addAction(workspace.name)
