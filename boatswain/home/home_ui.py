@@ -86,6 +86,10 @@ class HomeUi(QMainWindow):
 
         self.scroll_area = QScrollArea(central_widget)
         self.scroll_area.setStyleSheet('background-color: transparent')
+        self.scroll_area.verticalScrollBar().resize(0, 0)
+        self.scroll_area.horizontalScrollBar().resize(0, 0)
+        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.scroll_area.setSizePolicy(BQSizePolicy(v_stretch=2))
         self.scroll_area.setFrameShape(QFrame.NoFrame)
         self.scroll_area.setFrameShadow(QFrame.Plain)
