@@ -4,6 +4,7 @@ python:
 install:
   - pip install flake8
   - pip install pep8-naming
+  - pip install -r requirements.txt
 script:
   - flake8 boatswain
   - python -m unittest discover tests -v
