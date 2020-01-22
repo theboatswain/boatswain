@@ -6,3 +6,4 @@ install:
   - pip install pep8-naming
 script:
   - flake8 boatswain
+  - python -m unittest discover tests -v

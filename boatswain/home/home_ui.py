@@ -14,11 +14,10 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
-import os
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont, QPixmap, QPalette, QBrush, QColor
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QSizePolicy, QLineEdit, QPushButton, \
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSizePolicy, QLineEdit, QPushButton, \
     QMainWindow, QFrame, QScrollArea, QMenuBar, QMenu, QStatusBar, QHBoxLayout
 
 from boatswain.common.services import data_transporter_service
@@ -122,21 +121,6 @@ class HomeUi(QMainWindow):
         boatswain.setWindowTitle("Boatswain")
         self.search_app.setPlaceholderText(tr("Filter apps"))
         self.add_app.setText(tr("Add"))
-
-    def setBackgroundImage(self, image_path):
-        if os.path.isfile(image_path):
-            pixmap = QPixmap(image_path)
-            pixmap = pixmap.scaled(self.size(), Qt.IgnoreAspectRatio)
-            palette = self.palette()
-            palette.setBrush(QPalette.Background, QBrush(pixmap))
-            self.setPalette(palette)
-            self.update()
-
-    def setBackgroundColor(self, color: QColor):
-        palette = self.palette()
-        palette.setBrush(QPalette.Background, QBrush(color))
-        self.setPalette(palette)
-        self.update()
 
     def closeEvent(self, event):
         data_transporter_service.fire(APP_EXIT_CHANNEL)

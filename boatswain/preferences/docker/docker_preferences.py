@@ -24,3 +24,4 @@ class DockerPreferences:
         # Todo: Connection configuration UI
         # Todo: Delete volume with Container UI
         # Todo: Global labels
+        # Todo: Add option for user to pick the location of Docker installation folder. i.e. global preferences

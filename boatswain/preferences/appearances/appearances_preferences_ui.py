@@ -16,8 +16,8 @@
 #
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import QSize, Qt
-from PyQt5.QtGui import QPalette, QFont
-from PyQt5.QtWidgets import QVBoxLayout, QSizePolicy, QScrollArea, QFrame, QWidget, QLayout, QHBoxLayout, QLabel, \
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QVBoxLayout, QSizePolicy, QScrollArea, QFrame, QWidget, QHBoxLayout, QLabel, \
     QPushButton
 
 from boatswain.common.services import system_service

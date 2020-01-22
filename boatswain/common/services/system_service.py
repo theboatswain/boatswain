@@ -20,7 +20,6 @@ import os
 from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtWidgets import QApplication
 from boatswain_updater.utils import sys_utils
-from peewee import DoesNotExist
 
 from boatswain import resources_utils
 from boatswain.common.services import global_preference_service

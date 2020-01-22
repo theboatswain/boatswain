@@ -14,9 +14,9 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtWidgets
 from PyQt5.QtCore import QSize
-from PyQt5.QtWidgets import QVBoxLayout, QSizePolicy
+from PyQt5.QtWidgets import QVBoxLayout
 
 from boatswain.common.services import system_service
 from boatswain.common.services.system_service import rt

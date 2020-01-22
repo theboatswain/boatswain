@@ -135,4 +135,3 @@ class GeneralAppConfigUi(AutoResizeWidget):
         self.vertical_layout_2.addWidget(self.widget_2)
 
         self.container_id.setTextInteractionFlags(Qt.TextSelectableByMouse)
-

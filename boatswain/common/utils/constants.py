@@ -44,8 +44,6 @@ PERFORMING_SEARCH_CHANNEL = 'performing_search_channel'
 CONTAINER_CONF_CHANGED_CHANNEL = 'container_conf_channel'
 SHORTCUT_CONF_CHANGED_CHANNEL = 'shortcut_conf_channel'
 UPDATES_CHANNEL = 'check_for_updates'
-WINDOW_COLOR_CHANNEL = 'window_color_channel'
-WINDOW_BG_CHANNEL = 'window_bg_channel'
 THEME_UPDATING_CHANNEL = 'theme_updating_channel'
 
 # Docker
@@ -59,8 +57,6 @@ HOME_HEIGHT = 'home_height'
 PROTOCOL_KEY = 'docker_protocol'
 DEFAULT_SEARCH_UPDATE_DATE = 'default_search_update_date'
 DEFAULT_TERMINAL = 'default_terminal'
-DEFAULT_WINDOW_COLOR = 'default_window_colour'
-DEFAULT_WINDOW_IMG = 'default_window_img'
 
 DEFAULT_THEME = 'default_theme'
 

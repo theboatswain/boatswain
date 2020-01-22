@@ -20,7 +20,6 @@ QWidget.app-widget * {
 
 QFrame[frameShape="4"] {
     color: #dedfdf;
-    border-width: 1px;
 }
 
 QWidget.border-button {
@@ -39,7 +38,6 @@ QMenu {
 
 QMenu::item {
     color: white;
-    padding: 1px 12px 1px 16px;
     min-width: 120px;
 }
 

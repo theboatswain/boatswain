@@ -19,8 +19,7 @@ from PyQt5.QtCore import Qt, QCoreApplication, QRect, QPoint, QSize
 from PyQt5.QtGui import QFont, QImage, QIcon
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QSizePolicy
 
-from boatswain.common.models.container import Container
-from boatswain.common.services.system_service import applyFontRatio, rt
+from boatswain.common.services.system_service import rt
 from boatswain.common.utils import text_utils
 
 

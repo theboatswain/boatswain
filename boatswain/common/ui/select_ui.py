@@ -18,20 +18,21 @@
 from PyQt5 import QtGui
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QMouseEvent, QPainter, QPen, QBrush, QColor
-from PyQt5.QtWidgets import QWidget, QPushButton, QMenu, QAction, QComboBox
+from PyQt5.QtWidgets import QWidget, QPushButton, QMenu, QAction
 
 from boatswain.common.services import global_preference_service
 from boatswain.common.services.system_service import rt
 
 
 class MultiLevelSelectionUi(QPushButton):
-    current_option: str
     on_option_selected = pyqtSignal(str)
-    currentTextChanged = pyqtSignal(str)
+    current_text_changed = pyqtSignal(str)
 
     def __init__(self, parent: QWidget):
         super().__init__(parent)
         self.options = {}
+        self.current_option = None
+        self.option_mapping = {}
         self.menues = []
         self.setFlat(True)
         padding = "%dpx %dpx %dpx %dpx" % (rt(1), rt(7), rt(1), rt(10))
@@ -41,10 +42,20 @@ class MultiLevelSelectionUi(QPushButton):
 
     def setData(self, options: dict):
         self.options = options
+        self.__parseData(options)
+
+    def __parseData(self, options):
+        for key in options:
+            if options[key] == 1:
+                self.option_mapping[key] = 1
+                if not self.current_option:
+                    self.setCurrentOption(key)
+            else:
+                self.__parseData(options[key])
 
     def setCurrentOption(self, option):
         self.current_option = option
-        # self.setText(self.options[option]['small_label'] + '    ')
+        self.setText(option + '    ')
 
     def setCurrentText(self, text):
         self.setCurrentOption(text)
@@ -67,16 +78,9 @@ class MultiLevelSelectionUi(QPushButton):
         menu.exec_(self.mapToGlobal(event.pos()))
 
     def onSelection(self, action: QAction):
-        option = {}
-        for opt in self.options:
-            if opt == action.data():
-                option = self.options[opt]
-        if option['handler'] is not None:
-            option['handler']()
-        else:
-            self.setCurrentOption(option['key'])
-            self.on_option_selected.emit(str(option['key']))
-            self.currentTextChanged.emit(str(option['key']))
+        self.setCurrentOption(action.text())
+        self.on_option_selected.emit(action.text())
+        self.current_text_changed.emit(action.text())
 
     def getCurrentOption(self):
         return self.current_option
@@ -97,8 +101,8 @@ class MultiLevelSelectionUi(QPushButton):
 class SelectUi(QPushButton):
     current_option: str
     on_option_selected = pyqtSignal(str)
-    currentTextChanged = pyqtSignal(str)
-    currentIndexChanged = pyqtSignal(int)
+    current_text_changed = pyqtSignal(str)
+    current_index_changed = pyqtSignal(int)
 
     def __init__(self, parent: QWidget):
         super().__init__(parent)
@@ -157,8 +161,8 @@ class SelectUi(QPushButton):
         else:
             self.setCurrentOption(option['key'])
             self.on_option_selected.emit(str(option['key']))
-            self.currentTextChanged.emit(str(option['key']))
-            self.currentIndexChanged.emit(option['index'])
+            self.current_text_changed.emit(str(option['key']))
+            self.current_index_changed.emit(option['index'])
 
     def getCurrentOption(self):
         return self.current_option

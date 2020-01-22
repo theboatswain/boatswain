@@ -22,7 +22,6 @@ from PyQt5.QtGui import QIcon, QIntValidator
 from PyQt5.QtWidgets import QSizePolicy, QWidget, QStyle, QToolButton, QLineEdit, QFileDialog, QItemDelegate, \
     QComboBox
 
-from boatswain.common.services import system_service
 from boatswain.resources_utils import getResource
 
 

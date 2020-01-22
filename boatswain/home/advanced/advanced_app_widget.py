@@ -17,7 +17,7 @@
 
 from PyQt5.QtCore import QPropertyAnimation
 from PyQt5.QtGui import QResizeEvent
-from PyQt5.QtWidgets import QLabel, QComboBox, QSizePolicy, QWidget, QLineEdit, QPushButton, QFileDialog
+from PyQt5.QtWidgets import QLabel, QSizePolicy, QWidget, QLineEdit, QPushButton, QFileDialog
 
 from boatswain.common.models.container import Container
 from boatswain.common.models.preferences_shortcut import PreferencesShortcut
@@ -25,7 +25,7 @@ from boatswain.common.services import containers_service, shortcut_service, tags
 from boatswain.common.services.system_service import rt
 from boatswain.common.ui.custom_ui import BQSizePolicy
 from boatswain.common.ui.path_view import PathViewWidget
-from boatswain.common.ui.select_ui import SelectUi, MultiLevelSelectionUi
+from boatswain.common.ui.select_ui import MultiLevelSelectionUi
 from boatswain.common.utils import docker_utils
 from boatswain.common.utils.constants import SHORTCUT_CONF_CHANGED_CHANNEL
 from boatswain.common.utils.utils import tr
@@ -140,10 +140,8 @@ class AdvancedAppWidget:
         for index, tag in enumerate(tags_service.getTags(self.container)):
             tag_map = docker_utils.mergeTagMap(tag_map, docker_utils.parseTagMap(self.container.name, tag.name))
         self.tags.setData(tag_map)
-        # self.tags.addItem(self.container.image_name + ":" + tag.name)
-        # if tag.name == self.container.tag:
-        #     self.tags.setCurrentIndex(index)
-        # self.tags.currentTextChanged.connect(self.onImageTagChange)
+        self.tags.current_text_changed.connect(self.onImageTagChange)
+        self.tags.setCurrentText(self.container.image_name + ':' + self.container.tag)
         label.setText(tr("Image tag:"))
 
     def drawShortcuts(self):
