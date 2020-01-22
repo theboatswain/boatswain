@@ -5,6 +5,7 @@ from peewee import DoesNotExist
 
 from boatswain import resources_utils
 from boatswain.common.services import global_preference_service, data_transporter_service
+from boatswain.common.services.system_service import rt
 from boatswain.common.utils import file_utils
 from boatswain.common.utils.constants import DEFAULT_THEME, THEME_UPDATING_CHANNEL
 
@@ -35,6 +36,12 @@ def readTheme(file_path):
 
     for key in variables:
         theme_content = theme_content.replace(key, variables[key])
+
+    def pixelReplacement(match):
+        pixel = int(match.group(1))
+        pixel = rt(pixel)
+        return "%dpx" % pixel
+    theme_content = re.sub(r'rt(\d+)px', pixelReplacement, theme_content)
     return theme_content, variables
 
 
