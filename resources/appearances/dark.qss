@@ -28,6 +28,10 @@ QWidget.border-button {
     border-radius: 2px;
 }
 
+QWidget.border-button:hover {
+  border: 1px solid @selection_color;
+}
+
 QMenu {
     background-color: #3b3c3d;
     border-radius: 10px;
@@ -35,6 +39,8 @@ QMenu {
 
 QMenu::item {
     color: white;
+    padding: 1px 12px 1px 16px;
+    min-width: 120px;
 }
 
 QMenu::item::selected {

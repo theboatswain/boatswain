@@ -25,7 +25,8 @@ from boatswain.common.services import containers_service, shortcut_service, tags
 from boatswain.common.services.system_service import rt
 from boatswain.common.ui.custom_ui import BQSizePolicy
 from boatswain.common.ui.path_view import PathViewWidget
-from boatswain.common.ui.select_ui import SelectUi
+from boatswain.common.ui.select_ui import SelectUi, MultiLevelSelectionUi
+from boatswain.common.utils import docker_utils
 from boatswain.common.utils.constants import SHORTCUT_CONF_CHANGED_CHANNEL
 from boatswain.common.utils.utils import tr
 from boatswain.config.app_config import AppConfig
@@ -34,7 +35,7 @@ from boatswain.home.advanced.advanced_app_widget_ui import AdvancedAppWidgetUi
 
 class AdvancedAppWidget:
     animation: QPropertyAnimation
-    tags: SelectUi
+    tags: MultiLevelSelectionUi
 
     def __init__(self, parent, container: Container) -> None:
         self.container = container
@@ -129,18 +130,20 @@ class AdvancedAppWidget:
     def drawTagShortcut(self, row):
         label = QLabel(self.ui.widget)
         self.ui.grid_layout.addWidget(label, row, 0, 1, 1)
-        self.tags = SelectUi(self.ui.widget)
+        self.tags = MultiLevelSelectionUi(self.ui.widget)
         self.tags.setSizePolicy(BQSizePolicy(h_stretch=4, height=QSizePolicy.Fixed, width=QSizePolicy.Fixed))
         self.ui.grid_layout.addWidget(self.tags, row, 1, 1, 2)
         hidden_widget = QWidget(self.ui.widget)
         hidden_widget.setSizePolicy(BQSizePolicy(h_stretch=1))
         self.ui.grid_layout.addWidget(hidden_widget, row, 3, 1, 2)
-
+        tag_map = {}
         for index, tag in enumerate(tags_service.getTags(self.container)):
-            self.tags.addItem(self.container.image_name + ":" + tag.name)
-            if tag.name == self.container.tag:
-                self.tags.setCurrentIndex(index)
-        self.tags.currentTextChanged.connect(self.onImageTagChange)
+            tag_map = docker_utils.mergeTagMap(tag_map, docker_utils.parseTagMap(self.container.name, tag.name))
+        self.tags.setData(tag_map)
+        # self.tags.addItem(self.container.image_name + ":" + tag.name)
+        # if tag.name == self.container.tag:
+        #     self.tags.setCurrentIndex(index)
+        # self.tags.currentTextChanged.connect(self.onImageTagChange)
         label.setText(tr("Image tag:"))
 
     def drawShortcuts(self):

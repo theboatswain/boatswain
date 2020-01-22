@@ -83,7 +83,7 @@ def run():
     update_dialog = Updater(None, feed)
     update_dialog.setIcon(pixmap)
     update_dialog.installed.connect(onApplicationInstalled)
-    update_dialog.checkForUpdate(silent=True)
+    # update_dialog.checkForUpdate(silent=True)
     data_transporter_service.listen(UPDATES_CHANNEL, update_dialog.checkForUpdate)
 
     if docker_service.isDockerRunning():
