@@ -167,7 +167,7 @@ class PreferencesShortcutConfig(object):
         # set horizontal header properties
         hh: QHeaderView = tv.horizontalHeader()
         hh.setSectionResizeMode(1, QHeaderView.Stretch)
-        hh.setMinimumSectionSize(rt(60))
+        hh.setMinimumSectionSize(rt(100))
         tv.resizeColumnsToContents()
 
         # set row height

@@ -98,3 +98,5 @@ QTabBar::tab:top {
     border: 1px solid #999999;
     margin-left: -1px;
 }
+
+QTableView { alternate-background-color: #32414B }

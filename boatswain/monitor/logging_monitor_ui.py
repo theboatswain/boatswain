@@ -21,7 +21,7 @@ from PyQt5.QtWidgets import QDialog
 
 from boatswain.common.services import system_service
 from boatswain.common.services.system_service import rt
-from boatswain.common.ui.custom_ui import BQSizePolicy
+from boatswain.common.ui.custom_ui import BQSizePolicy, BorderedButton
 from boatswain.common.utils.utils import tr
 from boatswain.monitor.logging_table_ui import UniformRowHeights
 
@@ -47,7 +47,7 @@ class LoggingMonitorUi(QObject):
         self.horizontal_layout = QtWidgets.QHBoxLayout(self.tool_widget)
         self.horizontal_layout.setContentsMargins(rt(12), rt(6), rt(12), rt(6))
         self.horizontal_layout.setSpacing(rt(6))
-        self.now = QtWidgets.QPushButton(self.tool_widget)
+        self.now = BorderedButton(self.tool_widget)
         self.now.setCheckable(True)
         self.now.setChecked(True)
         self.now.setFocusPolicy(Qt.NoFocus)
@@ -55,16 +55,16 @@ class LoggingMonitorUi(QObject):
         self.hidden_1 = QtWidgets.QWidget(self.tool_widget)
         self.hidden_1.setSizePolicy(BQSizePolicy(h_stretch=1))
         self.horizontal_layout.addWidget(self.hidden_1)
-        self.clear = QtWidgets.QPushButton(self.tool_widget)
+        self.clear = BorderedButton(self.tool_widget)
         self.clear.setFocusPolicy(Qt.NoFocus)
         self.horizontal_layout.addWidget(self.clear)
-        self.reload = QtWidgets.QPushButton(self.tool_widget)
+        self.reload = BorderedButton(self.tool_widget)
         self.reload.setFocusPolicy(Qt.NoFocus)
         self.horizontal_layout.addWidget(self.reload)
         self.hidden_2 = QtWidgets.QWidget(self.tool_widget)
         self.hidden_2.setSizePolicy(BQSizePolicy(h_stretch=1))
         self.horizontal_layout.addWidget(self.hidden_2)
-        self.info = QtWidgets.QPushButton(self.tool_widget)
+        self.info = BorderedButton(self.tool_widget)
         self.info.setFocusPolicy(Qt.NoFocus)
         self.info.setCheckable(True)
         self.info.setChecked(True)
