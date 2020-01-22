@@ -21,6 +21,7 @@ from PyQt5.QtWidgets import QVBoxLayout
 from boatswain.common.services import system_service
 from boatswain.common.services.system_service import rt
 from boatswain.common.ui.custom_ui import AutoResizeWidget, BQSizePolicy
+from boatswain.common.ui.select_ui import SelectUi
 from boatswain.common.utils.utils import tr
 
 
@@ -45,7 +46,7 @@ class GeneralPreferencesUi(AutoResizeWidget):
         self.gridLayout.setHorizontalSpacing(rt(6))
         self.hidden_widget_1 = QtWidgets.QWidget(self.top_widget)
         self.gridLayout.addWidget(self.hidden_widget_1, 0, 2, 1, 1)
-        self.terminal = QtWidgets.QComboBox(self.top_widget)
+        self.terminal = SelectUi(self.top_widget)
         self.gridLayout.addWidget(self.terminal, 0, 1, 1, 1)
         self.terminal_label = QtWidgets.QLabel(self.top_widget)
         self.gridLayout.addWidget(self.terminal_label, 0, 0, 1, 1)
@@ -71,7 +72,7 @@ class GeneralPreferencesUi(AutoResizeWidget):
         self.gridLayout_3.addWidget(self.fetch_shortcut_label, 3, 0, 1, 1)
         self.check_for_update = QtWidgets.QCheckBox(self.bot_widget)
         self.gridLayout_3.addWidget(self.check_for_update, 2, 1, 1, 1)
-        self.language = QtWidgets.QComboBox(self.bot_widget)
+        self.language = SelectUi(self.bot_widget)
         self.gridLayout_3.addWidget(self.language, 5, 1, 1, 1)
         self.check_for_updates_label = QtWidgets.QLabel(self.bot_widget)
         self.gridLayout_3.addWidget(self.check_for_updates_label, 2, 0, 1, 1)

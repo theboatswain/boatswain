@@ -41,7 +41,7 @@ class AdvancedAppWidget:
         self.container = container
         self.ui = AdvancedAppWidgetUi(parent, container)
         self.drawShortcuts()
-        containers_service.listen(self.container, 'tag_index', self.listenTagChange)
+        containers_service.listen(self.container, 'tag_name_change', self.listenTagChange)
         containers_service.listen(self.container, SHORTCUT_CONF_CHANGED_CHANNEL, self.redrawShortcuts)
         if not container.expanded:
             self.ui.setMaximumHeight(0)
@@ -159,8 +159,8 @@ class AdvancedAppWidget:
         self.cleanShortcuts()
         self.drawShortcuts()
 
-    def listenTagChange(self, index):
-        self.tags.setCurrentIndex(index)
+    def listenTagChange(self, tag_name):
+        self.tags.setCurrentText(tag_name)
 
     def setShortcutValue(self, shortcut: PreferencesShortcut, value):
         previous_val = shortcut.default_value

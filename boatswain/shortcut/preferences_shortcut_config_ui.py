@@ -22,7 +22,7 @@ from PyQt5.QtWidgets import QDialog
 from boatswain.common.models.container import Container
 from boatswain.common.services import system_service
 from boatswain.common.services.system_service import rt
-from boatswain.common.ui.custom_ui import BQSizePolicy
+from boatswain.common.ui.custom_ui import BQSizePolicy, BorderedButton
 
 
 class PreferencesShortcutConfigUi(object):
@@ -46,22 +46,22 @@ class PreferencesShortcutConfigUi(object):
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.top_widget)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setSpacing(1)
-        self.import_shortcut = QtWidgets.QPushButton(self.top_widget)
+        self.import_shortcut = BorderedButton(self.top_widget)
         self.import_shortcut.setAutoDefault(False)
         self.import_shortcut.setDefault(False)
         self.horizontalLayout.addWidget(self.import_shortcut)
-        self.export_shortcut = QtWidgets.QPushButton(self.top_widget)
+        self.export_shortcut = BorderedButton(self.top_widget)
         self.horizontalLayout.addWidget(self.export_shortcut)
         self.hidden = QtWidgets.QWidget(self.top_widget)
         self.hidden.setSizePolicy(BQSizePolicy(h_stretch=1))
         self.horizontalLayout.addWidget(self.hidden)
-        self.new_shortcut = QtWidgets.QPushButton(self.top_widget)
+        self.new_shortcut = BorderedButton(self.top_widget)
         self.horizontalLayout.addWidget(self.new_shortcut)
-        self.delete_shortcut = QtWidgets.QPushButton(self.top_widget)
+        self.delete_shortcut = BorderedButton(self.top_widget)
         self.horizontalLayout.addWidget(self.delete_shortcut)
-        self.move_up = QtWidgets.QPushButton(self.top_widget)
+        self.move_up = BorderedButton(self.top_widget)
         self.horizontalLayout.addWidget(self.move_up)
-        self.move_down = QtWidgets.QPushButton(self.top_widget)
+        self.move_down = BorderedButton(self.top_widget)
         self.horizontalLayout.addWidget(self.move_down)
         self.verticalLayout.addWidget(self.top_widget)
         self.shortcut_table = QtWidgets.QTableView(dialog)

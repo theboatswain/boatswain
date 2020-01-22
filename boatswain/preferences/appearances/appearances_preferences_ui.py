@@ -22,7 +22,7 @@ from PyQt5.QtWidgets import QVBoxLayout, QSizePolicy, QScrollArea, QFrame, QWidg
 
 from boatswain.common.services import system_service
 from boatswain.common.services.system_service import rt, applyFontRatio
-from boatswain.common.ui.custom_ui import AutoResizeWidget, BQSizePolicy
+from boatswain.common.ui.custom_ui import AutoResizeWidget, BQSizePolicy, BorderedButton
 from boatswain.common.utils.app_avatar import AppAvatar
 from boatswain.common.utils.utils import tr
 
@@ -83,10 +83,10 @@ class AppearancesPreferencesUi(AutoResizeWidget):
         self.app_bg_label = QtWidgets.QLabel(self.mid_widget)
         self.app_bg_label.setSizePolicy(BQSizePolicy(h_stretch=2))
         self.gridLayout_2.addWidget(self.app_bg_label, 0, 0, 1, 1)
-        self.select_bg = QtWidgets.QPushButton(self.mid_widget)
+        self.select_bg = BorderedButton(self.mid_widget)
         self.select_bg.setSizePolicy(BQSizePolicy(h_stretch=1, width=QSizePolicy.Fixed, height=QSizePolicy.Fixed))
         self.gridLayout_2.addWidget(self.select_bg, 0, 2, 1, 1)
-        self.current_bg = QtWidgets.QPushButton(self.mid_widget)
+        self.current_bg = BorderedButton(self.mid_widget)
         self.current_bg.setSizePolicy(BQSizePolicy(h_stretch=1, width=QSizePolicy.Fixed, height=QSizePolicy.Fixed))
         self.gridLayout_2.addWidget(self.current_bg, 0, 1, 1, 1)
         self.hidden_widget = QtWidgets.QWidget(self.mid_widget)
@@ -95,13 +95,13 @@ class AppearancesPreferencesUi(AutoResizeWidget):
 
         self.application_font_label = QtWidgets.QLabel(self.mid_widget)
         self.gridLayout_2.addWidget(self.application_font_label, 2, 0, 1, 1)
-        self.app_font = QtWidgets.QPushButton(self.mid_widget)
+        self.app_font = BorderedButton(self.mid_widget)
         self.app_font.setSizePolicy(BQSizePolicy(h_stretch=1, width=QSizePolicy.Fixed, height=QSizePolicy.Fixed))
         self.gridLayout_2.addWidget(self.app_font, 2, 1, 1, 1)
 
         self.widget_bg_label = QtWidgets.QLabel(self.mid_widget)
         self.gridLayout_2.addWidget(self.widget_bg_label, 3, 0, 1, 1)
-        self.widget_bg = QtWidgets.QPushButton(self.mid_widget)
+        self.widget_bg = BorderedButton(self.mid_widget)
         self.widget_bg.setSizePolicy(BQSizePolicy(h_stretch=1, width=QSizePolicy.Fixed, height=QSizePolicy.Fixed))
         self.gridLayout_2.addWidget(self.widget_bg, 3, 1, 1, 1)
 
@@ -121,7 +121,7 @@ class AppearancesPreferencesUi(AutoResizeWidget):
         self.widget_bg_transparent.setOrientation(QtCore.Qt.Horizontal)
         self.gridLayout_2.addWidget(self.widget_bg_transparent, 4, 1, 1, 3)
 
-        self.reset_all = QtWidgets.QPushButton(self.mid_widget)
+        self.reset_all = BorderedButton(self.mid_widget)
         self.gridLayout_2.addWidget(self.reset_all, 5, 1, 1, 2)
 
         self.vertical_layout.addWidget(self.mid_widget)

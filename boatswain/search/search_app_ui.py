@@ -17,11 +17,12 @@
 
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtWidgets import QWidget, QSizePolicy, QVBoxLayout, QFrame, QScrollArea, QLineEdit, QComboBox, QGridLayout
+from PyQt5.QtWidgets import QWidget, QSizePolicy, QVBoxLayout, QFrame, QScrollArea, QLineEdit, QGridLayout
 
 from boatswain.common.services import system_service
 from boatswain.common.services.system_service import rt
 from boatswain.common.ui.custom_ui import BQSizePolicy
+from boatswain.common.ui.select_ui import SelectUi
 
 
 class SearchAppDialogUi(object):
@@ -42,13 +43,13 @@ class SearchAppDialogUi(object):
         widget.setSizePolicy(BQSizePolicy())
         self.grid_container = QGridLayout(widget)
         self.grid_container.setContentsMargins(0, 0, 0, rt(10))
-        self.repo_select = QComboBox(widget)
+        self.repo_select = SelectUi(widget)
         self.repo_select.setSizePolicy(BQSizePolicy(width=QSizePolicy.Fixed, height=QSizePolicy.Fixed))
         self.grid_container.addWidget(self.repo_select, 0, 0, 1, 1)
         self.key_search = QLineEdit(widget)
         self.key_search.setAttribute(Qt.WA_MacShowFocusRect, 0)
         self.key_search.setFocusPolicy(Qt.StrongFocus)
-        self.key_search.setStyleSheet("padding: 2 2 2 5;")
+        self.key_search.setStyleSheet("padding: 1 1 1 5;")
         self.grid_container.addWidget(self.key_search, 0, 1, 1, 1)
         main_layout.addWidget(widget)
         self.scroll_area = QScrollArea(dialog)

@@ -16,12 +16,13 @@
 #
 from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import QTableView, QVBoxLayout, QWidget, QGridLayout, QLineEdit, QSizePolicy, \
-    QLabel, QComboBox, QFrame, QHBoxLayout, QPushButton
+    QLabel, QFrame, QHBoxLayout
 
 from boatswain.common.models.container import Container
 from boatswain.common.services import system_service
 from boatswain.common.services.system_service import rt
-from boatswain.common.ui.custom_ui import AutoResizeWidget, BQSizePolicy
+from boatswain.common.ui.custom_ui import AutoResizeWidget, BQSizePolicy, BorderedButton
+from boatswain.common.ui.select_ui import SelectUi
 
 
 class PortMappingConfigUi(AutoResizeWidget):
@@ -51,7 +52,7 @@ class PortMappingConfigUi(AutoResizeWidget):
         self.grid_layout.addWidget(self.ip_addr_label, 2, 0, 1, 1)
         self.network_label = QLabel(self.top_widget)
         self.grid_layout.addWidget(self.network_label, 0, 0, 1, 1)
-        self.network = QComboBox(self.top_widget)
+        self.network = SelectUi(self.top_widget)
         self.grid_layout.addWidget(self.network, 0, 1, 1, 1)
         self.hidden_widget_2 = QWidget(self.top_widget)
         self.hidden_widget_2.setSizePolicy(BQSizePolicy(h_stretch=1))
@@ -71,9 +72,9 @@ class PortMappingConfigUi(AutoResizeWidget):
         self.hidden_widget = QWidget(self.mid_widget)
         self.hidden_widget.setSizePolicy(BQSizePolicy(h_stretch=1))
         self.horizontal_layout.addWidget(self.hidden_widget)
-        self.new_port = QPushButton(self.mid_widget)
+        self.new_port = BorderedButton(self.mid_widget)
         self.horizontal_layout.addWidget(self.new_port)
-        self.delete_port = QPushButton(self.mid_widget)
+        self.delete_port = BorderedButton(self.mid_widget)
         self.horizontal_layout.addWidget(self.delete_port)
         self.vertical_layout.addWidget(self.mid_widget)
         self.mapping_table = QTableView(self)

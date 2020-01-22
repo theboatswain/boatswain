@@ -16,12 +16,12 @@
 #
 
 from PyQt5.QtCore import QSize
-from PyQt5.QtWidgets import QWidget, QLabel, QHBoxLayout, QVBoxLayout, QPushButton, QTableView
+from PyQt5.QtWidgets import QWidget, QLabel, QHBoxLayout, QVBoxLayout, QTableView
 
 from boatswain.common.models.container import Container
 from boatswain.common.services import system_service
 from boatswain.common.services.system_service import rt
-from boatswain.common.ui.custom_ui import AutoResizeWidget, BQSizePolicy
+from boatswain.common.ui.custom_ui import AutoResizeWidget, BQSizePolicy, BorderedButton
 
 
 class VolumeMountConfigUi(AutoResizeWidget):
@@ -48,9 +48,9 @@ class VolumeMountConfigUi(AutoResizeWidget):
         self.hidden_widget = QWidget(self.top_widget)
         self.hidden_widget.setSizePolicy(BQSizePolicy(h_stretch=1))
         self.horizontalLayout.addWidget(self.hidden_widget)
-        self.new_mount = QPushButton(self.top_widget)
+        self.new_mount = BorderedButton(self.top_widget)
         self.horizontalLayout.addWidget(self.new_mount)
-        self.delete_mount = QPushButton(self.top_widget)
+        self.delete_mount = BorderedButton(self.top_widget)
         self.horizontalLayout.addWidget(self.delete_mount)
         self.verticalLayout.addWidget(self.top_widget)
         self.mount_table = QTableView(self)

@@ -20,8 +20,9 @@ from typing import List
 from PyQt5.QtCore import QSize, Qt, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QIcon, QIntValidator
 from PyQt5.QtWidgets import QSizePolicy, QWidget, QStyle, QToolButton, QLineEdit, QFileDialog, QItemDelegate, \
-    QComboBox
+    QComboBox, QPushButton
 
+from boatswain.common.services.system_service import rt
 from boatswain.resources_utils import getResource
 
 
@@ -124,6 +125,15 @@ class ComboBoxDelegate(QItemDelegate):
     @pyqtSlot()
     def currentIndexChanged(self):
         self.commitData.emit(self.sender())
+
+
+class BorderedButton(QPushButton):
+
+    def __init__(self, parent):
+        super(BorderedButton, self).__init__(parent)
+        self.setFlat(True)
+        self.setProperty('class', 'border-button')
+        self.setStyleSheet("padding: %dpx %dpx;" % (1, rt(10)))
 
 
 class ButtonLineEdit(QLineEdit):

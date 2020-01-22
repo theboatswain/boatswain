@@ -16,11 +16,11 @@
 #
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSizePolicy, QHBoxLayout, QLabel, QPushButton, QFrame, QLayout
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSizePolicy, QHBoxLayout, QLabel, QFrame, QLayout
 
 from boatswain.common.models.container import Container
 from boatswain.common.services.system_service import rt
-from boatswain.common.ui.custom_ui import BQSizePolicy
+from boatswain.common.ui.custom_ui import BQSizePolicy, BorderedButton
 from boatswain.common.utils.app_avatar import AppAvatar
 from boatswain.home.advanced.advanced_app_widget import AdvancedAppWidget
 
@@ -48,10 +48,7 @@ class AppWidgetUi(QWidget):
         self.name.setSizePolicy(BQSizePolicy(h_stretch=2))
         self.horizontal_layout.addWidget(self.name)
 
-        self.status = QPushButton(self.widget)
-        self.status.setFlat(True)
-        self.status.setProperty('class', 'border-button')
-        self.status.setStyleSheet("padding: %dpx %dpx;" % (1, rt(10)))
+        self.status = BorderedButton(self.widget)
         self.horizontal_layout.addWidget(self.status)
 
         self.advanced_app = AdvancedAppWidget(self.widget, container)

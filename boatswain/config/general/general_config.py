@@ -17,10 +17,9 @@
 from PyQt5.QtCore import QThread
 
 from boatswain.common.models.container import Container
-from boatswain.common.models.tag import Tag
-from boatswain.common.services import containers_service, auditing_service
+from boatswain.common.services import containers_service, auditing_service, tags_service
 from boatswain.common.services.worker_service import Worker, threadpool
-from boatswain.common.utils import utils
+from boatswain.common.utils import utils, docker_utils
 from boatswain.common.utils.utils import tr
 from boatswain.config.general.general_config_ui import GeneralAppConfigUi
 
@@ -50,7 +49,7 @@ class GeneralAppConfig:
 
         self.ui.sync.clicked.connect(self.onSyncClicked)
         self.ui.container_name.textChanged.connect(self.onNameChanged)
-        self.ui.image_tags.currentIndexChanged.connect(self.onImageTagChange)
+        self.ui.image_tags.current_text_changed.connect(self.onImageTagChange)
         self.ui.entrypoint.textChanged.connect(self.onEntrypointChanged)
         self.ui.entrypoint.setText(container.entrypoint)
 
@@ -76,10 +75,11 @@ class GeneralAppConfig:
 
     def loadTags(self):
         self.ui.image_tags.clear()
-        for index, tag in enumerate(Tag.select().where(Tag.container == self.container)):
-            self.ui.image_tags.addItem(self.container.image_name + ":" + tag.name)
-            if tag.name == self.container.tag:
-                self.ui.image_tags.setCurrentIndex(index)
+        tag_map = {}
+        for index, tag in enumerate(tags_service.getTags(self.container)):
+            tag_map = docker_utils.mergeTagMap(tag_map, docker_utils.parseTagMap(self.container.name, tag.name))
+        self.ui.image_tags.setData(tag_map)
+        self.ui.image_tags.setCurrentText(self.container.image_name + ':' + self.container.tag)
 
     def onNameChanged(self, name):
         if len(name) == 0:
@@ -96,15 +96,14 @@ class GeneralAppConfig:
         auditing_service.audit_update(self.container, self.container.tableName(),
                                       self.container.id, "entrypoint", previous_entrypoint, entrypoint)
 
-    def onImageTagChange(self, index):
-        if index > 0:
-            tag = self.ui.image_tags.itemText(index).split(':')[1]
-            previous_tag = self.container.tag
-            self.container.tag = tag
-            self.container.save()
-            auditing_service.audit_update(self.container, self.container.tableName(),
-                                          self.container.id, "tag", previous_tag, tag)
-            containers_service.fire(self.container, 'tag_index', index)
+    def onImageTagChange(self, tag_name):
+        tag = tag_name.split(':')[1]
+        previous_tag = self.container.tag
+        self.container.tag = tag
+        self.container.save()
+        auditing_service.audit_update(self.container, self.container.tableName(),
+                                      self.container.id, "tag", previous_tag, tag)
+        containers_service.fire(self.container, 'tag_name_change', tag_name)
 
     def onMemoryChanged(self):
         previous_memory_limit = self.container.memory_limit

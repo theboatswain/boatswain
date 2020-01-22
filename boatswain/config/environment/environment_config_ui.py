@@ -16,12 +16,12 @@
 #
 
 from PyQt5.QtCore import QSize
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTableView
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QTableView
 
 from boatswain.common.models.container import Container
 from boatswain.common.services import system_service
 from boatswain.common.services.system_service import rt
-from boatswain.common.ui.custom_ui import BQSizePolicy, AutoResizeWidget
+from boatswain.common.ui.custom_ui import BQSizePolicy, AutoResizeWidget, BorderedButton
 
 
 class EnvironmentConfigUi(AutoResizeWidget):
@@ -42,9 +42,9 @@ class EnvironmentConfigUi(AutoResizeWidget):
         self.hidden_widget = QWidget(self.top_widget)
         self.hidden_widget.setSizePolicy(BQSizePolicy(h_stretch=1))
         self.horizontal_layout.addWidget(self.hidden_widget)
-        self.new_env = QPushButton(self.top_widget)
+        self.new_env = BorderedButton(self.top_widget)
         self.horizontal_layout.addWidget(self.new_env)
-        self.delete_env = QPushButton(self.top_widget)
+        self.delete_env = BorderedButton(self.top_widget)
         self.horizontal_layout.addWidget(self.delete_env)
         self.vertical_layout.addWidget(self.top_widget)
         self.user_table = QTableView(self)

@@ -85,6 +85,10 @@ class MultiLevelSelectionUi(QPushButton):
     def getCurrentOption(self):
         return self.current_option
 
+    def clear(self):
+        self.options = {}
+        self.option_mapping = {}
+
     def paintEvent(self, event: QtGui.QPaintEvent):
         QPushButton.paintEvent(self, event)
 

@@ -33,7 +33,7 @@ class GeneralPreferences:
             if item['name'] == default_terminal:
                 self.ui.terminal.setCurrentText(default_terminal)
 
-        self.ui.terminal.currentTextChanged.connect(self.onTerminalChanged)
+        self.ui.terminal.current_text_changed.connect(self.onTerminalChanged)
         self.ui.language.addItem(tr("English"))
         # Todo: Terminal open new tab if possible
         # Todo: Start with OS

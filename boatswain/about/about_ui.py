@@ -19,7 +19,7 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtWidgets import QFrame, QSizePolicy, QApplication
 
-from boatswain.common.ui.custom_ui import BQSizePolicy
+from boatswain.common.ui.custom_ui import BQSizePolicy, BorderedButton
 
 from boatswain.common.services import system_service
 from boatswain.common.utils import utils
@@ -73,7 +73,7 @@ class AboutUi(object):
         self.build.setSizePolicy(BQSizePolicy(v_stretch=1))
         self.build.setAlignment(QtCore.Qt.AlignCenter)
         self.verticalLayout_3.addWidget(self.build)
-        self.license = QtWidgets.QPushButton(self.app_info_widget)
+        self.license = BorderedButton(self.app_info_widget)
         self.verticalLayout_3.addWidget(self.license)
         self.vertical_layout_2.addWidget(self.app_info_widget)
         self.horizontal_layout.addWidget(self.left_widget)

@@ -16,13 +16,14 @@
 #
 
 from PyQt5.QtCore import QCoreApplication, Qt, QSize
-from PyQt5.QtWidgets import QLabel, QGridLayout, QPushButton, QComboBox, QLineEdit, QCheckBox, QWidget, QVBoxLayout, \
+from PyQt5.QtWidgets import QLabel, QGridLayout, QLineEdit, QCheckBox, QWidget, QVBoxLayout, \
     QHBoxLayout, QFrame, QSlider
 
 from boatswain.common.models.container import Container
 from boatswain.common.services import system_service
 from boatswain.common.services.system_service import rt
-from boatswain.common.ui.custom_ui import BQSizePolicy, AutoResizeWidget
+from boatswain.common.ui.custom_ui import BQSizePolicy, AutoResizeWidget, BorderedButton
+from boatswain.common.ui.select_ui import MultiLevelSelectionUi
 from boatswain.common.utils.app_avatar import AppAvatar
 
 
@@ -85,7 +86,7 @@ class GeneralAppConfigUi(AutoResizeWidget):
         self.grid_layout = QGridLayout(self.widget_4)
         self.grid_layout.setContentsMargins(0, 0, 0, rt(5))
         self.grid_layout.setSpacing(rt(6))
-        self.sync = QPushButton(self.widget_4)
+        self.sync = BorderedButton(self.widget_4)
         self.sync.setFocusPolicy(Qt.NoFocus)
         self.grid_layout.addWidget(self.sync, 2, 4, 1, 1)
         self.widget_8 = QWidget(self.widget_4)
@@ -104,7 +105,7 @@ class GeneralAppConfigUi(AutoResizeWidget):
         self.grid_layout.addWidget(self.limit_cpu_label, 4, 0, 1, 1)
         self.entrypoint_label = QLabel(self.widget_4)
         self.grid_layout.addWidget(self.entrypoint_label, 5, 0, 1, 1)
-        self.image_tags = QComboBox(self.widget_4)
+        self.image_tags = MultiLevelSelectionUi(self.widget_4)
         self.image_tags.setMinimumWidth(rt(300))
         self.grid_layout.addWidget(self.image_tags, 2, 1, 1, 3)
         self.limit_memory_label = QLabel(self.widget_4)

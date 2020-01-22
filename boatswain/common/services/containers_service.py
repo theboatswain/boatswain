@@ -315,9 +315,9 @@ def listen(container: Container, name, func):
     data_transporter_service.listen(key, func)
 
 
-def fire(container: Container, name, value=None):
+def fire(container: Container, name, *args):
     key = CONTAINER_CONF_CHANGED_CHANNEL + '_' + str(container.id) + '_' + name
-    data_transporter_service.fire(key, value)
+    data_transporter_service.fire(key, *args)
 
 
 def getContainerInfo(container_name, is_official=True):

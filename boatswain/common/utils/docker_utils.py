@@ -54,6 +54,8 @@ def mergeTagMap(tag_map_1, tag_map_2):
     result = {**tag_map_1}
     for key in tag_map_2:
         if key in result:
+            if tag_map_1[key] == 1 and tag_map_2[key] == 1:
+                continue
             if tag_map_2[key] == 1:
                 result[key][key] = 1
             elif tag_map_1[key] == 1:

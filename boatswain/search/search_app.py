@@ -70,7 +70,7 @@ class SearchAppDialog(object):
     def searchApp(self):
         keyword = self.ui.key_search.text()
         if len(keyword) != 0:
-            docker_images = containers_service.searchImages(keyword, self.ui.repo_select.currentText())
+            docker_images = containers_service.searchImages(keyword, self.ui.repo_select.getCurrentOption())
         else:
             docker_images = self.getDefaultResult()
         self.loadResult(docker_images)
