@@ -126,3 +126,7 @@ QColumnView::item:pressed {
 QHeaderView {
   background-color: #32414B;
 }
+
+QHeaderView::section {
+    background-color: #32414B;
+}
