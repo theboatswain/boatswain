@@ -24,6 +24,7 @@ class AppearanceUnitUi(QWidget):
         self.visualise.setFixedSize(QSize(rt(80), rt(50)))
         self.visualise.setProperty('class', 'home')
         self.visualise.setStyleSheet("QWidget.home { border-radius: 8px; }")
+        self.setProperty('class', 'Theme' + theme_name)
 
         self.app_widget_layout = QVBoxLayout(self.visualise)
         self.app_widget_layout.setContentsMargins(0, 12, 0, 10)

@@ -45,6 +45,7 @@ class PortMappingConfigUi(AutoResizeWidget):
         self.grid_layout.setContentsMargins(0, 0, 0, rt(12))
         self.grid_layout.setSpacing(rt(6))
         self.ip_addr = QLineEdit(self.top_widget)
+        self.ip_addr.setProperty('class', 'border-button')
         self.ip_addr.setSizePolicy(BQSizePolicy(h_stretch=1, height=QSizePolicy.Fixed))
         self.ip_addr.setReadOnly(True)
         self.grid_layout.addWidget(self.ip_addr, 2, 1, 1, 1)

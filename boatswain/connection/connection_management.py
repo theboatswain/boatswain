@@ -1,5 +1,5 @@
 from PyQt5.QtCore import QObject, Qt, pyqtSignal
-from PyQt5.QtWidgets import QDialog, QDialogButtonBox
+from PyQt5.QtWidgets import QDialog
 from docker import APIClient
 
 from boatswain.common.exceptions.docker_exceptions import DockerNotAvailableException
@@ -34,7 +34,7 @@ class ConnectionManagement(QObject):
         try:
             docker_service.ping()
             self.ui.message.setText(tr("Connection successful!!!"))
-            self.ui.button_box.button(QDialogButtonBox.Ok).setText(tr("Save"))
+            self.ui.ok_button.setText(tr("Save"))
             self.status = True
         except DockerNotAvailableException:
             mess = tr("We are unable to connect to the Docker upstream!!!")

@@ -47,16 +47,8 @@ class EnvironmentConfig:
         self.ui.sys_env_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.ui.sys_env_table.doubleClicked.connect(self.onDoubleClickItem)
 
-        self.retranslateUi()
-
         self.ui.new_env.clicked.connect(self.onNewEnvClicked)
         self.ui.delete_env.clicked.connect(self.onDeleteEnvClicked)
-
-    def retranslateUi(self):
-        self.ui.user_env_label.setText(tr("User environment variables:"))
-        self.ui.new_env.setText(tr("Add"))
-        self.ui.delete_env.setText(tr("Delete"))
-        self.ui.include_sys_env.setText(tr("System environments (double click to copy)"))
 
     def onDoubleClickItem(self, index: QModelIndex):
         data = self.ui.sys_env_table.model().array_data[index.row()]

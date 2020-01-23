@@ -2,7 +2,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets import QDialogButtonBox
 
 from boatswain.common.services.system_service import rt, applyFontRatio
-from boatswain.common.ui.custom_ui import BQSizePolicy
+from boatswain.common.ui.custom_ui import BQSizePolicy, BorderedButton
 from boatswain.common.utils.utils import tr
 
 
@@ -37,11 +37,17 @@ class ConnectionManagementUi(object):
         self.protocol.setFont(font)
         self.horizontalLayout.addWidget(self.protocol)
         self.url = QtWidgets.QLineEdit(self.widget)
+        self.url.setProperty('class', 'border-button')
         self.horizontalLayout.addWidget(self.url)
         self.verticalLayout.addWidget(self.widget)
         self.button_box = QtWidgets.QDialogButtonBox(dialog)
         self.button_box.setOrientation(QtCore.Qt.Horizontal)
-        self.button_box.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
+        self.ok_button = BorderedButton(dialog)
+        self.ok_button.setDefault(True)
+        self.cancel_button = BorderedButton(dialog)
+        self.cancel_button.setAutoDefault(False)
+        self.button_box.addButton(self.cancel_button, QDialogButtonBox.RejectRole)
+        self.button_box.addButton(self.ok_button, QDialogButtonBox.AcceptRole)
         self.verticalLayout.addWidget(self.button_box)
 
         self.retranslateUi(dialog)
@@ -49,6 +55,7 @@ class ConnectionManagementUi(object):
 
     def retranslateUi(self, dialog):
         dialog.setWindowTitle(tr("Connection Management Dialog"))
-        self.button_box.button(QDialogButtonBox.Ok).setText(tr("Test connection..."))
         self.label.setText(tr("Docker connection configuration"))
         self.protocol.setText(tr("Docker URI:"))
+        self.cancel_button.setText(tr("Cancel"))
+        self.ok_button.setText(tr("Test connection..."))

@@ -15,6 +15,10 @@ QWidget.home {
     background-color: @background_color;
 }
 
+QWidget.ThemeDark QWidget.home {
+    border: 1px solid @selection_color;
+}
+
 QWidget.home * {
     color: @font_color;
 }
@@ -66,7 +70,7 @@ QTabWidget::pane {
 }
 
 QTabWidget::tab-bar { alignment: center; }
-QTabWidget::pane { position: absolute; top: -0.5em; }
+QTabWidget::pane { position: absolute; top: -rt10px; }
 
 QTabBar::tab:top:selected {
     border: 1px solid @selection_color;
@@ -100,3 +104,25 @@ QTabBar::tab:top {
 }
 
 QTableView { alternate-background-color: #32414B }
+
+QTreeView,
+QListView,
+QTableView,
+QColumnView {
+  background-color: #19232D;
+  border: 1px solid #32414B;
+  color: #F0F0F0;
+  gridline-color: #32414B;
+  border-radius: rt4px;
+}
+
+QTreeView::item:pressed,
+QListView::item:pressed,
+QTableView::item:pressed,
+QColumnView::item:pressed {
+  background-color: @selection_color;
+}
+
+QHeaderView {
+  background-color: #32414B;
+}

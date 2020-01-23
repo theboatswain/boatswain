@@ -22,6 +22,7 @@ from boatswain.common.models.container import Container
 from boatswain.common.services import system_service
 from boatswain.common.services.system_service import rt
 from boatswain.common.ui.custom_ui import BQSizePolicy, AutoResizeWidget, BorderedButton
+from boatswain.common.utils.utils import tr
 
 
 class EnvironmentConfigUi(AutoResizeWidget):
@@ -61,8 +62,15 @@ class EnvironmentConfigUi(AutoResizeWidget):
         self.sys_env_table = QTableView(self)
         self.sys_env_table.setSizePolicy(BQSizePolicy(v_stretch=1))
         self.vertical_layout.addWidget(self.sys_env_table)
+        self.retranslateUi()
 
     def preferableSize(self) -> QSize:
         height = system_service.getRefHeight() / 2
         width = height * 1.6
         return QSize(width, height * 1.2)
+
+    def retranslateUi(self):
+        self.user_env_label.setText(tr("User environment variables:"))
+        self.new_env.setText(tr("Add"))
+        self.delete_env.setText(tr("Delete"))
+        self.include_sys_env.setText(tr("System environments (double click to copy)"))

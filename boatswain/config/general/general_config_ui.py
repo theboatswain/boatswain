@@ -116,6 +116,7 @@ class GeneralAppConfigUi(AutoResizeWidget):
         self.limit_cpu = QSlider(Qt.Horizontal)
         self.grid_layout.addWidget(self.limit_cpu, 4, 1, 1, 3)
         self.entrypoint = QLineEdit(self.widget_4)
+        self.entrypoint.setProperty('class', 'border-button')
         self.entrypoint.setAttribute(Qt.WA_MacShowFocusRect, 0)
         self.entrypoint.setFocusPolicy(Qt.ClickFocus)
         self.grid_layout.addWidget(self.entrypoint, 5, 1, 1, 5)
