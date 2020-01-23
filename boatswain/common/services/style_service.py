@@ -1,6 +1,7 @@
 import os
 import re
 
+from boatswain_updater.updater import Updater
 from peewee import DoesNotExist
 
 from boatswain import resources_utils
@@ -60,3 +61,12 @@ def getCurrentActivatedThemePath():
         return default_path.value
     except DoesNotExist:
         return getStyleFilePath('base')
+
+
+def optimiseUpdaterUi(updater: Updater):
+    buttons = [updater.ui.button_cancel, updater.ui.button_cancel_loading, updater.ui.button_confirm,
+               updater.ui.button_install, updater.ui.button_install_and_relaunch, updater.ui.button_skip]
+    for button in buttons:
+        button.setFlat(True)
+        button.setStyleSheet("padding: %dpx %dpx;" % (1, rt(10)))
+        button.setProperty('class', 'border-button')

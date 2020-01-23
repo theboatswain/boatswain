@@ -83,6 +83,7 @@ def run():
     update_dialog = Updater(None, feed)
     update_dialog.setIcon(pixmap)
     update_dialog.installed.connect(onApplicationInstalled)
+    style_service.optimiseUpdaterUi(update_dialog)
     # update_dialog.checkForUpdate(silent=True)
     data_transporter_service.listen(UPDATES_CHANNEL, update_dialog.checkForUpdate)
 
@@ -91,8 +92,9 @@ def run():
     else:
         # At this point, if the docker service is still not running, that mean, the Connection Management dialog
         # has been closed or canceled. So, now, we just need to shut the application down.
-        # Prefetch default containers for search
         utils.exitApp()
+
+    # Prefetch default containers for search
     containers_service.prefetchDefaultContainersInBackground()
 
     # Stop daemon before exit
