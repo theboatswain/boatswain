@@ -92,28 +92,22 @@ class AppearancesPreferencesUi(AutoResizeWidget):
         self.gridLayout_2.addWidget(self.hidden_widget, 0, 3, 1, 1)
 
         self.font_label = QtWidgets.QLabel(self.mid_widget)
-        self.gridLayout_2.addWidget(self.font_label, 2, 0, 1, 1)
+        self.gridLayout_2.addWidget(self.font_label, 1, 0, 1, 1)
         self.font_color = BorderedButton(self.mid_widget)
         self.font_color.setFixedWidth(rt(70))
         self.font_color.setSizePolicy(BQSizePolicy(h_stretch=1, width=QSizePolicy.Fixed, height=QSizePolicy.Fixed))
-        self.gridLayout_2.addWidget(self.font_color, 2, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.font_color, 1, 1, 1, 1)
 
         self.selection_label = QtWidgets.QLabel(self.mid_widget)
-        self.gridLayout_2.addWidget(self.selection_label, 3, 0, 1, 1)
+        self.gridLayout_2.addWidget(self.selection_label, 2, 0, 1, 1)
         self.selection_color = BorderedButton(self.mid_widget)
         self.selection_color.setFixedWidth(rt(70))
         self.selection_color.setSizePolicy(BQSizePolicy(h_stretch=1, width=QSizePolicy.Fixed, height=QSizePolicy.Fixed))
-        self.gridLayout_2.addWidget(self.selection_color, 3, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.selection_color, 2, 1, 1, 1)
 
         self.hidden_widget_2 = QtWidgets.QWidget(self.mid_widget)
         self.hidden_widget_2.setSizePolicy(BQSizePolicy(h_stretch=1))
         self.gridLayout_2.addWidget(self.hidden_widget_2, 0, 4, 1, 2)
-
-        self.background_transparent_label = QtWidgets.QLabel(self.mid_widget)
-        self.gridLayout_2.addWidget(self.background_transparent_label, 1, 0, 1, 1)
-        self.background_transparent = QtWidgets.QSlider(self.mid_widget)
-        self.background_transparent.setOrientation(QtCore.Qt.Horizontal)
-        self.gridLayout_2.addWidget(self.background_transparent, 1, 1, 1, 4)
 
         self.vertical_layout.addWidget(self.mid_widget)
 
@@ -121,7 +115,6 @@ class AppearancesPreferencesUi(AutoResizeWidget):
 
     def retranslateUi(self):
         self.background_label.setText(tr("Background color:"))
-        self.background_transparent_label.setText(tr("Background transparent:"))
         self.font_label.setText(tr("Font color:"))
         self.selection_label.setText(tr("Selection color:"))
 

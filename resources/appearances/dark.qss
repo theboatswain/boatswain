@@ -50,7 +50,7 @@ QMenu {
 }
 
 QMenu::item {
-    color: white;
+    color: @font_color;
     min-width: rt120px;
 }
 
