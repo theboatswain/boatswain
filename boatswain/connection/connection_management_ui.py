@@ -37,7 +37,7 @@ class ConnectionManagementUi(object):
         self.protocol.setFont(font)
         self.horizontalLayout.addWidget(self.protocol)
         self.url = QtWidgets.QLineEdit(self.widget)
-        self.url.setProperty('class', 'border-button')
+        self.url.setProperty('class', 'bordered-widget')
         self.horizontalLayout.addWidget(self.url)
         self.verticalLayout.addWidget(self.widget)
         self.button_box = QtWidgets.QDialogButtonBox(dialog)

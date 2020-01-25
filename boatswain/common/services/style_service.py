@@ -36,6 +36,9 @@ def readTheme(file_path):
             variables[key_search.group(1)] = key_search.group(2)
 
     for key in variables:
+        pre_defined_key = global_preference_service.getPreferenceValue(key)
+        if pre_defined_key is not None:
+            variables[key] = pre_defined_key
         theme_content = theme_content.replace(key, variables[key])
 
     def pixelReplacement(match):
@@ -55,6 +58,16 @@ def activateTheme(theme_path):
     return theme
 
 
+def reloadTheme():
+    theme = getCurrentActivatedThemePath()
+    activateTheme(theme)
+
+
+def isAutoThemeActivating():
+    theme = getCurrentActivatedThemePath()
+    return theme == getStyleFilePath('base')
+
+
 def getCurrentActivatedThemePath():
     try:
         default_path = global_preference_service.getPreference(DEFAULT_THEME)
@@ -69,4 +82,4 @@ def optimiseUpdaterUi(updater: Updater):
     for button in buttons:
         button.setFlat(True)
         button.setStyleSheet("padding: %dpx %dpx;" % (1, rt(10)))
-        button.setProperty('class', 'border-button')
+        button.setProperty('class', 'bordered-widget')

@@ -22,13 +22,13 @@ QFrame[frameShape="4"] {
     color: #888888;
 }
 
-QWidget.border-button {
+QWidget.bordered-widget {
     border: 1px solid #999999;
     border-radius: 2px;
 }
 
 QMenu {
-    background-color: @background_color;
+    background-color: rgb(236, 236, 236);
     border-radius: 5px;
 }
 

@@ -57,7 +57,9 @@ HOME_HEIGHT = 'home_height'
 PROTOCOL_KEY = 'docker_protocol'
 DEFAULT_SEARCH_UPDATE_DATE = 'default_search_update_date'
 DEFAULT_TERMINAL = 'default_terminal'
-
+DEFAULT_BG_COLOR = '@background_color'
+DEFAULT_FONT_COLOR = '@font_color'
+DEFAULT_SELECTION_COLOR = '@selection_color'
 DEFAULT_THEME = 'default_theme'
 
 

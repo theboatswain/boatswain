@@ -58,6 +58,14 @@ def setPreference(key, value):
     preference.save()
 
 
+def removePreference(key):
+    try:
+        preference = getPreference(key)
+        preference.delete_instance()
+    except DoesNotExist:
+        pass
+
+
 def getCurrentDockerURL():
     try:
         return getPreference(PROTOCOL_KEY).value

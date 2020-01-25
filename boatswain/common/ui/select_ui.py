@@ -36,7 +36,7 @@ class MultiLevelSelectionUi(QPushButton):
         self.menues = []
         self.setFlat(True)
         padding = "%dpx %dpx %dpx %dpx" % (rt(1), rt(7), rt(1), rt(10))
-        self.setProperty('class', 'border-button')
+        self.setProperty('class', 'bordered-widget')
         self.setStyleSheet("padding: %s; Text-align:left" % padding)
         self.mouseReleaseEvent = self.onSelectClicked
 
@@ -114,7 +114,7 @@ class SelectUi(QPushButton):
         self.index = []
         self.setFlat(True)
         padding = "%dpx %dpx %dpx %dpx" % (rt(1), rt(7), rt(1), rt(10))
-        self.setProperty('class', 'border-button')
+        self.setProperty('class', 'bordered-widget')
         self.setStyleSheet("padding: %s; Text-align:left" % padding)
         self.mouseReleaseEvent = self.onSelectClicked
 

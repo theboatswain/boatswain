@@ -28,16 +28,20 @@ QWidget.app-widget * {
 }
 
 QFrame[frameShape="4"] {
-    color: #dedfdf;
+    color: rgb(68, 70 ,72);
 }
 
-QWidget.border-button {
+QWidget.bordered-widget {
     border: 1px solid #999999;
     border-radius: rt2px;
 }
 
-QWidget.border-button:hover {
+QWidget.bordered-widget:hover {
   border: 1px solid @selection_color;
+}
+
+QPushButton.bordered-widget {
+    padding: rt1px rt8px
 }
 
 QMenu {

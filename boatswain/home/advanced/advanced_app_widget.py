@@ -111,7 +111,7 @@ class AdvancedAppWidget:
             finder = QPushButton(self.ui.widget)
             finder.setText(' ... ')
             finder.setFlat(True)
-            finder.setProperty('class', 'border-button')
+            finder.setProperty('class', 'bordered-widget')
             finder.setStyleSheet("padding: 0px 4px;")
             finder.setMaximumWidth(rt(25))
             finder.clicked.connect(lambda x: self.findFileOrFolder(shortcut, input_box))

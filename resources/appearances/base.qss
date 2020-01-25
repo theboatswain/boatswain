@@ -5,9 +5,13 @@
     @font_color = black
 */
 
-QWidget.border-button {
+QWidget.bordered-widget {
     border: 1px solid #999999;
     border-radius: 2px;
+}
+
+QPushButton.bordered-widget {
+    padding: rt1px rt8px
 }
 
 QFrame[frameShape="4"] {

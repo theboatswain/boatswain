@@ -48,7 +48,7 @@ class HomeUi(QMainWindow):
 
         self.add_app = QPushButton(widget)
         self.add_app.setFlat(True)
-        self.add_app.setProperty('class', 'border-button')
+        self.add_app.setProperty('class', 'bordered-widget')
         self.add_app.setStyleSheet("padding: %dpx %dpx" % (rt(1), rt(12)))
         self.add_app.setSizePolicy(BQSizePolicy(width=QSizePolicy.Fixed, height=QSizePolicy.Fixed))
         self.add_app.setFocusPolicy(Qt.ClickFocus)
@@ -63,7 +63,7 @@ class HomeUi(QMainWindow):
         self.search_app.setSizePolicy(BQSizePolicy(h_stretch=2, height=QSizePolicy.Fixed))
         self.search_app.setFocusPolicy(Qt.ClickFocus)
         self.search_app.setStyleSheet("padding: 0 0 0 5; background-color: transparent;")
-        self.search_app.setProperty('class', 'border-button')
+        self.search_app.setProperty('class', 'bordered-widget')
         top_layout.addWidget(self.search_app)
         self.custom_menu = QPushButton(widget)
         self.custom_menu.setText("⋮")

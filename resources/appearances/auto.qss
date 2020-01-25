@@ -17,7 +17,7 @@ QFrame[frameShape="4"] {
     min-height: 1px;
 }
 
-QWidget.border-button {
+QWidget.bordered-widget {
     border: 1px solid #999999;
     border-radius: 2px;
 }

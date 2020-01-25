@@ -56,7 +56,7 @@ class AppearanceUnitUi(QWidget):
         status = QPushButton(widget)
         status.setFlat(True)
         status.setFont(font)
-        status.setProperty('class', 'border-button')
+        status.setProperty('class', 'bordered-widget')
         status.setStyleSheet('padding: 0 %dpx' % rt(1))
         self.app_horizontal_layout.addWidget(status)
 

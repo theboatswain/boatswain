@@ -132,8 +132,7 @@ class BorderedButton(QPushButton):
     def __init__(self, parent):
         super(BorderedButton, self).__init__(parent)
         self.setFlat(True)
-        self.setProperty('class', 'border-button')
-        self.setStyleSheet("padding: %dpx %dpx;" % (1, rt(10)))
+        self.setProperty('class', 'bordered-widget')
 
 
 class ButtonLineEdit(QLineEdit):
@@ -148,7 +147,7 @@ class ButtonLineEdit(QLineEdit):
         self.button.setCursor(Qt.OpenHandCursor)
         self.button.clicked.connect(self.button_clicked.emit)
 
-        self.setAttribute(Qt.WA_MacShowFocusRect, 0)
+        self.setAttribute(Qt.WA_MacShowFocusRect, False)
 
         frame_width = self.style().pixelMetric(QStyle.PM_DefaultFrameWidth)
         button_size = self.button.sizeHint()
