@@ -16,7 +16,7 @@
 #
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QObject
-from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtGui import QColor
 
 from boatswain.common.services import style_service, global_preference_service
 from boatswain.common.utils.constants import DEFAULT_BG_COLOR, DEFAULT_FONT_COLOR, DEFAULT_SELECTION_COLOR
@@ -60,12 +60,14 @@ class AppearancesPreferences(QObject):
     def onSelectColorClicked(self):
         if style_service.isAutoThemeActivating():
             return
-        colour_dia = QtWidgets.QColorDialog()
-        selected_colour = colour_dia.getColor()
         button = self.sender()
-        self.setColorButton(button, selected_colour.name())
-        global_preference_service.setPreference(self.buttons[button], selected_colour.name())
-        style_service.reloadTheme()
+        color = self.getPreference(self.buttons[button])
+        colour_dia = QtWidgets.QColorDialog()
+        selected_colour = colour_dia.getColor(QColor(color))
+        if selected_colour.isValid():
+            self.setColorButton(button, selected_colour.name())
+            global_preference_service.setPreference(self.buttons[button], selected_colour.name())
+            style_service.reloadTheme()
 
     def setColorButton(self, button: QObject, color):
         button.setStyleSheet("background-color: " + color)

@@ -50,7 +50,7 @@ class SearchAppDialogUi(object):
         self.key_search.setAttribute(Qt.WA_MacShowFocusRect, 0)
         self.key_search.setFocusPolicy(Qt.StrongFocus)
         self.key_search.setProperty('class', 'bordered-widget')
-        self.key_search.setStyleSheet("padding: 0 0 0 5;")
+        self.key_search.setStyleSheet("padding: 0 0 0 5px;")
         self.grid_container.addWidget(self.key_search, 0, 1, 1, 1)
         main_layout.addWidget(widget)
         self.scroll_area = QScrollArea(dialog)

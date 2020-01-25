@@ -51,7 +51,7 @@ class AppWidgetUi(QWidget):
         self.status = BorderedButton(self.widget)
         self.horizontal_layout.addWidget(self.status)
 
-        self.advanced_app = AdvancedAppWidget(self.widget, container)
+        self.advanced_app = AdvancedAppWidget(self, container)
 
         self.vertical_layout.addWidget(self.advanced_app.ui)
         self.container = container
