@@ -14,8 +14,10 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
+from PyQt5.QtWidgets import QMessageBox, QDialog
 
-from PyQt5.QtWidgets import QMessageBox
+from boatswain.common.ui.custom_ui import BorderedButton
+from boatswain.common.utils.utils import tr
 
 
 def error(header, body):
@@ -26,3 +28,19 @@ def error(header, body):
     msg.setInformativeText(body)
     msg.setStandardButtons(QMessageBox.Ok)
     msg.exec_()
+
+
+def question(header, body):
+    box = QMessageBox()
+    box.setIcon(QMessageBox.Question)
+    box.setWindowTitle(header)
+    box.setText(body)
+    ok_button = BorderedButton(box)
+    ok_button.setText(tr("Ok"))
+    ok_button.setDefault(True)
+    cancel_button = BorderedButton(box)
+    cancel_button.setText(tr("Cancel"))
+    cancel_button.setAutoDefault(False)
+    box.addButton(cancel_button, QMessageBox.RejectRole)
+    box.addButton(ok_button, QMessageBox.AcceptRole)
+    return box.exec_()

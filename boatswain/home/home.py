@@ -219,9 +219,8 @@ class Home:
     def deleteGroup(self, group: Group, approved=False):
         if not approved:
             message = tr("Are you sure you want to delete this group? All apps inside will be deleted also!")
-            button_reply = QMessageBox.question(self.ui, tr('Delete group'), message,
-                                                QMessageBox.Ok | QMessageBox.Cancel, QMessageBox.Cancel)
-            if button_reply != QMessageBox.Ok:
+            reply = message_utils.question(tr('Delete group'), message)
+            if not reply:
                 return
         for i in reversed(range(self.groups[group.id].app_list_layout.count())):
             container = self.groups[group.id].app_list_layout.itemAt(i).widget().container
@@ -235,9 +234,8 @@ class Home:
     def deleteApp(self, container):
         message = tr("Are you sure you want to delete this container? All configurations "
                      "you made for it will be deleted also!")
-        button_reply = QMessageBox.question(self.ui, tr('Delete container'), message,
-                                            QMessageBox.Ok | QMessageBox.Cancel, QMessageBox.Cancel)
-        if button_reply != QMessageBox.Ok:
+        reply = message_utils.question(tr('Delete container'), message)
+        if not reply:
             return
         containers_service.deleteContainer(container)
         self.apps[container.id].deleteLater()

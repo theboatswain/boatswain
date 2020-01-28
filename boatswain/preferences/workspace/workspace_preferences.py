@@ -114,9 +114,8 @@ class WorkspacePreferences:
     def onDeleteWorkspaceClicked(self):
         message = tr("Are you sure you want to delete this workspace? All groups and containers that belongs to it "
                      "will be deleted also!")
-        button_reply = QMessageBox.question(self.ui, tr('Delete workspace'), message,
-                                            QMessageBox.Ok | QMessageBox.Cancel, QMessageBox.Cancel)
-        if button_reply != QMessageBox.Ok:
+        reply = message_utils.question(tr('Delete workspace'), message)
+        if not reply:
             return
         indicates = self.ui.workspace_table.selectionModel().selectedRows()
         for item in sorted(indicates, reverse=True):
