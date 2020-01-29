@@ -17,7 +17,7 @@
 
 from boatswain.common.services import global_preference_service
 from boatswain.common.utils import utils
-from boatswain.common.utils.constants import DEFAULT_TERMINAL
+from boatswain.common.utils.constants import DEFAULT_TERMINAL, AUTOMATIC_UPDATE
 from boatswain.common.utils.utils import tr
 from boatswain.preferences.general.general_preferences_ui import GeneralPreferencesUi
 
@@ -33,6 +33,8 @@ class GeneralPreferences:
             if item['name'] == default_terminal:
                 self.ui.terminal.setCurrentText(default_terminal)
 
+        self.ui.check_for_update.setChecked(global_preference_service.isAutomaticUpdate())
+        self.ui.check_for_update.stateChanged.connect(self.onAutoUpdateChanged)
         self.ui.terminal.current_text_changed.connect(self.onTerminalChanged)
         self.ui.language.addItem(tr("English"))
         # Todo: Terminal open new tab if possible
@@ -45,3 +47,6 @@ class GeneralPreferences:
 
     def onTerminalChanged(self, terminal):
         global_preference_service.setPreference(DEFAULT_TERMINAL, terminal)
+
+    def onAutoUpdateChanged(self, status):
+        global_preference_service.setPreference(AUTOMATIC_UPDATE, str(status))

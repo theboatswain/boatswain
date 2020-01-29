@@ -19,9 +19,8 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtWidgets import QFrame, QSizePolicy, QApplication
 
-from boatswain.common.ui.custom_ui import BQSizePolicy, BorderedButton
-
 from boatswain.common.services import system_service
+from boatswain.common.ui.custom_ui import BQSizePolicy, BorderedButton
 from boatswain.common.utils import utils
 from boatswain.common.utils.utils import tr
 

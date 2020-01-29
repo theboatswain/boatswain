@@ -27,7 +27,7 @@ from boatswain_updater.updater import Updater
 from boatswain.common.models.base import db
 from boatswain.common.models.tables import db_tables
 from boatswain.common.services import data_transporter_service, system_service, \
-    containers_service, docker_service, style_service
+    containers_service, docker_service, style_service, global_preference_service
 from boatswain.common.utils import utils
 from boatswain.common.utils.constants import APP_DATA_DIR, APP_EXIT_CHANNEL, UPDATES_CHANNEL, APP_AVATAR_DIR, \
     THEME_UPDATING_CHANNEL
@@ -84,7 +84,8 @@ def run():
     update_dialog.setIcon(pixmap)
     update_dialog.installed.connect(onApplicationInstalled)
     style_service.optimiseUpdaterUi(update_dialog)
-    # update_dialog.checkForUpdate(silent=True)
+    if global_preference_service.isAutomaticUpdate():
+        update_dialog.checkForUpdate(silent=True)
     data_transporter_service.listen(UPDATES_CHANNEL, update_dialog.checkForUpdate)
 
     if docker_service.isDockerRunning():

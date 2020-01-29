@@ -15,14 +15,13 @@
 #
 #
 
-from PyQt5.QtCore import QSize
+from PyQt5.QtCore import QSize, Qt
 from boatswain_updater.utils import sys_utils
 from peewee import DoesNotExist
 
 from boatswain.common.models.preference import Preference
 from boatswain.common.services import system_service
-from boatswain.common.utils.constants import HOME_WIDTH, HOME_HEIGHT, PROTOCOL_KEY
-
+from boatswain.common.utils.constants import HOME_WIDTH, HOME_HEIGHT, PROTOCOL_KEY, AUTOMATIC_UPDATE
 
 in_memory_variables = {}
 
@@ -56,6 +55,14 @@ def setPreference(key, value):
     except DoesNotExist:
         preference = Preference(name=key, value=value)
     preference.save()
+
+
+def isAutomaticUpdate():
+    try:
+        preference = getPreference(AUTOMATIC_UPDATE)
+        return preference.value == str(Qt.Checked)
+    except DoesNotExist:
+        return True
 
 
 def removePreference(key):

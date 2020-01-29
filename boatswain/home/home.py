@@ -18,7 +18,7 @@ from typing import Dict
 
 from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QResizeEvent
-from PyQt5.QtWidgets import QMainWindow, QInputDialog, QMenu, QAction, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QInputDialog, QMenu, QAction
 from boatswain_updater.utils import sys_utils
 from playhouse.shortcuts import update_model_from_dict, model_to_dict
 

@@ -19,9 +19,8 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtWidgets import QFrame, QSizePolicy
 
-from boatswain.common.ui.custom_ui import BQSizePolicy
-
 from boatswain.common.services import system_service
+from boatswain.common.ui.custom_ui import BQSizePolicy
 
 
 class LicenseUi(object):

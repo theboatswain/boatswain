@@ -15,7 +15,7 @@
 #
 #
 from PyQt5.QtCore import QModelIndex
-from PyQt5.QtWidgets import QAbstractItemView, QTableView, QInputDialog, QMessageBox
+from PyQt5.QtWidgets import QAbstractItemView, QTableView, QInputDialog
 
 from boatswain.common.exceptions.workspace import WorkspaceAlreadyExistsException
 from boatswain.common.services import workspace_service, containers_service, data_transporter_service, group_service

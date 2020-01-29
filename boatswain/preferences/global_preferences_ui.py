@@ -22,9 +22,7 @@ from boatswain.common.services import system_service
 from boatswain.common.ui.custom_ui import BQSizePolicy
 from boatswain.common.utils.utils import tr
 from boatswain.preferences.appearances.appearances_preferences import AppearancesPreferences
-from boatswain.preferences.docker.docker_preferences import DockerPreferences
 from boatswain.preferences.general.general_preferences import GeneralPreferences
-from boatswain.preferences.startup.startup_preferences import StartupPreferences
 from boatswain.preferences.workspace.workspace_preferences import WorkspacePreferences
 
 
@@ -57,14 +55,14 @@ class GlobalPreferencesUi(QObject):
         self.appearances = AppearancesPreferences(self.central_widget)
         self.tab_widget.addTab(self.appearances.ui, tr("Appearances"))
 
-        self.docker = DockerPreferences(self.central_widget)
-        self.tab_widget.addTab(self.docker.ui, tr("Docker"))
+        # self.docker = DockerPreferences(self.central_widget)
+        # self.tab_widget.addTab(self.docker.ui, tr("Docker"))
 
         self.workspace = WorkspacePreferences(self.central_widget)
         self.tab_widget.addTab(self.workspace.ui, tr("Workspaces"))
 
-        self.startup = StartupPreferences(self.central_widget)
-        self.tab_widget.addTab(self.startup.ui, tr("Startup"))
+        # self.startup = StartupPreferences(self.central_widget)
+        # self.tab_widget.addTab(self.startup.ui, tr("Startup"))
         self.vertical_layout.addWidget(self.tab_widget)
 
         main_layout.addWidget(self.central_widget)

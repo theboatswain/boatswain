@@ -14,7 +14,7 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
-from PyQt5.QtWidgets import QMessageBox, QDialog
+from PyQt5.QtWidgets import QMessageBox
 
 from boatswain.common.ui.custom_ui import BorderedButton
 from boatswain.common.utils.utils import tr

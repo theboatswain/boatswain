@@ -21,7 +21,6 @@ import sys
 from contextlib import closing
 
 from PyQt5.QtCore import QFile, QCoreApplication
-
 from boatswain_updater.utils import sys_utils
 from docker.types import CancellableStream
 
