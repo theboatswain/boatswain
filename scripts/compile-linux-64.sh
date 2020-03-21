@@ -16,7 +16,7 @@ cd ..
 rm -rf release/linux
 mkdir -p release/linux/"${VERSION}"/boatswain
 mv build-linux-64/Boatswain release/linux/"${VERSION}"/boatswain/
-cp resources/* release/linux/"${VERSION}"/boatswain/
+cp -R resources/* release/linux/"${VERSION}"/boatswain/
 
 cd release/linux/"${VERSION}" || exit
 

@@ -6,6 +6,11 @@
     @font_color = black
 */
 
+* {
+    background-color: @background_color;
+    color: @font_color;
+}
+
 QWidget.home {
     background-color: @background_color;
 }
@@ -24,17 +29,26 @@ QFrame[frameShape="4"] {
 
 QWidget.bordered-widget {
     border: 1px solid #999999;
-    border-radius: 2px;
+    border-radius: rt2px;
+}
+
+QWidget.bordered-widget:hover {
+  border: 1px solid @selection_color;
+}
+
+QPushButton.bordered-widget {
+    padding: rt1px rt8px
 }
 
 QMenu {
     background-color: rgb(236, 236, 236);
-    border-radius: 5px;
+    border-radius: rt10px;
+    min-width: rt120px;
 }
 
 QMenu::item {
     color: @font_color;
-    min-width: 120px;
+    min-width: rt120px;
 }
 
 QMenu::item::selected {
@@ -43,4 +57,77 @@ QMenu::item::selected {
 
 QLineEdit {
     color: @font_color;
+}
+
+
+QTabWidget {
+  padding: rt2px;
+}
+
+QTabWidget::pane {
+  padding-top: rt10px;
+  border: 1px solid #32414B;
+  border-radius: rt4px;
+}
+
+QTabWidget::tab-bar { alignment: center; }
+QTabWidget::pane { position: absolute; top: -rt10px; }
+
+QTabBar::tab:top:selected {
+    border: 1px solid @selection_color;
+}
+
+QTabBar::tab:top:first {
+    border-top-left-radius: rt4px;
+    border-bottom-left-radius: rt4px;
+    margin-left: 0px;
+}
+
+QTabBar::tab:top:last {
+    border-top-right-radius: rt4px;
+    border-bottom-right-radius: rt4px;
+}
+
+QTabBar::tab:top:only-one {
+    border-radius: rt4px;
+}
+
+QTabBar::tab:top:!selected:hover {
+  border: 1px solid @selection_color;
+}
+
+QTabBar::tab:top {
+    color: @font_color;
+    padding: rt2px rt6px rt2px rt6px;
+    min-width: rt5px;
+    border: 1px solid #999999;
+    margin-left: -1px;
+}
+
+QTableView { alternate-background-color: #D5DBDB }
+
+QTreeView,
+QListView,
+QTableView,
+QColumnView {
+  background-color: #F8F9F9;
+  border: 1px solid #32414B;
+  color: black;
+  gridline-color: #32414B;
+  border-radius: rt4px;
+}
+
+QTreeView::item:pressed,
+QListView::item:pressed,
+QTableView::item:pressed,
+QColumnView::item:pressed {
+  background-color: @selection_color;
+}
+
+QHeaderView {
+  background-color: #707B7C;
+}
+
+QHeaderView::section {
+    background-color: #32414B;
 }

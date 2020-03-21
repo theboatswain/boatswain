@@ -21,3 +21,4 @@ QWidget.bordered-widget {
     border: 1px solid #999999;
     border-radius: 2px;
 }
+

@@ -17,6 +17,9 @@
 import os
 
 from appdirs import user_data_dir, user_log_dir
+import getpass
+
+USER_NAME = getpass.getuser()
 
 APP_NAME = 'boatswain'
 APP_AUTHOR = 'theboatswain'
@@ -59,6 +62,7 @@ DEFAULT_SEARCH_UPDATE_DATE = 'default_search_update_date'
 DEFAULT_TERMINAL = 'default_terminal'
 
 AUTOMATIC_UPDATE = 'automatic_update'
+AUTOMATIC_FETCH_PREFERENCE_SHORTCUT = 'automatic_fetch_preference_shortcut'
 
 DEFAULT_BG_COLOR = '@background_color'
 DEFAULT_FONT_COLOR = '@font_color'

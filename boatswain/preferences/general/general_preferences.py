@@ -17,7 +17,7 @@
 
 from boatswain.common.services import global_preference_service
 from boatswain.common.utils import utils
-from boatswain.common.utils.constants import DEFAULT_TERMINAL, AUTOMATIC_UPDATE
+from boatswain.common.utils.constants import DEFAULT_TERMINAL, AUTOMATIC_UPDATE, AUTOMATIC_FETCH_PREFERENCE_SHORTCUT
 from boatswain.common.utils.utils import tr
 from boatswain.preferences.general.general_preferences_ui import GeneralPreferencesUi
 
@@ -35,11 +35,14 @@ class GeneralPreferences:
 
         self.ui.check_for_update.setChecked(global_preference_service.isAutomaticUpdate())
         self.ui.check_for_update.stateChanged.connect(self.onAutoUpdateChanged)
+
+        self.ui.fetch_shortcut.setChecked(global_preference_service.isAutomaticFetchPreferencesShortcuts())
+        self.ui.fetch_shortcut.stateChanged.connect(self.onAutoFetchPreferenceShortcutChanged)
+
         self.ui.terminal.current_text_changed.connect(self.onTerminalChanged)
         self.ui.language.addItem(tr("English"))
         # Todo: Terminal open new tab if possible
         # Todo: Start with OS
-        # Todo: Automatic check for updates
         # Todo: Automatic fetch preferences shortcut
         # Todo: User set background image
         # Todo: Transparent
@@ -50,3 +53,6 @@ class GeneralPreferences:
 
     def onAutoUpdateChanged(self, status):
         global_preference_service.setPreference(AUTOMATIC_UPDATE, str(status))
+
+    def onAutoFetchPreferenceShortcutChanged(self, status):
+        global_preference_service.setPreference(AUTOMATIC_FETCH_PREFERENCE_SHORTCUT, str(status))

@@ -21,7 +21,8 @@ from peewee import DoesNotExist
 
 from boatswain.common.models.preference import Preference
 from boatswain.common.services import system_service
-from boatswain.common.utils.constants import HOME_WIDTH, HOME_HEIGHT, PROTOCOL_KEY, AUTOMATIC_UPDATE
+from boatswain.common.utils.constants import HOME_WIDTH, HOME_HEIGHT, PROTOCOL_KEY, AUTOMATIC_UPDATE, \
+    AUTOMATIC_FETCH_PREFERENCE_SHORTCUT
 
 in_memory_variables = {}
 
@@ -60,6 +61,14 @@ def setPreference(key, value):
 def isAutomaticUpdate():
     try:
         preference = getPreference(AUTOMATIC_UPDATE)
+        return preference.value == str(Qt.Checked)
+    except DoesNotExist:
+        return True
+
+
+def isAutomaticFetchPreferencesShortcuts():
+    try:
+        preference = getPreference(AUTOMATIC_FETCH_PREFERENCE_SHORTCUT)
         return preference.value == str(Qt.Checked)
     except DoesNotExist:
         return True

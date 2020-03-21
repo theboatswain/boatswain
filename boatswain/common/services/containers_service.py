@@ -102,10 +102,11 @@ def installContainer(image_name, repo='dockerhub', description='', tag='latest',
             port.container = container
             port.save()
 
-    preferences_shortcuts = requests.get("%s/%s/%s.yaml" % (PREFERENCES_SHORTCUT_API, repo, image_name))
-    if preferences_shortcuts.ok:
-        shortcut_yaml = ShortcutYaml.fromYaml(preferences_shortcuts.content)
-        shortcut_service.importShortcuts(container, shortcut_yaml.shortcuts)
+    if global_preference_service.isAutomaticFetchPreferencesShortcuts():
+        preferences_shortcuts = requests.get("%s/%s/%s.yaml" % (PREFERENCES_SHORTCUT_API, repo, image_name))
+        if preferences_shortcuts.ok:
+            shortcut_yaml = ShortcutYaml.fromYaml(preferences_shortcuts.content)
+            shortcut_service.importShortcuts(container, shortcut_yaml.shortcuts)
 
     updateContainerTags(container)
     logo = getContainerLogo(container.image_name)

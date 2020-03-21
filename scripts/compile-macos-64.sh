@@ -16,7 +16,7 @@ cd ..
 rm -rf release/macos
 mkdir -p release/macos/"${VERSION}"
 mv build-macos-64/Boatswain.app release/macos/"${VERSION}"
-cp resources/* release/macos/"${VERSION}"/Boatswain.app/Contents/Resources/
+cp -R resources/* release/macos/"${VERSION}"/Boatswain.app/Contents/Resources/
 
 rm -rf release/macos/"${VERSION}"/Boatswain.app/Contents/Resources/*.desktop
 

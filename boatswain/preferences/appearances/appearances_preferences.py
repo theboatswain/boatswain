@@ -70,8 +70,9 @@ class AppearancesPreferences(QObject):
             style_service.reloadTheme()
 
     def setColorButton(self, button: QObject, color):
-        button.setStyleSheet("background-color: " + color)
-        button.update()
+        if color is not None:
+            button.setStyleSheet("background-color: " + color)
+            button.update()
 
     def getPreference(self, key):
         background_color = global_preference_service.getPreferenceValue(key)

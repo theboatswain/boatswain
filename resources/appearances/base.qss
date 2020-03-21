@@ -18,3 +18,7 @@ QFrame[frameShape="4"] {
     color: #888888;
     border-width: 1px;
 }
+
+QMenu {
+    min-width: rt120px;
+}

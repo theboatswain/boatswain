@@ -47,6 +47,7 @@ QPushButton.bordered-widget {
 QMenu {
     background-color: #3b3c3d;
     border-radius: rt10px;
+    min-width: rt120px;
 }
 
 QMenu::item {
