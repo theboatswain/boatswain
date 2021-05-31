@@ -18,7 +18,7 @@ virtualenv venv
 source venv/bin/activate  
 ```  
 + Install project's dependencies: `pip3 install -r requirements.txt`  
-+ Install pyqtdeploy: `pip3 install pyqtdeploy`  
++ Install pyqtdeploy: `pip3 install pyqtdeploy==2.5.1`  
 
 #### Install sysroot
 Download all dependencies:
