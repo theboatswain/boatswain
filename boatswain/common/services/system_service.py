@@ -58,7 +58,7 @@ def startTerminalWithCommand(command):
         os.system("start cmd /c %s" % command)
     else:
         default_linux_term = 'xterm'
-        if default_term is not None and default_term is not 'auto':
+        if default_term is not None and default_term is not 'Auto':
             default_linux_term = default_term
         elif os.path.exists('/etc/debian_version'):
             default_linux_term = 'x-terminal-emulator'
