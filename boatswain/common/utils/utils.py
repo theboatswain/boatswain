@@ -32,6 +32,10 @@ _tr = QCoreApplication.translate
 tpl = 'Boatswain'
 possible_terminals = [
     {
+        'name': 'Auto',
+        'path': 'auto'
+    },
+    {
         'name': 'Terminal',
         'path': '/System/Applications/Utilities/Terminal.app'
     },
@@ -95,6 +99,8 @@ def getListAvailableTerminals():
     results = []
     for item in possible_terminals:
         if os.path.exists(item['path']):
+            results.append(item)
+        elif item['path'] == 'auto':
             results.append(item)
     return results
 
